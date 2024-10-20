@@ -72,7 +72,7 @@ const Products = () => {
   }, [selectedOption]);
 
   // Determine if today is a weekend and set showBrunch accordingly
-  const isWeekend = (new Date().getDay() === 6) || (new Date().getDay() === 7);
+  const isWeekend = (new Date().getDay() === 6) || (new Date().getDay() === 0);
 
   // State variable to control which options are shown, initialized based on the day
   const [showBrunch, setShowBrunch] = useState(isWeekend);
