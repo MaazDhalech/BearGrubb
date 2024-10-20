@@ -1,0 +1,69 @@
+{
+    "Breakfast": {
+      "North hall": [
+        "Quiche Lorraine",
+        "Fruit Smoothie Bowl",
+        "Cinnamon Roll"
+      ],
+      "South hall": [
+        "Avocado Toast with Poached Egg",
+        "Breakfast Tacos",
+        "Coconut Chia Pudding"
+      ],
+      "East hall": [
+        "Banana Bread",
+        "Egg and Cheese Muffin",
+        "Porridge with Honey"
+      ],
+      "West hall": [
+        "Smoked Salmon Bagel",
+        "Vegetable Frittata",
+        "Peanut Butter Oatmeal"
+      ]
+    },
+    "Lunch": {
+      "North hall": [
+        "Caprese Panini",
+        "Vegetable Curry with Rice",
+        "Pulled Chicken Salad"
+      ],
+      "South hall": [
+        "Beef Stir-fry",
+        "Spinach and Feta Pie",
+        "Roasted Veggie Wrap"
+      ],
+      "East hall": [
+        "Seafood Salad",
+        "Falafel Wrap",
+        "BBQ Chicken Flatbread"
+      ],
+      "West hall": [
+        "Roasted Beet Salad",
+        "Tuna Melt",
+        "Vegetable Soba Noodles"
+      ]
+    },
+    "Dinner": {
+      "North hall": [
+        "Lemon Herb Roasted Chicken",
+        "Vegetable Paella",
+        "Grilled Salmon with Asparagus"
+      ],
+      "South hall": [
+        "Stuffed Zucchini",
+        "Baked Cod with Herbs",
+        "Pasta Primavera"
+      ],
+      "East hall": [
+        "Braised Lamb Shanks",
+        "Mushroom Stroganoff",
+        "Chicken Cacciatore"
+      ],
+      "West hall": [
+        "Stuffed Bell Peppers",
+        "Shrimp and Grits",
+        "Vegetable Lasagna"
+      ]
+    }
+  }
+  
