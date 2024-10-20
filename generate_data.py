@@ -1,13 +1,8 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
+import json
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
 import gpt_classifier as classifier
-from functools import cache
-
-app = Flask(__name__)
-CORS(app)
 
 # List of dining halls
 dining_halls = [
@@ -120,7 +115,6 @@ def extract_halal_meals(root):
     
     return classifier.meat_classifier(ai_meals)
 
-@cache
 def get_halal_meals_for_today():
     today = datetime.now()
     date_str = today.strftime("%Y%m%d")  # Format date as YYYYMMDD
@@ -161,7 +155,6 @@ def extract_vegetarian_meals(root):
     return vegetarian_meals
 
 # Get vegan meals for today
-@cache
 def get_vegan_meals_for_today():
     today = datetime.now()
     date_str = today.strftime("%Y%m%d")
@@ -174,7 +167,6 @@ def get_vegan_meals_for_today():
     return all_vegan_meals
 
 # Get vegetarian meals for today
-@cache
 def get_vegetarian_meals_for_today():
     today = datetime.now()
     date_str = today.strftime("%Y%m%d")
@@ -186,26 +178,8 @@ def get_vegetarian_meals_for_today():
             all_vegetarian_meals[dining_hall] = vegetarian_meals
     return all_vegetarian_meals
 
-# Route to get halal meals
-@app.route('/api/halal-meals', methods=['GET'])
-def get_halal_meals():
-    return jsonify(get_halal_meals_for_today())
-
-# Route to get vegan meals
-@app.route('/api/vegan-meals', methods=['GET'])
-def get_vegan_meals():
-    return jsonify(get_vegan_meals_for_today())
-
-# Route to get vegetarian meals
-@app.route('/api/vegetarian-meals', methods=['GET'])
-def get_vegetarian_meals():
-    return jsonify(get_vegetarian_meals_for_today())
 
 # Running the Flask app
 if __name__ == '__main__':
-    print("server starting...")
-    get_halal_meals_for_today()
-    get_vegan_meals_for_today()
-    get_vegetarian_meals_for_today()
-    print("precompute done..")
-    app.run(debug=True, port=5000)
+    with open('halal.json', 'w') as output:
+        json.dump(get_halal_meals_for_today(), output)
