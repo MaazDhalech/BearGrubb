@@ -1,5 +1,5 @@
 from openai import OpenAI
-client = OpenAI(api_key="insert api key")
+client = OpenAI(api_key="insert API key here")
 
 def check_meal(meal):
     response = client.chat.completions.with_raw_response.create(
