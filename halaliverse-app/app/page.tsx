@@ -1,22 +1,12 @@
 import Head from 'next/head';
 import Products from './components/Products';
 import Link from 'next/link';
-import DynamicTable from './components/DynamicTable'
 
 const Home = () => {
-  const tableData = [
-    ['Row 1, Col 1', 'Row 1, Col 2'],
-    ['Row 2, Col 1'],
-    ['Row 3, Col 1', 'Row 3, Col 2', 'Row 3, Col 3'],
-    ['Row 4, Col 1', 'Row 4, Col 2', 'Row 4, Col 3', 'Row 4, Col 4'],
-  ];
-
   return (
 
     
     <div className="flex flex-col min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Dynamic Table Example</h1>
-      <DynamicTable data={tableData} />
       <Head>
         <title>CalInclusiveDining</title>
         <meta name="description" content="A menu of halal, vegetarian, and vegan at Berkeley dining halls." />
