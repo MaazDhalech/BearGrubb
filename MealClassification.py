@@ -1,6 +1,7 @@
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
+import gpt_classifier as classifier
 
 # List of dining halls
 dining_halls = [
@@ -38,6 +39,22 @@ def find_dietary_value(recipe, dietary_id):
     dietary = dietaries.find(f'dietaryChoice[@id="{dietary_id}"]')
     return dietary.text if dietary is not None else None
 
+def swap_dict_layers(input_dict):
+    new_dict = {}
+
+    for layer1 in input_dict:
+        layer1_data = input_dict[layer1]
+        for layer2 in layer1_data:
+            layer2_data = layer1_data[layer2]
+
+            if not layer2 in new_dict:
+                new_dict[layer2] = {}
+            
+            new_dict[layer2][layer1] = layer2_data
+
+    return new_dict
+
+
 def extract_vegan_meals(root):
     vegan_meals = {'Breakfast': [], 'Brunch': [], 'Lunch': [], 'Dinner': []}
     
@@ -45,7 +62,7 @@ def extract_vegan_meals(root):
     for meal in root.findall('.//menu'):
         meal_period = meal.attrib.get('mealperiodname', '')
         recipes = meal.find('recipes')
-        if recipes:
+        if len(recipes) > 0:
             for recipe in recipes.findall('recipe'):
                 vegan_value = find_dietary_value(recipe, "Vegan Option")
                 if vegan_value == 'Yes':
@@ -70,7 +87,7 @@ def extract_vegetarian_meals(root):
         meal_period = meal.attrib.get('mealperiodname', '')
         recipes = meal.find('recipes')
 
-        if recipes:
+        if len(recipes) > 0:
             for recipe in recipes.findall('recipe'):
                 vegetarian_value = find_dietary_value(recipe, "Vegetarian Option")
                 vegan_value = find_dietary_value(recipe, "Vegan Option")
@@ -95,24 +112,23 @@ def extract_halal_meals(root):
     for meal in root.findall('.//menu'):
         meal_period = meal.attrib.get('mealperiodname', '')
         recipes = meal.find('recipes')
-        if recipes:
+        if len(recipes) > 0:
             for recipe in recipes.findall('recipe'):
                 ingredients = recipe.find('ingredients').text
                 alcohol_value = find_allergen_value(recipe, "Alcohol")
                 pork_value = find_allergen_value(recipe, "Pork")
-                vegetarian_value = find_dietary_value(recipe, "Vegetarian Option")
-                vegan_value = find_dietary_value(recipe, "Vegan Option")
-                if alcohol_value == "No" and pork_value == "No" and vegetarian_value == "No" and vegan_value == "No":
+                if (alcohol_value == "No" and pork_value == "No"):
                     meal_name = recipe.attrib.get('shortName', '')
                     if 'Breakfast' in meal_period:
-                        ai_meals['Breakfast'].append(meal_name + ingredients)
+                        ai_meals['Breakfast'].append((meal_name,ingredients))
                     elif 'Brunch' in meal_period:
-                        ai_meals['Brunch'].append(meal_name + ingredients)
+                        ai_meals['Brunch'].append((meal_name,ingredients))
                     elif 'Lunch' in meal_period:
-                        ai_meals['Lunch'].append((meal_name, ingredients))
+                        ai_meals['Lunch'].append((meal_name,ingredients))
                     elif 'Dinner' in meal_period:
-                        ai_meals['Dinner'].append((meal_name, ingredients))
-    return ai_meals
+                        ai_meals['Dinner'].append((meal_name,ingredients))
+    
+    return classifier.meat_classifier(ai_meals)
             
 
 
@@ -125,7 +141,7 @@ def get_vegan_meals_for_today():
         print(f"Processing vegan meals for {dining_hall} on {date_str}")
 
         root = download_and_parse_xml(dining_hall,date_str)
-        if root:
+        if len(root) > 0:
             vegan_meals = extract_vegan_meals(root)
             all_vegan_meals[dining_hall] = vegan_meals
 
@@ -140,7 +156,7 @@ def get_vegetarian_meals_for_today():
         print(f"Processing vegetarian meals for {dining_hall} on {date_str}")
 
         root = download_and_parse_xml(dining_hall,date_str)
-        if root:
+        if len(root) > 0:
             vegetarian_meals = extract_vegetarian_meals(root)
             all_vegetarian_meals[dining_hall] = vegetarian_meals
 
@@ -155,18 +171,18 @@ def get_halal_meals_for_today():
         print(f"Processing halal meals for {dining_hall} on {date_str}")
         
         root = download_and_parse_xml(dining_hall, date_str)
-        if root:
+        if len(root) > 0:
             halal_meals = extract_halal_meals(root)
             all_halal_meals[dining_hall] = halal_meals
     
     return all_halal_meals
+
 if __name__ == "__main__":
     vegan_meals_data = get_vegan_meals_for_today()
 
     vegetarian_meals_data = get_vegetarian_meals_for_today()
     halal_meals_data = get_halal_meals_for_today()
-
-    # Print or process the meals
+    
     for dining_hall, meals in vegan_meals_data.items():
         print(f"\nVegan meals for {dining_hall}:")
         for meal_period, meal_list in meals.items():
@@ -194,3 +210,4 @@ if __name__ == "__main__":
                     print(f"    - {meal}")
             else:
                 print(f"    No halal meals found.")
+    

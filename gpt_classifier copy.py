@@ -1,5 +1,5 @@
 from openai import OpenAI
-client = OpenAI(api_key="put api key here")
+client = OpenAI(api_key="sk-22q7YdHECHZx8sE9IHdpcXzOgXiEhrBnvR116enDx6T3BlbkFJytv35n6XaH-0AVhMtPzrpVyyOliLNslcIpUfM0ViwA")
 
 def check_meal(meal):
     response = client.chat.completions.with_raw_response.create(
@@ -22,27 +22,24 @@ def check_meal(meal):
 
 def meat_classifier(unknown_meals):
     meat_ingredients = {}
-    for meal_time in unknown_meals:
-        meat_ingredients[meal_time] = {}
-        for meal in unknown_meals[meal_time]:
-            meat_item_str = check_meal(meal)
-            meat_items_i = meat_item_str.split("\n")
-            
-            halal_list = []
-            for item in meat_items_i:
-                if "HALAL" in item.upper() or "KOSHER" in item.upper():
-                    halal_list.append(item)
-            for item in halal_list:
-                i = meat_items_i.index(item)
-                meat_items_i.pop(i)
+    for dining_hall in unknown_meals:
+        meat_ingredients[dining_hall] = {}
+        for meal_time in unknown_meals[dining_hall]:
+            meat_ingredients[dining_hall][meal_time] = {}
+            for meal in unknown_meals[dining_hall][meal_time]:
+                meat_item_str = check_meal(meal)
+                meat_items_i = meat_item_str.split("\n")
+                
+                halal_list = []
+                for item in meat_items_i:
+                    if "HALAL" in item.upper():
+                        halal_list.append(item)
+                for item in halal_list:
+                    meat_items_i.pop(item)
 
-            meat_ingredients[meal_time][meal[0]] = meat_items_i
+                meat_ingredients[dining_hall][meal_time][meal[0]] = meat_items_i
 
-    result = {}
-    for meal_time in unknown_meals:
-        result[meal_time] = []
-        for meal in unknown_meals[meal_time]:
-            if len(meat_ingredients[meal_time][meal[0]]) == 0 or len(meat_ingredients[meal_time][meal[0]][0]) == 0:
-                result[meal_time].append(meal[0])
     
-    return result
+    
+    
+    return meat_ingredients
