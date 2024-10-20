@@ -71,6 +71,17 @@ const Products = () => {
     }
   }, [selectedOption]);
 
+  // Determine if today is a weekend and set showBrunch accordingly
+  const isWeekend = (new Date().getDay() === 6) || (new Date().getDay() === 7);
+
+  // State variable to control which options are shown, initialized based on the day
+  const [showBrunch, setShowBrunch] = useState(isWeekend);
+
+  useEffect(() => {
+    // Ensure the state is updated if the component re-renders on a different day
+    setShowBrunch(isWeekend);
+  }, [isWeekend]);
+
   return (
     <div className="p-4 text-black">
       {/* First dropdown for meal type selection */}
@@ -81,7 +92,7 @@ const Products = () => {
           onChange={handleMealTypeChange}
           value={selectedOption}
         >
-          <option value="">Select a meal type</option>
+          <option value="" disabled>Select a meal type</option>
           <option value="1">Halal</option>
           <option value="2">Vegetarian</option>
           <option value="3">Vegan</option>
@@ -97,10 +108,10 @@ const Products = () => {
           value={selectedMealtime}
           disabled={!selectedOption} // Disable if meal type is not selected
         >
-          <option value="">Select a mealtime</option>
-          <option value="Breakfast">Breakfast</option>
-          <option value="Brunch">Brunch</option>
-          <option value="Lunch">Lunch</option>
+          <option value="" disabled>Select a mealtime</option>
+          {!showBrunch && <option value="Breakfast">Breakfast</option>}
+          {showBrunch && <option value="Brunch">Brunch</option>}
+          {!showBrunch && <option value="Lunch">Lunch</option>}
           <option value="Dinner">Dinner</option>
         </select>
       </div>
