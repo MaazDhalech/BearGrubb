@@ -8,6 +8,15 @@ const Products = () => {
   const [selectedOption, setSelectedOption] = useState(''); // Store selected meal type (Halal, Vegan, etc.)
   const [selectedMealtime, setSelectedMealtime] = useState(''); // Store selected mealtime (Breakfast, Lunch, etc.)
 
+  // Determine if it's brunch day
+  const isSaturday = new Date().getDay() === 6;
+  const [brunchDay, setBrunchDay] = useState(isSaturday);
+  useEffect(() => {
+    // Ensure the state is updated if the component re-renders on a different day
+    setBrunchDay(isSaturday);
+  }, [isSaturday]);
+
+
   const fetchHalalMeals = async () => {
     try {
       const response = await fetch('http://127.0.0.1:5000/api/halal-meals'); // Flask API endpoint
@@ -66,9 +75,9 @@ const Products = () => {
           disabled={!selectedOption} // Disable if meal type is not selected
         >
           <option value="">Select a mealtime</option>
-          <option value="Breakfast">Breakfast</option>
-          <option value="Brunch">Brunch</option>
-          <option value="Lunch">Lunch</option>
+          {!brunchDay && <option value="Breakfast">Breakfast</option>}
+          {brunchDay && <option value="Brunch">Brunch</option>}
+          {!brunchDay && <option value="Lunch">Lunch</option>}
           <option value="Dinner">Dinner</option>
         </select>
       </div>
