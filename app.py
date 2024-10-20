@@ -1,5 +1,12 @@
 from flask import Flask, jsonify
+<<<<<<< HEAD
 from flask_cors import CORS
+=======
+import MealClassification as mealClassifier
+app = Flask(__name__)
+
+'''
+>>>>>>> 9b5e17b21e0f59eda0aa0d9f786ea8078b2ba7d5
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -136,7 +143,27 @@ def get_halal_meals_for_today():
     
     return all_halal_meals
 
+<<<<<<< HEAD
 
+=======
+# Main code
+# if __name__ == "__main__":
+#     halal_meals_data = get_halal_meals_for_today()
+
+#     # Print or process the halal meals
+#     for dining_hall, meals in halal_meals_data.items():
+#         print(f"\nHalal meals for {dining_hall}:")
+#         for meal_period, meal_list in meals.items():
+#             print(f"  {meal_period}:")
+#             if meal_list:
+#                 for meal in meal_list:
+#                     print(f"    - {meal}")
+#             else:
+#                 print(f"    No halal meals found.")
+
+# print(json.dumps(meals_data))
+'''
+>>>>>>> 9b5e17b21e0f59eda0aa0d9f786ea8078b2ba7d5
 
 # Vegetarian meal extraction
 def extract_vegetarian_meals(root):
@@ -189,6 +216,7 @@ def get_vegetarian_meals_for_today():
 # Route to get halal meals
 @app.route('/api/halal-meals', methods=['GET'])
 def get_halal_meals():
+<<<<<<< HEAD
     return jsonify(get_halal_meals_for_today())
 
 # Route to get vegan meals
@@ -209,3 +237,17 @@ if __name__ == '__main__':
     get_vegetarian_meals_for_today()
     print("precompute done..")
     app.run(debug=True, port=5000)
+=======
+    halal_meals_data = mealClassifier.swap_dict_layers(mealClassifier.get_halal_meals_for_today())
+    return jsonify(halal_meals_data)
+
+@app.route('/api/vegan-meals', methods = ['GET'])
+def get_vegan_meals():
+    vegan_meals_data = mealClassifier.swap_dict_layers(mealClassifier.get_vegan_meals_for_today())
+    return jsonify(vegan_meals_data)
+
+@app.route('/api/vegetarian-meals', methods = ['GET'])
+def get_vegetarian_meals():
+    vegetarian_meals_data = mealClassifier.swap_dict_layers(mealClassifier.get_vegetarian_meals_for_today())
+    return jsonify(vegetarian_meals_data)
+>>>>>>> 9b5e17b21e0f59eda0aa0d9f786ea8078b2ba7d5
