@@ -1,8 +1,8 @@
 from flask import Flask, jsonify
-import subprocess
-import json
-from flask_cors import CORS
+import MealClassification as mealClassifier
+app = Flask(__name__)
 
+'''
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -97,18 +97,19 @@ def get_halal_meals_for_today():
 #                 print(f"    No halal meals found.")
 
 # print(json.dumps(meals_data))
-
+'''
 
 @app.route('/api/halal-meals', methods=['GET'])
 def get_halal_meals():
-    return jsonify(get_halal_meals_for_today())
-    # Call the HalalMeat.py script and capture the output
-    # try:
-    #     result = subprocess.run(['python3', 'HalalMeat.py'], capture_output=True, text=True)
-    #     meals_data = json.loads(result.stdout)  # Assuming HalalMeat.py outputs a JSON string
-    #     return jsonify(meals_data)  # Return as a JSON response to the client
-    # except Exception as e:
-    #     return jsonify({"error": str(e)})
+    halal_meals_data = mealClassifier.swap_dict_layers(mealClassifier.get_halal_meals_for_today())
+    return jsonify(halal_meals_data)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/vegan_meals_today', methods = ['GET'])
+def get_vegan_meals():
+    vegan_meals_data = mealClassifier.swap_dict_layers(mealClassifier.get_vegan_meals_for_today())
+    return jsonify(vegan_meals_data)
+
+@app.route('/vegetarian_meals_today', methods = ['GET'])
+def get_vegetarian_meals():
+    vegetarian_meals_data = mealClassifier.swap_dict_layers(mealClassifier.get_vegetarian_meals_for_today())
+    return jsonify(vegetarian_meals_data)
