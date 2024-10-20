@@ -1,6 +1,8 @@
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime
+import json
+
 
 # List of dining halls
 dining_halls = [
@@ -85,3 +87,6 @@ if __name__ == "__main__":
                     print(f"    - {meal}")
             else:
                 print(f"    No halal meals found.")
+
+print(json.dumps(meals_data))
+

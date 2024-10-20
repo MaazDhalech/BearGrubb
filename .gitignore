@@ -1,3 +1,6 @@
 /chromedriver
 /dining_berkeley_edu__menus_.html
 /htmlWebscraper.py
+.DS_Store
+node_modules/
+package-lock.json
