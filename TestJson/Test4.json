@@ -1,0 +1,69 @@
+{
+    "Breakfast": {
+      "North hall": [
+        "Egg White Omelette",
+        "Overnight Oats",
+        "Pineapple Upside-Down Pancakes"
+      ],
+      "South hall": [
+        "Breakfast Burrito Bowl",
+        "Yogurt with Granola",
+        "Cinnamon Apple Crêpes"
+      ],
+      "East hall": [
+        "Savory Oatmeal with Spinach",
+        "Mango Smoothie",
+        "Bagel with Avocado"
+      ],
+      "West hall": [
+        "Breakfast Skillet",
+        "Chia Seed Pudding",
+        "Fruity Granola Bars"
+      ]
+    },
+    "Lunch": {
+      "North hall": [
+        "Vegetarian Sushi Rolls",
+        "Thai Chicken Salad",
+        "Pork Ramen"
+      ],
+      "South hall": [
+        "Mediterranean Grain Bowl",
+        "Chickpea Burger",
+        "Spicy Tuna Poke"
+      ],
+      "East hall": [
+        "Quinoa Tabbouleh",
+        "Philly Cheesesteak Sandwich",
+        "Roasted Cauliflower Tacos"
+      ],
+      "West hall": [
+        "Lentil Burger",
+        "Buffalo Chicken Salad",
+        "Pasta Salad with Pesto"
+      ]
+    },
+    "Dinner": {
+      "North hall": [
+        "Beef Wellington",
+        "Vegan Stir-fried Noodles",
+        "Herb-Crusted Tilapia"
+      ],
+      "South hall": [
+        "Vegetable Curry with Naan",
+        "Grilled Pork Chops",
+        "Seafood Risotto"
+      ],
+      "East hall": [
+        "Chicken Marsala",
+        "Butternut Squash Ravioli",
+        "Miso Glazed Eggplant"
+      ],
+      "West hall": [
+        "Roasted Chicken with Vegetables",
+        "Spinach and Feta Stuffed Chicken",
+        "Pasta with Marinara Sauce"
+      ]
+    }
+  }
+  

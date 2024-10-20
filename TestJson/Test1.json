@@ -1,0 +1,68 @@
+{
+    "Breakfast": {
+      "North hall": [
+        "Pancakes",
+        "Scrambled Eggs",
+        "Fruit Salad"
+      ],
+      "South hall": [
+        "Oatmeal",
+        "Breakfast Burrito",
+        "Yogurt Parfait"
+      ],
+      "East hall": [
+        "French Toast",
+        "Smoothie Bowl",
+        "Breakfast Sandwich"
+      ],
+      "West hall": [
+        "Avocado Toast",
+        "Cereal Bar",
+        "Chia Pudding"
+      ]
+    },
+    "Lunch": {
+      "North hall": [
+        "Grilled Chicken Salad",
+        "Vegetable Stir-fry",
+        "Quinoa Bowl"
+      ],
+      "South hall": [
+        "Taco Bar",
+        "Pasta Primavera",
+        "Caprese Salad"
+      ],
+      "East hall": [
+        "Sushi Rolls",
+        "Chicken Caesar Wrap",
+        "Falafel Plate"
+      ],
+      "West hall": [
+        "BBQ Pulled Pork",
+        "Minestrone Soup",
+        "Greek Salad"
+      ]
+    },
+    "Dinner": {
+      "North hall": [
+        "Steak with Garlic Mashed Potatoes",
+        "Vegetable Curry",
+        "Seafood Paella"
+      ],
+      "South hall": [
+        "Baked Salmon",
+        "Stuffed Peppers",
+        "Ratatouille"
+      ],
+      "East hall": [
+        "Lamb Chops",
+        "Eggplant Parmesan",
+        "Chicken Alfredo"
+      ],
+      "West hall": [
+        "Mushroom Risotto",
+        "BBQ Ribs",
+        "Vegetable Lasagna"
+      ]
+    }
+  }
