@@ -58,7 +58,7 @@ const Products = () => {
           onChange={handleMealTypeChange}
           value={selectedOption}
         >
-          <option value="">Select a meal type</option>
+          <option value="" disabled>Select a meal type</option>
           <option value="1">Halal</option>
           <option value="2">Vegetarian</option>
           <option value="3">Vegan</option>
@@ -74,7 +74,7 @@ const Products = () => {
           value={selectedMealtime}
           disabled={!selectedOption} // Disable if meal type is not selected
         >
-          <option value="">Select a mealtime</option>
+          <option value="" disabled>Select a mealtime</option>
           {!brunchDay && <option value="Breakfast">Breakfast</option>}
           {brunchDay && <option value="Brunch">Brunch</option>}
           {!brunchDay && <option value="Lunch">Lunch</option>}
