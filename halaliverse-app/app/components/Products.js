@@ -17,7 +17,6 @@ const Products = () => {
       console.error('Error fetching halal meals:', error);
     }
   };
-<<<<<<< HEAD
   const fetchVeganMeals = async () => {
     try {
       const response = await fetch('http://127.0.0.1:5000/api/vegan-meals'); // Flask API endpoint
@@ -36,9 +35,6 @@ const Products = () => {
       console.error('Error fetching vegetarian meals:', error);
     }
   };
-=======
-
->>>>>>> 9b5e17b21e0f59eda0aa0d9f786ea8078b2ba7d5
   const handleMealTypeChange = (event) => {
     const option = event.target.value;
     setSelectedOption(option);
@@ -47,16 +43,12 @@ const Products = () => {
       // Load halal meals if "Halal" option is selected
       fetchHalalMeals();
     }
-<<<<<<< HEAD
     if (option === '2') {
       fetchVegetarianMeals();
     }
     if (option === '3') {
       fetchVeganMeals();
     }
-=======
-    // Add more logic for vegetarian, vegan, etc., if needed
->>>>>>> 9b5e17b21e0f59eda0aa0d9f786ea8078b2ba7d5
   };
 
   const handleMealtimeChange = (event) => {
@@ -68,7 +60,6 @@ const Products = () => {
       fetchHalalMeals(); // Fetch halal meals when Halal is selected
     }
   }, [selectedOption]);
-<<<<<<< HEAD
   useEffect(() => {
     if (selectedOption === '2') {
       fetchVegetarianMeals(); // Fetch vegetarian meals when selected
@@ -79,8 +70,6 @@ const Products = () => {
       fetchVeganMeals(); // Fetch vegan meals when selected
     }
   }, [selectedOption]);
-=======
->>>>>>> 9b5e17b21e0f59eda0aa0d9f786ea8078b2ba7d5
 
   return (
     <div className="p-4 text-black">
@@ -116,13 +105,8 @@ const Products = () => {
         </select>
       </div>
 
-<<<<<<< HEAD
       {/* Display the meals table with spacing below */}
       <div className="overflow-x-auto mb-12"> {/* Add margin-bottom to create space before footer */}
-=======
-      {/* Display the meals table */}
-      <div className="overflow-x-auto">
->>>>>>> 9b5e17b21e0f59eda0aa0d9f786ea8078b2ba7d5
         <table className="table-auto w-full border-collapse border border-gray-300 shadow-sm rounded-lg">
           <thead>
             <tr className="bg-gray-200 text-left">
