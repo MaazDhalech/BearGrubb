@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Table,
   TableBody,
@@ -15,49 +15,97 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-export default function Component({ data = {} }) {
+export default function MealTable({ data = {} }) {
   const diningHalls = Object.keys(data)
   const mealTypes = ['Breakfast', 'Brunch', 'Lunch', 'Dinner']
 
+  const [selectedDiningHall, setSelectedDiningHall] = useState(diningHalls[0] || '');
+  const [selectedMealType, setSelectedMealType] = useState(mealTypes[0] || '');
+  const [selectedMeals, setSelectedMeals] = useState([]);
+
+  const handleDiningHallChange = (hall) => {
+    setSelectedDiningHall(hall);
+    if (data[hall] && data[hall][selectedMealType]) {
+      setSelectedMeals(data[hall][selectedMealType]);
+    } else {
+      setSelectedMeals([]);
+    }
+  };
+
+  const handleMealTypeChange = (meal) => {
+    setSelectedMealType(meal);
+    if (data[selectedDiningHall] && data[selectedDiningHall][meal]) {
+      setSelectedMeals(data[selectedDiningHall][meal]);
+    } else {
+      setSelectedMeals([]);
+    }
+  };
+
+  useEffect(() => {
+    // When the component mounts or when dining hall/meal type is changed, update meals
+    if (selectedDiningHall && selectedMealType) {
+      if (data[selectedDiningHall] && data[selectedDiningHall][selectedMealType]) {
+        setSelectedMeals(data[selectedDiningHall][selectedMealType]);
+      } else {
+        setSelectedMeals([]);
+      }
+    }
+  }, [selectedDiningHall, selectedMealType, data]);
+
   return (
-    <div className="overflow-x-auto">
-      <Table className="min-w-full table-auto border-collapse border border-gray-200 shadow-lg">
-        <TableHeader className="bg-gray-100">
-          <TableRow>
-            <TableHead className="text-left text-sm font-semibold text-gray-700 p-4 border-b border-gray-200">Dining Hall</TableHead>
-            {mealTypes.map((meal) => (
-              <TableHead key={meal} className="text-left text-sm font-semibold text-gray-700 p-4 border-b border-gray-200">{meal}</TableHead>
+    <div>
+      <div className="flex mb-4 space-x-4">
+        {/* Dropdown for selecting the dining hall */}
+        <Select onValueChange={handleDiningHallChange} defaultValue={selectedDiningHall}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select Dining Hall" />
+          </SelectTrigger>
+          <SelectContent>
+            {diningHalls.map((hall) => (
+              <SelectItem key={hall} value={hall}>
+                {hall.replace(/_/g, ' ')}
+              </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+
+        {/* Dropdown for selecting the meal type */}
+        <Select onValueChange={handleMealTypeChange} defaultValue={selectedMealType}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select Mealtime" />
+          </SelectTrigger>
+          <SelectContent>
+            {mealTypes.map((meal) => (
+              <SelectItem key={meal} value={meal}>
+                {meal}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Meal Table */}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{selectedDiningHall.replace(/_/g, ' ')}</TableHead>
+            <TableHead>{selectedMealType}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {diningHalls.map((hall) => (
-            <TableRow key={hall} className="hover:bg-gray-50">
-              <TableCell className="p-4 border-b border-gray-200 font-medium">{hall.replace(/_/g, ' ')}</TableCell>
-              {mealTypes.map((meal) => (
-                <TableCell key={`${hall}-${meal}`} className="p-4 border-b border-gray-200">
-                  <Select>
-                    <SelectTrigger className="w-full max-w-[180px] text-sm bg-gray-50 border border-gray-300 focus:border-blue-500">
-                      <SelectValue placeholder="Select a meal" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {data[hall][meal].length > 0 ? (
-                        data[hall][meal].map((item, index) => (
-                          <SelectItem key={`${hall}-${meal}-${index}`} value={item}>
-                            {item}
-                          </SelectItem>
-                        ))
-                      ) : (
-                        <SelectItem value="no-meals" disabled>
-                          No meals available
-                        </SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
-                </TableCell>
-              ))}
+          {selectedMeals.length > 0 ? (
+            selectedMeals.map((item, index) => (
+              <TableRow key={`${selectedDiningHall}-${selectedMealType}-${index}`}>
+                <TableCell>{item}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={2} className="text-center">
+                No meals available
+              </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </div>
