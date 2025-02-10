@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -16,26 +16,9 @@ import {
 } from "@/components/ui/select";
 
 export default function Component({ data = {} }) {
-  const [selectedMeal, setSelectedMeal] = useState('Breakfast'); // Default to 'Breakfast'
   const diningHalls = Object.keys(data);
   const mealTypes = ['Breakfast', 'Brunch', 'Lunch', 'Dinner'];
 
-  const handleMealChange = (meal) => {
-    setSelectedMeal(meal);
-  };
-
-  const [selectedDiningHall, setSelectedDiningHall] = useState(diningHalls[0] || '');
-  const [selectedMealType, setSelectedMealType] = useState(mealTypes[0] || '');
-  const [selectedMeals, setSelectedMeals] = useState([]);
-
-  const handleDiningHallChange = (hall) => {
-    setSelectedDiningHall(hall);
-    if (data[hall] && data[hall][selectedMealType]) {
-      setSelectedMeals(data[hall][selectedMealType]);
-    } else {
-      setSelectedMeals([]);
-    }
-  };
 
   const handleMealTypeChange = (meal) => {
     setSelectedMealType(meal);
@@ -47,7 +30,6 @@ export default function Component({ data = {} }) {
   };
 
   useEffect(() => {
-    // When the component mounts or when dining hall/meal type is changed, update meals
     if (selectedDiningHall && selectedMealType) {
       if (data[selectedDiningHall] && data[selectedDiningHall][selectedMealType]) {
         setSelectedMeals(data[selectedDiningHall][selectedMealType]);
@@ -63,9 +45,9 @@ export default function Component({ data = {} }) {
       <div className="flex justify-start mb-4">
         <div className="mr-4">
           <label className="text-sm font-semibold mb-2 block">Select Meal Time:</label>
-          <Select onValueChange={handleMealChange}>
+          <Select onValueChange={handleMealTypeChange}>
             <SelectTrigger className="w-full max-w-[200px] bg-gray-50 border border-gray-300">
-              <SelectValue placeholder={selectedMeal} />
+              <SelectValue placeholder={selectedMealType} />
             </SelectTrigger>
             <SelectContent>
               {mealTypes.map((meal) => (
@@ -83,23 +65,29 @@ export default function Component({ data = {} }) {
         <Table className="min-w-full table-auto border-collapse border border-gray-200 shadow-lg">
           <TableHeader className="bg-gray-100">
             <TableRow>
-              <TableHead className="text-left text-sm font-semibold text-gray-700 p-4 border-b border-gray-200">Dining Hall</TableHead>
-              <TableHead className="text-left text-sm font-semibold text-gray-700 p-4 border-b border-gray-200">{selectedMeal}</TableHead>
+              <TableHead className="text-left text-sm font-semibold text-gray-700 p-4 border-b border-gray-200">
+                Dining Hall
+              </TableHead>
+              <TableHead className="text-left text-sm font-semibold text-gray-700 p-4 border-b border-gray-200">
+                {selectedMealType}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {diningHalls.map((hall) => (
               <TableRow key={hall} className="hover:bg-gray-50">
-                <TableCell className="p-4 border-b border-gray-200 font-medium">{hall.replace(/_/g, ' ')}</TableCell>
+                <TableCell className="p-4 border-b border-gray-200 font-medium">
+                  {hall.replace(/_/g, ' ')}
+                </TableCell>
                 <TableCell className="p-4 border-b border-gray-200">
                   <Select>
                     <SelectTrigger className="w-full max-w-[180px] text-sm bg-gray-50 border border-gray-300 focus:border-blue-500">
                       <SelectValue placeholder="Select a meal" />
                     </SelectTrigger>
                     <SelectContent>
-                      {data[hall][selectedMeal]?.length > 0 ? (
-                        data[hall][selectedMeal].map((item, index) => (
-                          <SelectItem key={`${hall}-${selectedMeal}-${index}`} value={item}>
+                      {data[hall]?.[selectedMealType]?.length > 0 ? (
+                        data[hall][selectedMealType].map((item, index) => (
+                          <SelectItem key={`${hall}-${selectedMealType}-${index}`} value={item}>
                             {item}
                           </SelectItem>
                         ))

@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Head>
-        <title>CalInclusiveDining</title>
+        <title>BearGrub</title>
         <meta name="description" content="A menu of halal, vegetarian, and vegan at Berkeley dining halls." />
         <link 
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" 
@@ -18,7 +18,7 @@ const Home = () => {
       <header className="bg-[#003262] fixed top-0 left-0 w-full z-10 font-sans">
         <div className="container mx-auto p-4 flex items-center justify-between">
           <Link href="/" className="text-white font-bold text-xl hover:text-gray-300">
-            Cal Dining
+            BearGrub
           </Link>
         </div>
       </header>
@@ -26,7 +26,7 @@ const Home = () => {
       <main className="container mx-auto pt-20 flex-grow">
         {/* Gold background row with Etelka text */}
         <div className="bg-[#C3820E] text-white p-4 text-center">
-          <h1 className="text-3xl font-bold" style={{ fontFamily: 'Etelka' }}>CalInclusiveDining</h1>
+          <h1 className="text-3xl font-bold" style={{ fontFamily: 'Etelka' }}>BearGrub</h1>
         </div>
 
         {/* Subtitle with gold border and different color */}

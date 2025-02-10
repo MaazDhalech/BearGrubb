@@ -1,5 +1,12 @@
-from openai import OpenAI
-client = OpenAI(api_key="insert API key here")
+from dotenv import load_dotenv
+import os
+import openai
+
+# Load environment variables from the .env file
+load_dotenv()
+
+# Initialize OpenAI client with API key
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def check_meal(meal):
     response = client.chat.completions.with_raw_response.create(
