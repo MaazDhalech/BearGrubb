@@ -84,6 +84,12 @@ def get_halal_meals():
     """Returns cached meal data."""
     return jsonify(load_cached_meal_data())
 
+@app.route('/api/refresh-cache', methods=['POST'])
+def refresh_cache():
+    """Manually refresh the cached meal data."""
+    precompute_meal_data()
+    return jsonify({"message": "Cache refreshed successfully"}), 200
+
 if __name__ == '__main__':
     # Check if running as a standalone script
     if os.getenv("RUN_CRON_JOB") == "1":
