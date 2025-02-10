@@ -95,6 +95,16 @@ def load_cached_meal_data():
             return json.load(f)
     return {"halal": {}, "vegetarian": {}, "vegan": {}}
 
+
+def debug_cache():
+    """Prints cached meal data for debugging."""
+    if os.path.exists(CACHE_FILE):
+        with open(CACHE_FILE, "r") as f:
+            cached_data = json.load(f)
+        print("🔍 DEBUG: Cached meal data ->", json.dumps(cached_data, indent=4))
+    else:
+        print("⚠️ No cache file found.")
+
 @app.route('/')
 def home():
     """Simple home route to check API status."""
@@ -120,6 +130,14 @@ def refresh_cache():
     """Manually refresh the cached meal data."""
     precompute_meal_data()
     return jsonify({"message": "Cache refreshed successfully"}), 200
+
+@app.route('/api/refresh-cache', methods=['POST'])
+def refresh_cache():
+    """Manually refresh the cached meal data."""
+    precompute_meal_data()
+    debug_cache()  # Print cached data after refreshing
+    return jsonify({"message": "Cache refreshed successfully"}), 200
+
 
 if __name__ == '__main__':
     # Check if running as a standalone script
