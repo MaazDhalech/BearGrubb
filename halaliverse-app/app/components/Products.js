@@ -10,7 +10,7 @@ const Products = () => {
 
   const fetchHalalMeals = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/halal-meals'); // Flask API endpoint
+      const response = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/halal-meals'); // Flask API endpoint
       const data = await response.json();
       setMeals(data); // Store the fetched data
     } catch (error) {
@@ -19,7 +19,7 @@ const Products = () => {
   };
   const fetchVeganMeals = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/vegan-meals'); // Flask API endpoint
+      const response = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/halal-meals'); // Flask API endpoint
       const data = await response.json();
       setMeals(data); // Store the fetched data
     } catch (error) {
@@ -28,7 +28,7 @@ const Products = () => {
   };
   const fetchVegetarianMeals = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/vegetarian-meals'); // Flask API endpoint
+      const response = await fetch('${process.env.NEXT_PUBLIC_API_URL}/api/halal-meals'); // Flask API endpoint
       const data = await response.json();
       setMeals(data); // Store the fetched data
     } catch (error) {
