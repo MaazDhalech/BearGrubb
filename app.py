@@ -51,6 +51,7 @@ def extract_halal_meals(root):
     return classifier.meat_classifier(ai_meals)
 
 def precompute_meal_data():
+    """Fetches and caches meal data, intended to be run once daily."""
     today = datetime.now().strftime("%Y%m%d")
     all_halal_meals = {}
 
@@ -65,17 +66,27 @@ def precompute_meal_data():
         json.dump(all_halal_meals, f)
 
     print("✅ Daily meal update complete!")
-    exit(0)  # **Ensure the script stops after running**
 
 def load_cached_meal_data():
+    """Loads cached meal data if available, else returns an empty structure."""
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, "r") as f:
             return json.load(f)
     return {}
 
+@app.route('/')
+def home():
+    """Simple home route to check API status."""
+    return jsonify({"message": "BearGrub API is running!"}), 200
+
 @app.route('/api/halal-meals', methods=['GET'])
 def get_halal_meals():
+    """Returns cached meal data."""
     return jsonify(load_cached_meal_data())
 
 if __name__ == '__main__':
-    precompute_meal_data()  # Run this when the cron job executes
+    # Check if running as a standalone script
+    if os.getenv("RUN_CRON_JOB") == "1":
+        precompute_meal_data()  # Run only if triggered by a cron job
+    else:
+        app.run(host="0.0.0.0", port=5000, debug=True)  # Run Flask normally
