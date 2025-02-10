@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import gpt_classifier as classifier  # OpenAI Classifier
 import requests
@@ -15,6 +15,7 @@ CACHE_FILE = "meals_cache.json"
 dining_halls = ['Cafe_3', 'Crossroads', 'Foothill', 'Clark_Kerr_Campus']
 
 def download_and_parse_xml(dining_hall, date):
+    """Fetch XML data from Berkeley dining API and parse it."""
     url = f"https://dining.berkeley.edu/wp-content/uploads/menus-exportimport/{dining_hall}_{date}.xml"
     try:
         response = requests.get(url)
@@ -27,10 +28,10 @@ def download_and_parse_xml(dining_hall, date):
         print(f"Error fetching XML: {e}")
         return None
 
-def extract_halal_meals(root):
-    halal_meals = {'Breakfast': [], 'Brunch': [], 'Lunch': [], 'Dinner': []}
-    ai_meals = {'Breakfast': [], 'Brunch': [], 'Lunch': [], 'Dinner': []}
-
+def extract_meals(root, meal_type):
+    """Extract meals based on type (Halal, Vegetarian, Vegan)."""
+    meals = {'Breakfast': [], 'Brunch': [], 'Lunch': [], 'Dinner': []}
+    
     for meal in root.findall('.//menu'):
         meal_period = meal.attrib.get('mealperiodname', '')
         recipes = meal.find('recipes')
@@ -38,32 +39,31 @@ def extract_halal_meals(root):
             for recipe in recipes.findall('recipe'):
                 ingredients = recipe.find('ingredients').text
                 meal_name = recipe.attrib.get('shortName', '')
-                if 'halal' in ingredients.lower():
-                    if 'Breakfast' in meal_period:
-                        ai_meals['Breakfast'].append((meal_name, ingredients))
-                    elif 'Brunch' in meal_period:
-                        ai_meals['Brunch'].append((meal_name, ingredients))
-                    elif 'Lunch' in meal_period:
-                        ai_meals['Lunch'].append((meal_name, ingredients))
-                    elif 'Dinner' in meal_period:
-                        ai_meals['Dinner'].append((meal_name, ingredients))
-    
-    return classifier.meat_classifier(ai_meals)
+
+                if meal_type == "halal" and "halal" in ingredients.lower():
+                    meals[meal_period].append(meal_name)
+                elif meal_type == "vegetarian" and "vegetarian" in ingredients.lower():
+                    meals[meal_period].append(meal_name)
+                elif meal_type == "vegan" and "vegan" in ingredients.lower():
+                    meals[meal_period].append(meal_name)
+
+    return meals
 
 def precompute_meal_data():
-    """Fetches and caches meal data, intended to be run once daily."""
+    """Fetches and caches Halal, Vegetarian, and Vegan meal data, intended to be run once daily."""
     today = datetime.now().strftime("%Y%m%d")
-    all_halal_meals = {}
+    all_meals = {"halal": {}, "vegetarian": {}, "vegan": {}}
 
     for dining_hall in dining_halls:
         print(f"Processing meals for {dining_hall} on {today}")
         root = download_and_parse_xml(dining_hall, today)
         if root is not None:
-            halal_meals = extract_halal_meals(root)
-            all_halal_meals[dining_hall] = halal_meals
+            all_meals["halal"][dining_hall] = extract_meals(root, "halal")
+            all_meals["vegetarian"][dining_hall] = extract_meals(root, "vegetarian")
+            all_meals["vegan"][dining_hall] = extract_meals(root, "vegan")
 
     with open(CACHE_FILE, "w") as f:
-        json.dump(all_halal_meals, f)
+        json.dump(all_meals, f)
 
     print("✅ Daily meal update complete!")
 
@@ -72,7 +72,7 @@ def load_cached_meal_data():
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, "r") as f:
             return json.load(f)
-    return {}
+    return {"halal": {}, "vegetarian": {}, "vegan": {}}
 
 @app.route('/')
 def home():
@@ -81,8 +81,18 @@ def home():
 
 @app.route('/api/halal-meals', methods=['GET'])
 def get_halal_meals():
-    """Returns cached meal data."""
-    return jsonify(load_cached_meal_data())
+    """Returns cached Halal meal data."""
+    return jsonify(load_cached_meal_data().get("halal", {}))
+
+@app.route('/api/vegetarian-meals', methods=['GET'])
+def get_vegetarian_meals():
+    """Returns cached Vegetarian meal data."""
+    return jsonify(load_cached_meal_data().get("vegetarian", {}))
+
+@app.route('/api/vegan-meals', methods=['GET'])
+def get_vegan_meals():
+    """Returns cached Vegan meal data."""
+    return jsonify(load_cached_meal_data().get("vegan", {}))
 
 @app.route('/api/refresh-cache', methods=['POST'])
 def refresh_cache():

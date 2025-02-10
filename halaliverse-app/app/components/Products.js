@@ -1,54 +1,32 @@
-// components/Products.js
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL; // Store API base URL
 
 const Products = () => {
   const [meals, setMeals] = useState(null); // Store meals data
-  const [selectedOption, setSelectedOption] = useState(''); // Store selected meal type (Halal, Vegan, etc.)
-  const [selectedMealtime, setSelectedMealtime] = useState(''); // Store selected mealtime (Breakfast, Lunch, etc.)
+  const [selectedOption, setSelectedOption] = useState(""); // Store selected meal type (Halal, Vegan, etc.)
+  const [selectedMealtime, setSelectedMealtime] = useState(""); // Store selected mealtime (Breakfast, Lunch, etc.)
 
-  const fetchHalalMeals = async () => {
+  const fetchMeals = async (mealType) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/halal-meals`); // Flask API endpoint
+      const response = await fetch(`${API_URL}/api/${mealType}-meals`); // Dynamic API endpoint
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       const data = await response.json();
       setMeals(data); // Store the fetched data
     } catch (error) {
-      console.error('Error fetching halal meals:', error);
+      console.error(`Error fetching ${mealType} meals:`, error);
     }
   };
-  const fetchVeganMeals = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/halal-meals`); // Flask API endpoint
-      const data = await response.json();
-      setMeals(data); // Store the fetched data
-    } catch (error) {
-      console.error('Error fetching vegan meals:', error);
-    }
-  };
-  const fetchVegetarianMeals = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/halal-meals`); // Flask API endpoint
-      const data = await response.json();
-      setMeals(data); // Store the fetched data
-    } catch (error) {
-      console.error('Error fetching vegetarian meals:', error);
-    }
-  };
+
   const handleMealTypeChange = (event) => {
     const option = event.target.value;
     setSelectedOption(option);
 
-    if (option === '1') {
-      // Load halal meals if "Halal" option is selected
-      fetchHalalMeals();
-    }
-    if (option === '2') {
-      fetchVegetarianMeals();
-    }
-    if (option === '3') {
-      fetchVeganMeals();
-    }
+    if (option === "1") fetchMeals("halal");
+    if (option === "2") fetchMeals("vegetarian");
+    if (option === "3") fetchMeals("vegan");
   };
 
   const handleMealtimeChange = (event) => {
@@ -56,35 +34,25 @@ const Products = () => {
   };
 
   useEffect(() => {
-    if (selectedOption === '1') {
-      fetchHalalMeals(); // Fetch halal meals when Halal is selected
-    }
-  }, [selectedOption]);
-  useEffect(() => {
-    if (selectedOption === '2') {
-      fetchVegetarianMeals(); // Fetch vegetarian meals when selected
-    }
-  }, [selectedOption]);
-  useEffect(() => {
-    if (selectedOption === '3') {
-      fetchVeganMeals(); // Fetch vegan meals when selected
+    if (selectedOption) {
+      const mealType = selectedOption === "1" ? "halal" 
+                     : selectedOption === "2" ? "vegetarian" 
+                     : "vegan";
+      fetchMeals(mealType);
     }
   }, [selectedOption]);
 
   // Determine if today is a weekend and set showBrunch accordingly
-  const isWeekend = (new Date().getDay() === 6) || (new Date().getDay() === 0);
-
-  // State variable to control which options are shown, initialized based on the day
+  const isWeekend = [0, 6].includes(new Date().getDay());
   const [showBrunch, setShowBrunch] = useState(isWeekend);
 
   useEffect(() => {
-    // Ensure the state is updated if the component re-renders on a different day
     setShowBrunch(isWeekend);
   }, [isWeekend]);
 
   return (
     <div className="p-4 text-black">
-      {/* First dropdown for meal type selection */}
+      {/* Meal Type Selection */}
       <div className="mb-4">
         <label className="block text-lg font-semibold mb-2">Select a Meal Type:</label>
         <select
@@ -99,14 +67,14 @@ const Products = () => {
         </select>
       </div>
 
-      {/* Second dropdown for mealtime selection */}
+      {/* Mealtime Selection */}
       <div className="mb-4">
         <label className="block text-lg font-semibold mb-2">Select a Mealtime:</label>
         <select
           className="select select-bordered w-full max-w-xs p-2 rounded border-gray-300 shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
           onChange={handleMealtimeChange}
           value={selectedMealtime}
-          disabled={!selectedOption} // Disable if meal type is not selected
+          disabled={!selectedOption}
         >
           <option value="" disabled>Select a mealtime</option>
           {!showBrunch && <option value="Breakfast">Breakfast</option>}
@@ -116,14 +84,14 @@ const Products = () => {
         </select>
       </div>
 
-      {/* Display the meals table with spacing below */}
-      <div className="overflow-x-auto mb-12"> {/* Add margin-bottom to create space before footer */}
+      {/* Meals Display */}
+      <div className="overflow-x-auto mb-12">
         <table className="table-auto w-full border-collapse border border-gray-300 shadow-sm rounded-lg">
           <thead>
             <tr className="bg-gray-200 text-left">
               <th className="border border-gray-300 p-3 text-lg font-semibold">Dining Place</th>
               <th className="border border-gray-300 p-3 text-lg font-semibold">
-                {selectedMealtime || 'Select Mealtime'}
+                {selectedMealtime || "Select Mealtime"}
               </th>
             </tr>
           </thead>
@@ -131,11 +99,11 @@ const Products = () => {
             {meals && selectedMealtime ? (
               Object.keys(meals).map((diningHall) => (
                 <tr key={diningHall} className="hover:bg-gray-100">
-                  <td className="border border-gray-300 p-3 font-medium">{diningHall.replace(/_/g, ' ')}</td>
+                  <td className="border border-gray-300 p-3 font-medium">{diningHall.replace(/_/g, " ")}</td>
                   <td className="border border-gray-300 p-3">
                     {meals[diningHall][selectedMealtime]?.length > 0
-                      ? meals[diningHall][selectedMealtime].join(', ')
-                      : 'No meals available'}
+                      ? meals[diningHall][selectedMealtime].join(", ")
+                      : "No meals available"}
                   </td>
                 </tr>
               ))
