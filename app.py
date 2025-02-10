@@ -129,12 +129,6 @@ def get_vegan_meals():
 def refresh_cache():
     """Manually refresh the cached meal data."""
     precompute_meal_data()
-    return jsonify({"message": "Cache refreshed successfully"}), 200
-
-@app.route('/api/refresh-cache', methods=['POST'])
-def refresh_cache():
-    """Manually refresh the cached meal data."""
-    precompute_meal_data()
     debug_cache()  # Print cached data after refreshing
     return jsonify({"message": "Cache refreshed successfully"}), 200
 
