@@ -29,23 +29,44 @@ def download_and_parse_xml(dining_hall, date):
         return None
 
 def extract_meals(root, meal_type):
-    """Extract meals based on type (Halal, Vegetarian, Vegan)."""
     meals = {'Breakfast': [], 'Brunch': [], 'Lunch': [], 'Dinner': []}
-    
+
     for meal in root.findall('.//menu'):
         meal_period = meal.attrib.get('mealperiodname', '')
+
+        # 🛑 Fix: Normalize unexpected meal period names
+        normalized_meal_period = None
+        if "Breakfast" in meal_period:
+            normalized_meal_period = "Breakfast"
+        elif "Brunch" in meal_period:
+            normalized_meal_period = "Brunch"
+        elif "Lunch" in meal_period:
+            normalized_meal_period = "Lunch"
+        elif "Dinner" in meal_period:
+            normalized_meal_period = "Dinner"
+
+        # 🛑 Fix: Skip meal periods that don’t match expected values
+        if normalized_meal_period is None:
+            print(f"⚠️ Skipping unexpected meal period: {meal_period}")
+            continue
+
         recipes = meal.find('recipes')
         if recipes is not None:
             for recipe in recipes.findall('recipe'):
-                ingredients = recipe.find('ingredients').text
                 meal_name = recipe.attrib.get('shortName', '')
+                ingredients = recipe.find('ingredients').text
 
+                # 🛑 Fix: Check for NoneType in ingredients
+                if ingredients is None:
+                    ingredients = ""
+
+                # ✅ Filter meals based on meal_type (halal, vegan, etc.)
                 if meal_type == "halal" and "halal" in ingredients.lower():
-                    meals[meal_period].append(meal_name)
-                elif meal_type == "vegetarian" and "vegetarian" in ingredients.lower():
-                    meals[meal_period].append(meal_name)
+                    meals[normalized_meal_period].append(meal_name)
                 elif meal_type == "vegan" and "vegan" in ingredients.lower():
-                    meals[meal_period].append(meal_name)
+                    meals[normalized_meal_period].append(meal_name)
+                elif meal_type == "vegetarian" and "vegetarian" in ingredients.lower():
+                    meals[normalized_meal_period].append(meal_name)
 
     return meals
 
