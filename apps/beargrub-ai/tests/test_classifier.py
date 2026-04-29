@@ -70,6 +70,20 @@ class ClassifierTests(unittest.TestCase):
         self.assertEqual(result["status"], "NOT_HALAL")
         self.assertIn("vanilla extract", result["reason"])
 
+    def test_anchovy_paste_is_not_halal(self):
+        result = self.classify_uncached("Anchovy paste; Oil")
+        self.assertEqual(result["status"], "NOT_HALAL")
+        self.assertIn("anchovy paste", result["reason"])
+
+    def test_vegan_item_with_alcohol_allergen_is_uncertain(self):
+        result = classifier.classify(
+            item("Corn; Coconut Milk", is_vegan=True, allergens_present=["Alcohol"]),
+            cache={},
+            cache_path=None,
+        )
+        self.assertEqual(result["status"], "UNCERTAIN")
+        self.assertIn("alcohol", result["reason"].lower())
+
     def test_shellfish_is_halal_with_note(self):
         result = self.classify_uncached("Oyster sauce; soy sauce; sugar")
         self.assertEqual(result["status"], "HALAL")

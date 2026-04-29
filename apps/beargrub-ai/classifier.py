@@ -18,6 +18,7 @@ FORBIDDEN_PATTERNS = [
     (r"\bLARD\b", "lard"),
     (r"\bBACON\b", "bacon"),
     (r"\bHAM\b", "ham"),
+    (r"\bANCHOV(Y|IES)\b", "anchovy paste"),
     (r"\bGELATIN\b", "gelatin"),
     (r"\bWINE\b", "wine"),
     (r"\bBEER\b", "beer"),
@@ -156,7 +157,9 @@ def classify(
     if key in active_cache:
         return deepcopy(_coerce_result(active_cache[key]))
 
-    result = deterministic_classify(normalized, ingredients)
+    result = allergen_override_classify(item, normalized)
+    if result is None:
+        result = deterministic_classify(normalized, ingredients)
     if result is None:
         result = gpt_classify(ingredients, normalized, openai_client=openai_client)
 
@@ -164,6 +167,23 @@ def classify(
     if cache_path is not None:
         save_cache(active_cache, cache_path)
     return deepcopy(result)
+
+
+def allergen_override_classify(item: dict[str, Any], normalized: str) -> dict[str, Any] | None:
+    allergens_present = {
+        str(allergen).strip().upper()
+        for allergen in item.get("allergens_present") or []
+        if str(allergen).strip()
+    }
+    if item.get("is_vegan") and "ALCOHOL" in allergens_present and "ALCOHOL" not in normalized:
+        contains_shellfish, shellfish_note = detect_shellfish(normalized)
+        return _result(
+            "UNCERTAIN",
+            "Marked vegan but Berkeley XML flags alcohol as an allergen",
+            contains_shellfish=contains_shellfish,
+            shellfish_note=shellfish_note,
+        )
+    return None
 
 
 def classify_all(

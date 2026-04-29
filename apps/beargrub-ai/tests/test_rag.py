@@ -80,6 +80,9 @@ class RagTests(unittest.TestCase):
         self.assertIn("Item: Halal Rosemary Chicken", doc.page_content)
         self.assertIn("Calories Per Oz:", doc.page_content)
         self.assertEqual(doc.metadata["halal_status"], "HALAL")
+        self.assertEqual(doc.metadata["category"], "Entree")
+        self.assertEqual(doc.metadata["ingredients"], "Chicken Diced Dark Meat HALAL; Oil Cooking Blend")
+        self.assertEqual(doc.metadata["serving_size"], 3.94)
         self.assertAlmostEqual(doc.metadata["calories_per_oz"], 38.885786802030456)
 
     def test_retrieve_applies_structured_filters_before_search(self):
@@ -138,6 +141,15 @@ class RagTests(unittest.TestCase):
         self.assertFalse(rag.is_stale(fresh))
         self.assertTrue(rag.is_stale(stale))
         self.assertTrue(rag.is_stale(empty))
+
+    def test_list_documents_returns_stored_menu_documents(self):
+        db = rag.embed_menu([menu_item(short_name="Halal Rosemary Chicken")], use_chroma=False)
+
+        docs = rag.list_documents(db)
+
+        self.assertEqual(len(docs), 1)
+        self.assertEqual(docs[0].metadata["short_name"], "Halal Rosemary Chicken")
+        self.assertIn("Item: Halal Rosemary Chicken", docs[0].page_content)
 
 
 if __name__ == "__main__":

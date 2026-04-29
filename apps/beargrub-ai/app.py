@@ -9,9 +9,10 @@ from typing import Any
 
 from classifier import classify_all, load_cache
 from config import OPENAI_MODEL, POSTHOG_API_KEY
+from menu_answers import build_menu_response, build_pre_context_response
 from mcp_tools import MCP_TOOLS, handle_tool_call
 from prompts import SYSTEM_PROMPT
-from rag import embed_menu, is_stale, retrieve
+from rag import embed_menu, is_stale, list_documents, retrieve
 from scraper import fetch_all
 
 logger = logging.getLogger(__name__)
@@ -489,6 +490,17 @@ async def on_message(message):
         },
     )
 
+    pre_context_response = build_pre_context_response(user_content)
+    if pre_context_response:
+        await send_static_response(
+            user_content,
+            pre_context_response.content,
+            history,
+            disclaimer_used=pre_context_response.disclaimer_used,
+            guardrail=pre_context_response.guardrail,
+        )
+        return
+
     unsupported_date_response = build_unsupported_date_range_response(user_content, menu_date)
     if unsupported_date_response:
         await send_static_response(
@@ -500,6 +512,24 @@ async def on_message(message):
         return
 
     active_db = ensure_fresh_menu(menu_date)
+    all_docs = list_documents(active_db)
+
+    menu_response = build_menu_response(
+        user_content,
+        all_docs,
+        menu_date,
+        include_halal_disclaimer=disclaimer_needed,
+    )
+    if menu_response:
+        await send_static_response(
+            user_content,
+            menu_response.content,
+            history,
+            disclaimer_used=menu_response.disclaimer_used,
+            guardrail=menu_response.guardrail,
+        )
+        return
+
     chunks = retrieve(active_db, user_content, n_results=retrieval_limit(user_content))
 
     dietary_options_response = build_dietary_options_response(

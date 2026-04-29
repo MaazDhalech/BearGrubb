@@ -179,17 +179,51 @@ def build_metadata(item: dict[str, Any]) -> dict[str, Any]:
         "date": item.get("date", ""),
         "dining_hall": item.get("dining_hall", ""),
         "meal_period": item.get("meal_period", ""),
+        "category": item.get("category", ""),
         "halal_status": item.get("halal_status", "UNCERTAIN"),
+        "halal_reason": item.get("halal_reason", ""),
         "is_vegan": bool(item.get("is_vegan", False)),
         "is_vegetarian": bool(item.get("is_vegetarian", False)),
         "contains_shellfish": bool(item.get("contains_shellfish", False)),
+        "shellfish_note": item.get("shellfish_note") or "",
         "timestamp": item.get("timestamp") or f"{item.get('date', '')}T00:00:00",
         "short_name": item.get("short_name", ""),
+        "ingredients": item.get("ingredients", ""),
+        "allergens_present": "|".join(item.get("allergens_present") or []),
+        "serving_size_unit": item.get("serving_size_unit") or "oz",
     }
-    for field in ["calories", "calories_per_oz", "protein", "fat", "carbs", "sodium"]:
+    for field in [
+        "calories",
+        "serving_size",
+        "calories_per_oz",
+        "protein",
+        "fat",
+        "sat_fat",
+        "trans_fat",
+        "cholesterol",
+        "carbs",
+        "fiber",
+        "sugar",
+        "sodium",
+    ]:
         if item.get(field) is not None:
             metadata[field] = item[field]
     return metadata
+
+
+def list_documents(db: Any, limit: int = 1000) -> list[MenuDocument]:
+    """Return stored menu documents for deterministic answer generation."""
+    if isinstance(db, InMemoryMenuStore):
+        return list(db.docs[:limit])
+    if not hasattr(db, "get"):
+        return []
+    results = db.get(limit=limit, include=["metadatas", "documents"])
+    documents = results.get("documents") or []
+    metadatas = results.get("metadatas") or []
+    return [
+        MenuDocument(page_content=str(page_content), metadata=dict(metadata or {}))
+        for page_content, metadata in zip(documents, metadatas, strict=False)
+    ]
 
 
 def _matches_filter(metadata: dict[str, Any], filters: dict[str, Any] | None) -> bool:
