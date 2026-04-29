@@ -103,3 +103,27 @@
 
 ### Next part
 - Build `app.py` with Chainlit startup, session state, deterministic staleness refresh, retrieval, history trimming, streaming response handling, MCP tool-call refresh support, and app-level tests with mocks.
+
+## Part 6 - Chainlit App Flow
+
+### What was built
+- Added `app.py` with module-level `db` and `cache`, startup initialization, deterministic freshness checks, menu refresh, retrieval, context construction, message construction, history trimming, OpenAI streaming, Chainlit session handlers, and MCP refresh handling.
+- Added a lightweight Chainlit fallback for unit tests and local imports when Chainlit is not installed.
+- Added test seams for OpenAI client creation, menu refresh, retrieval, streaming, and tool handling.
+- Added app tests for disabled test auto-init, chat start state reset, prompt message construction, history trimming, stale menu refresh, normal streaming responses, first halal disclaimer session state, fragmented tool-call parsing, and re-retrieval after a manual refresh tool call.
+
+### Deviations from the spec and why
+- Added `BEARGRUB_AUTO_INIT=0` support for tests. The default remains startup initialization, but tests can import `app.py` without making network/OpenAI calls.
+- Added a Chainlit fallback object for tests because Chainlit is not installed in the current local environment. Real runtime still imports Chainlit when available.
+- Added a second model call after an MCP refresh tool call so the assistant can answer from refreshed context instead of silently refreshing and returning no final content.
+- Added deterministic first-halal-query disclaimer session tracking in app code. The prompt asks for first-session-only behavior; app state makes that reliable across turns.
+
+### Updated vulnerability log
+- Import-time startup can fail because Berkeley dining data, Chroma, or OpenAI dependencies are unavailable. Mitigation: startup exceptions are logged and the app falls back to an empty embedded store instead of crashing the process.
+- Retrieved menu context is untrusted remote data. Mitigation: it is wrapped as generated menu context, while behavior rules remain in the system prompt and tests assert no-invention/dietary instructions stay present.
+- Tool-call arguments are model-generated. Mitigation: app parses JSON and delegates validation to `mcp_tools.handle_tool_call()`.
+- Streaming tool calls can be fragmented. Mitigation: `stream_completion()` accumulates names and JSON arguments by tool-call index before execution.
+- Chat history can grow without bound. Mitigation: app trims history to the latest 10 messages before prompt construction and after saving each response.
+
+### Next part
+- Add PostHog session/event handling, `requirements.txt`, final Phase 1 verification tests, and run the full suite before the final Phase 1 commit.
