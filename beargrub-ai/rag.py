@@ -1,0 +1,211 @@
+from __future__ import annotations
+
+import logging
+import re
+from dataclasses import dataclass
+from datetime import date
+from typing import Any
+
+from config import CHROMA_PATH, COLLECTION_NAME, EMBEDDING_MODEL
+
+logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class MenuDocument:
+    page_content: str
+    metadata: dict[str, Any]
+
+
+class InMemoryMenuStore:
+    """Small retrieval-compatible store used when ChromaDB is unavailable."""
+
+    def __init__(self, docs: list[MenuDocument]):
+        self.docs = list(docs)
+
+    def similarity_search(
+        self,
+        query: str,
+        k: int = 8,
+        filter: dict[str, Any] | None = None,
+    ) -> list[MenuDocument]:
+        candidates = [doc for doc in self.docs if _matches_filter(doc.metadata, filter)]
+        query_terms = _terms(query)
+
+        def score(doc: MenuDocument) -> tuple[int, int]:
+            haystack = _terms(doc.page_content)
+            overlap = len(query_terms & haystack)
+            short_name = str(doc.metadata.get("short_name", "")).lower()
+            phrase_bonus = 5 if short_name and short_name in query.lower() else 0
+            return overlap + phrase_bonus, -self.docs.index(doc)
+
+        return sorted(candidates, key=score, reverse=True)[:k]
+
+    def get(self, limit: int = 1, include: list[str] | None = None) -> dict[str, list[Any]]:
+        selected = self.docs[:limit]
+        result: dict[str, list[Any]] = {}
+        include = include or ["metadatas", "documents"]
+        if "metadatas" in include:
+            result["metadatas"] = [doc.metadata for doc in selected]
+        if "documents" in include:
+            result["documents"] = [doc.page_content for doc in selected]
+        return result
+
+    def persist(self) -> None:
+        return None
+
+
+def extract_filters(query: str) -> dict[str, Any] | None:
+    """Extract structured filters from user query before RAG retrieval."""
+    filters: dict[str, Any] = {}
+    q = query.lower()
+
+    hall_map = {
+        "crossroads": "Crossroads",
+        "cafe 3": "Cafe 3",
+        "cafe3": "Cafe 3",
+        "clark kerr": "Clark Kerr",
+        "clark": "Clark Kerr",
+        "foothill": "Foothill",
+    }
+    for key, val in hall_map.items():
+        if key in q:
+            filters["dining_hall"] = val
+            break
+
+    if "halal" in q:
+        filters["halal_status"] = "HALAL"
+    if "vegan" in q:
+        filters["is_vegan"] = True
+    if "vegetarian" in q or "veggie" in q:
+        filters["is_vegetarian"] = True
+
+    if "breakfast" in q or "brunch" in q:
+        filters["meal_period"] = "Brunch"
+    elif "lunch" in q:
+        filters["meal_period"] = "Lunch"
+    elif "dinner" in q:
+        filters["meal_period"] = "Dinner"
+
+    return filters if filters else None
+
+
+def embed_menu(
+    classified_items: list[dict[str, Any]],
+    embeddings: Any | None = None,
+    persist_directory: str = CHROMA_PATH,
+    collection_name: str = COLLECTION_NAME,
+    use_chroma: bool = True,
+):
+    """Full overwrite embed. Called on startup and after MCP refresh."""
+    menu_docs = [build_document(item) for item in classified_items]
+    if not use_chroma:
+        return InMemoryMenuStore(menu_docs)
+
+    try:
+        from langchain.schema import Document
+        from langchain_community.vectorstores import Chroma
+        from langchain_openai import OpenAIEmbeddings
+    except ImportError:
+        logger.warning("LangChain/ChromaDB packages are unavailable; using in-memory menu store")
+        return InMemoryMenuStore(menu_docs)
+
+    if embeddings is None:
+        embeddings = OpenAIEmbeddings(model=EMBEDDING_MODEL)
+
+    docs = [
+        Document(page_content=doc.page_content, metadata=_chroma_metadata(doc.metadata))
+        for doc in menu_docs
+    ]
+    db = Chroma.from_documents(
+        docs,
+        embeddings,
+        persist_directory=persist_directory,
+        collection_name=collection_name,
+    )
+    if hasattr(db, "persist"):
+        db.persist()
+    return db
+
+
+def retrieve(db: Any, query: str, n_results: int = 8) -> list[Any]:
+    """Extract filters from query, then semantic search with those filters."""
+    filters = extract_filters(query)
+    return db.similarity_search(query, k=n_results, filter=filters)
+
+
+def is_stale(db: Any) -> bool:
+    """True if stored menu is from a previous day or empty."""
+    try:
+        results = db.get(limit=1, include=["metadatas"])
+        metadatas = results.get("metadatas") or []
+        if not metadatas:
+            return True
+        return metadatas[0].get("date", "") != str(date.today())
+    except Exception:
+        logger.exception("Failed to inspect menu freshness")
+        return True
+
+
+def build_document(item: dict[str, Any]) -> MenuDocument:
+    metadata = build_metadata(item)
+    allergens_present = ", ".join(item.get("allergens_present") or []) or "None"
+    shellfish_note = item.get("shellfish_note") or "None"
+    serving_size = item.get("serving_size")
+    serving_unit = item.get("serving_size_unit") or "oz"
+    serving_text = f"{serving_size}{serving_unit}" if serving_size is not None else "Unknown"
+
+    doc = f"""
+Item: {item.get('short_name', '')}
+Dining Hall: {item.get('dining_hall', '')}
+Meal: {item.get('meal_period', '')}
+Category: {item.get('category', '')}
+Serving Size: {serving_text}
+Halal Status: {item.get('halal_status', 'UNCERTAIN')}
+Halal Reason: {item.get('halal_reason', '')}
+Contains Shellfish: {item.get('contains_shellfish', False)}
+Shellfish Note: {shellfish_note}
+Allergens: {allergens_present}
+Calories: {item.get('calories')} | Protein: {item.get('protein')}g | Fat: {item.get('fat')}g |
+Carbs: {item.get('carbs')}g | Fiber: {item.get('fiber')}g | Sodium: {item.get('sodium')}mg
+Calories Per Oz: {item.get('calories_per_oz')}
+Ingredients: {item.get('ingredients', '')}
+""".strip()
+    return MenuDocument(page_content=doc, metadata=metadata)
+
+
+def build_metadata(item: dict[str, Any]) -> dict[str, Any]:
+    metadata = {
+        "date": item.get("date", ""),
+        "dining_hall": item.get("dining_hall", ""),
+        "meal_period": item.get("meal_period", ""),
+        "halal_status": item.get("halal_status", "UNCERTAIN"),
+        "is_vegan": bool(item.get("is_vegan", False)),
+        "is_vegetarian": bool(item.get("is_vegetarian", False)),
+        "contains_shellfish": bool(item.get("contains_shellfish", False)),
+        "timestamp": item.get("timestamp") or f"{item.get('date', '')}T00:00:00",
+        "short_name": item.get("short_name", ""),
+    }
+    for field in ["calories", "calories_per_oz", "protein", "fat", "carbs", "sodium"]:
+        if item.get(field) is not None:
+            metadata[field] = item[field]
+    return metadata
+
+
+def _matches_filter(metadata: dict[str, Any], filters: dict[str, Any] | None) -> bool:
+    if not filters:
+        return True
+    return all(metadata.get(key) == value for key, value in filters.items())
+
+
+def _terms(text: str) -> set[str]:
+    return set(re.findall(r"[a-z0-9]+", text.lower()))
+
+
+def _chroma_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
+    """Chroma only accepts primitive, non-null metadata values."""
+    return {
+        key: value
+        for key, value in metadata.items()
+        if isinstance(value, str | int | float | bool)
+    }

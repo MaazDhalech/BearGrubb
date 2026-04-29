@@ -41,3 +41,25 @@
 
 ### Next part
 - Build `rag.py` with structured filter extraction before retrieval, document/metadata construction, ChromaDB embedding when dependencies are installed, a local in-memory fallback for tests, and staleness detection.
+
+## Part 3 - RAG Pipeline
+
+### What was built
+- Added `rag.py` with `extract_filters()`, `embed_menu()`, `retrieve()`, `is_stale()`, document construction, metadata construction, Chroma-compatible metadata cleaning, and a retrieval-compatible in-memory store for local tests.
+- Implemented structured filter extraction before semantic retrieval for dining hall, halal, vegan, vegetarian, and meal period filters.
+- Implemented the spec's human-readable menu item document format and structured metadata fields for filtering and nutrition lookups.
+- Added RAG tests for combined filter extraction, breakfast-to-brunch mapping, document/metadata shape, filtered retrieval, all-dining-halls retrieval, and staleness detection.
+
+### Deviations from the spec and why
+- Added `InMemoryMenuStore` as a fallback when LangChain/ChromaDB packages are not installed. This keeps local unit tests deterministic and avoids requiring OpenAI embeddings for every test run while preserving the same `similarity_search()`/`get()` interface used by Chroma.
+- Added `short_name` to metadata. The spec stores item name in the document text only, but adding it to metadata makes tests and downstream app responses easier to inspect without changing the filter contract.
+- Omitted `None` nutrition values from Chroma metadata because Chroma only accepts primitive non-null metadata. The document text still carries the raw field values for model context.
+
+### Updated vulnerability log
+- Retrieval can return irrelevant results if semantic search runs without structured filters. Mitigation: `retrieve()` always calls `extract_filters()` before search and passes exact metadata filters to the store.
+- Local test retrieval is lexical, not vector-based. Mitigation: production uses LangChain/Chroma when dependencies are available; the fallback is only an interface-compatible local path.
+- Chroma metadata rejects null and complex values. Mitigation: metadata is cleaned to primitive non-null values before Chroma ingestion.
+- Stale or empty stores can lead to outdated answers. Mitigation: `is_stale()` treats empty stores, old dates, and inspection failures as stale.
+
+### Next part
+- Build `mcp_tools.py` with the `get_menu` safety-net tool definition and a handler that fetches, classifies, and re-embeds menu data when the user explicitly asks to refresh.
