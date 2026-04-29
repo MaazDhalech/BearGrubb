@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 from datetime import date
 from typing import Any
 
@@ -77,6 +78,35 @@ if cl is None:
 client = None
 db = None
 cache: dict[str, dict[str, Any]] = {}
+
+HALAL_DISCLAIMER = (
+    "Classifications are ingredient-based and intended as a guide, not a religious ruling."
+)
+
+UNSUPPORTED_DATE_TERMS = {
+    "tomorrow",
+    "week",
+    "weekly",
+    "weekend",
+    "wek",
+    "yesterday",
+}
+
+DIETARY_OPTION_TERMS = {
+    "available",
+    "dish",
+    "dishes",
+    "find",
+    "meal",
+    "meals",
+    "option",
+    "options",
+    "serve",
+    "served",
+    "serves",
+    "serving",
+    "show",
+}
 
 
 def configure_posthog() -> None:
@@ -205,6 +235,189 @@ def should_show_halal_disclaimer(content: str) -> bool:
     return is_halal_query(content) and not cl.user_session.get("halal_disclaimer_shown", False)
 
 
+def tokenize(content: str) -> set[str]:
+    return set(re.findall(r"[a-z0-9]+", content.lower()))
+
+
+def asks_for_unsupported_date_range(content: str) -> bool:
+    tokens = tokenize(content)
+    if tokens & UNSUPPORTED_DATE_TERMS:
+        return True
+    return bool(re.search(r"\bnext\s+(week|mon|monday|tue|tuesday|wed|wednesday|thu|thursday|fri|friday|sat|saturday|sun|sunday)\b", content.lower()))
+
+
+def build_unsupported_date_range_response(content: str, menu_date: str) -> str | None:
+    if not asks_for_unsupported_date_range(content):
+        return None
+    return (
+        f"I only have today's Berkeley Dining menu loaded for {menu_date}. "
+        "I can't answer weekly, future, or past menu requests yet. "
+        "Ask for today's options or a specific item from today's menu."
+    )
+
+
+def requested_dietary_filters(content: str) -> list[str]:
+    q = content.lower()
+    filters: list[str] = []
+    if "halal" in q:
+        filters.append("halal")
+    if "vegan" in q:
+        filters.append("vegan")
+    if "vegetarian" in q or "veggie" in q:
+        filters.append("vegetarian")
+    return filters
+
+
+def is_dietary_options_query(content: str) -> bool:
+    filters = requested_dietary_filters(content)
+    if not filters:
+        return False
+    return bool(tokenize(content) & DIETARY_OPTION_TERMS)
+
+
+def retrieval_limit(content: str) -> int:
+    return 24 if is_dietary_options_query(content) else 8
+
+
+def doc_matches_dietary_filters(doc: Any, filters: list[str]) -> bool:
+    metadata = getattr(doc, "metadata", {}) or {}
+    for requested_filter in filters:
+        if requested_filter == "halal" and metadata.get("halal_status") != "HALAL":
+            return False
+        if requested_filter == "vegan" and metadata.get("is_vegan") is not True:
+            return False
+        if requested_filter == "vegetarian" and metadata.get("is_vegetarian") is not True:
+            return False
+    return True
+
+
+def dietary_filter_label(filters: list[str]) -> str:
+    labels = {"halal": "halal", "vegan": "vegan", "vegetarian": "vegetarian"}
+    return " and ".join(labels[requested_filter] for requested_filter in filters)
+
+
+def extract_doc_name(doc: Any) -> str:
+    metadata = getattr(doc, "metadata", {}) or {}
+    short_name = str(metadata.get("short_name") or "").strip()
+    if short_name:
+        return short_name
+    match = re.search(r"^Item:\s*(.+)$", getattr(doc, "page_content", ""), re.MULTILINE)
+    return match.group(1).strip() if match else "Unnamed item"
+
+
+def format_dietary_option_line(doc: Any, filters: list[str]) -> str:
+    metadata = getattr(doc, "metadata", {}) or {}
+    hall = str(metadata.get("dining_hall") or "Unknown dining hall").strip()
+    meal = str(metadata.get("meal_period") or "").strip()
+    name = extract_doc_name(doc)
+    details: list[str] = []
+    if meal:
+        details.append(meal)
+    if "halal" in filters and metadata.get("contains_shellfish") is True:
+        details.append("contains shellfish")
+    suffix = f" ({', '.join(details)})" if details else ""
+    return f"- {hall}: {name}{suffix}"
+
+
+def unique_docs_by_item(docs: list[Any]) -> list[Any]:
+    seen: set[tuple[str, str, str]] = set()
+    unique: list[Any] = []
+    for doc in docs:
+        metadata = getattr(doc, "metadata", {}) or {}
+        key = (
+            str(metadata.get("dining_hall") or ""),
+            str(metadata.get("meal_period") or ""),
+            extract_doc_name(doc),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(doc)
+    return unique
+
+
+def build_dietary_options_response(
+    content: str,
+    chunks: list[Any],
+    menu_date: str,
+    include_halal_disclaimer: bool = False,
+) -> tuple[str, bool] | None:
+    if not is_dietary_options_query(content):
+        return None
+
+    filters = requested_dietary_filters(content)
+    matching_docs = [
+        doc for doc in unique_docs_by_item(chunks) if doc_matches_dietary_filters(doc, filters)
+    ]
+    label = dietary_filter_label(filters)
+    lines: list[str] = []
+    disclaimer_used = include_halal_disclaimer and "halal" in filters
+    if disclaimer_used:
+        lines.append(HALAL_DISCLAIMER)
+
+    if not matching_docs:
+        lines.append(f"I couldn't find any {label} options in today's menu for {menu_date}.")
+        lines.append("Try a dining hall, meal period, or item name to narrow the search.")
+        return "\n".join(lines), disclaimer_used
+
+    matching_docs = sorted(
+        matching_docs,
+        key=lambda doc: (
+            str((getattr(doc, "metadata", {}) or {}).get("dining_hall") or ""),
+            str((getattr(doc, "metadata", {}) or {}).get("meal_period") or ""),
+            extract_doc_name(doc),
+        ),
+    )
+    lines.append(f"Today's {label} options I found for {menu_date}:")
+    lines.extend(format_dietary_option_line(doc, filters) for doc in matching_docs)
+    return "\n".join(lines), disclaimer_used
+
+
+def build_no_context_response(
+    content: str,
+    menu_date: str,
+    include_halal_disclaimer: bool = False,
+) -> tuple[str, bool]:
+    lines: list[str] = []
+    disclaimer_used = include_halal_disclaimer and is_halal_query(content)
+    if disclaimer_used:
+        lines.append(HALAL_DISCLAIMER)
+    lines.append(
+        f"I couldn't find matching items in today's Berkeley Dining menu for {menu_date}. "
+        "Try a dining hall, meal period, or exact menu item."
+    )
+    return "\n".join(lines), disclaimer_used
+
+
+def is_refresh_request(content: str) -> bool:
+    q = content.lower()
+    return "refresh" in q or "reload" in q or "update menu" in q
+
+
+async def send_static_response(
+    user_content: str,
+    assistant_content: str,
+    history: list[dict[str, str]],
+    disclaimer_used: bool = False,
+    guardrail: str | None = None,
+) -> None:
+    msg = cl.Message(content=assistant_content)
+    await msg.send()
+    cl.user_session.set("history", append_history(history, user_content, msg.content))
+    if disclaimer_used:
+        cl.user_session.set("halal_disclaimer_shown", True)
+    capture_event(
+        "response_sent",
+        {
+            "response_length": len(msg.content),
+            "tool_call_count": 0,
+            "halal_disclaimer_shown": bool(disclaimer_used),
+            "deterministic_response": True,
+            "guardrail": guardrail,
+        },
+    )
+
+
 def create_completion(openai_client: Any, messages: list[dict[str, str]], tools: list[dict[str, Any]] | None):
     kwargs: dict[str, Any] = {
         "model": OPENAI_MODEL,
@@ -276,8 +489,51 @@ async def on_message(message):
         },
     )
 
+    unsupported_date_response = build_unsupported_date_range_response(user_content, menu_date)
+    if unsupported_date_response:
+        await send_static_response(
+            user_content,
+            unsupported_date_response,
+            history,
+            guardrail="unsupported_date_range",
+        )
+        return
+
     active_db = ensure_fresh_menu(menu_date)
-    chunks = retrieve(active_db, user_content)
+    chunks = retrieve(active_db, user_content, n_results=retrieval_limit(user_content))
+
+    dietary_options_response = build_dietary_options_response(
+        user_content,
+        chunks,
+        menu_date,
+        include_halal_disclaimer=disclaimer_needed,
+    )
+    if dietary_options_response:
+        response_content, disclaimer_used = dietary_options_response
+        await send_static_response(
+            user_content,
+            response_content,
+            history,
+            disclaimer_used=disclaimer_used,
+            guardrail="dietary_options",
+        )
+        return
+
+    if not chunks and not is_refresh_request(user_content):
+        response_content, disclaimer_used = build_no_context_response(
+            user_content,
+            menu_date,
+            include_halal_disclaimer=disclaimer_needed,
+        )
+        await send_static_response(
+            user_content,
+            response_content,
+            history,
+            disclaimer_used=disclaimer_used,
+            guardrail="empty_retrieval",
+        )
+        return
+
     context = build_context(chunks)
     messages = build_messages(
         user_content,

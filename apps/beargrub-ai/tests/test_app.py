@@ -7,7 +7,7 @@ import sys
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -39,6 +39,21 @@ def tool_call(name: str | None = None, arguments: str | None = None, index: int 
         index=index,
         function=SimpleNamespace(name=name, arguments=arguments),
     )
+
+
+def menu_doc(name: str, **metadata):
+    base_metadata = {
+        "date": "2026-04-29",
+        "dining_hall": "Crossroads",
+        "meal_period": "Dinner",
+        "short_name": name,
+        "halal_status": "HALAL",
+        "is_vegan": False,
+        "is_vegetarian": False,
+        "contains_shellfish": False,
+    }
+    base_metadata.update(metadata)
+    return rag.MenuDocument(f"Item: {name}", base_metadata)
 
 
 class FakeCompletionClient:
@@ -139,6 +154,88 @@ class AppTests(unittest.TestCase):
         self.assertEqual(history[-2]["content"], "What is vegan?")
         self.assertEqual(history[-1]["content"], "Beet Red is vegan.")
         self.assertNotIn("tools", fake_client.calls[-1] if len(fake_client.calls) > 1 else {})
+
+    def test_on_message_rejects_week_query_without_model_call(self):
+        ensure_mock = Mock()
+        retrieve_mock = Mock()
+        openai_mock = Mock()
+
+        with (
+            patch.object(self.app, "ensure_fresh_menu", ensure_mock),
+            patch.object(self.app, "retrieve", retrieve_mock),
+            patch.object(self.app, "get_openai_client", openai_mock),
+        ):
+            asyncio.run(
+                self.app.on_message(
+                    SimpleNamespace(content="what are the halal meal options for this wek?")
+                )
+            )
+
+        ensure_mock.assert_not_called()
+        retrieve_mock.assert_not_called()
+        openai_mock.assert_not_called()
+        response = self.app.cl.user_session.get("history")[-1]["content"]
+        self.assertIn("today's Berkeley Dining menu", response)
+        self.assertIn("weekly", response)
+        self.assertFalse(self.app.cl.user_session.get("halal_disclaimer_shown", False))
+
+    def test_on_message_dietary_options_excludes_non_matching_halal_statuses(self):
+        docs = [
+            menu_doc("Halal Rosemary Chicken"),
+            menu_doc(
+                "Turkey Sandwich",
+                dining_hall="Foothill",
+                halal_status="NOT_HALAL",
+            ),
+            menu_doc(
+                "Vegan Lentil Soup",
+                dining_hall="Cafe 3",
+                meal_period="Lunch",
+                is_vegan=True,
+                is_vegetarian=True,
+            ),
+        ]
+        openai_mock = Mock()
+
+        with (
+            patch.object(self.app, "ensure_fresh_menu", Mock(return_value=object())),
+            patch.object(self.app, "retrieve", Mock(return_value=docs)) as retrieve_mock,
+            patch.object(self.app, "get_openai_client", openai_mock),
+        ):
+            asyncio.run(
+                self.app.on_message(
+                    SimpleNamespace(content="what halal options are available today?")
+                )
+            )
+
+        retrieve_mock.assert_called_once_with(
+            ANY,
+            "what halal options are available today?",
+            n_results=24,
+        )
+        openai_mock.assert_not_called()
+        response = self.app.cl.user_session.get("history")[-1]["content"]
+        self.assertIn(self.app.HALAL_DISCLAIMER, response)
+        self.assertIn("Halal Rosemary Chicken", response)
+        self.assertIn("Vegan Lentil Soup", response)
+        self.assertNotIn("Turkey Sandwich", response)
+        self.assertNotIn("NOT_HALAL", response)
+        self.assertTrue(self.app.cl.user_session.get("halal_disclaimer_shown"))
+
+    def test_on_message_empty_retrieval_returns_no_context_without_model_call(self):
+        openai_mock = Mock()
+
+        with (
+            patch.object(self.app, "ensure_fresh_menu", Mock(return_value=object())),
+            patch.object(self.app, "retrieve", Mock(return_value=[])),
+            patch.object(self.app, "get_openai_client", openai_mock),
+        ):
+            asyncio.run(self.app.on_message(SimpleNamespace(content="Tell me about pizza.")))
+
+        openai_mock.assert_not_called()
+        response = self.app.cl.user_session.get("history")[-1]["content"]
+        self.assertIn("couldn't find matching items", response)
+        self.assertIn("today's Berkeley Dining menu", response)
 
     def test_on_message_sets_halal_disclaimer_flag_once(self):
         menu_doc = rag.MenuDocument("Item: Halal Chicken", {"date": "2026-04-29"})
