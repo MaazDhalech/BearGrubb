@@ -43,10 +43,12 @@ DEFAULT_EXCLUDED_CATEGORIES = {
 }
 
 DEFAULT_EXCLUDED_ITEM_PHRASES = {
+    "assorted dinner rolls",
     "chive",
     "chives",
     "curly parsley",
     "italian parsley",
+    "cherry pepper",
     "nutritional yeast",
     "pumpkin seeds",
     "shredded vegan mozzarella cheese",
@@ -317,7 +319,8 @@ def build_optimization_response(
     if not filters:
         return None
 
-    hall = parse_hall(content) or default_hall(items)
+    hall = parse_hall(content)
+    location = hall or default_hall(items)
     meal = parse_meal(content) or default_meal(content)
     scope_items = filter_scope(items, hall=hall, meal=meal)
     scope_items = [item for item in scope_items if matches_dietary_filters(item, filters)]
@@ -329,7 +332,7 @@ def build_optimization_response(
             return None
         best = sorted(candidates, key=lambda item: (-(item.protein or 0), item.carbs or 0))[0]
         return RuleBasedResponse(
-            f"Best {dietary_label(filters)} high protein low carb option at {hall} tonight is "
+            f"Best {dietary_label(filters)} high protein low carb option at {location} tonight is "
             f"{best.name} — {format_grams(best.protein)}g protein, {format_grams(best.carbs)}g carbs "
             f"per {format_serving(best)}.",
             guardrail="high_protein_low_carb",
@@ -343,11 +346,11 @@ def build_optimization_response(
         if "highest" in q and "option" in q and "options" not in q:
             best = candidates[0]
             return RuleBasedResponse(
-                f"The highest protein {dietary_label(filters)} option at {hall} tonight is "
+                f"The highest protein {dietary_label(filters)} option at {location} tonight is "
                 f"{best.name} with {format_grams(best.protein)}g of protein per {format_serving(best)}.",
                 guardrail="highest_protein",
             )
-        lines = [f"Highest protein {dietary_label(filters)} options at {hall} tonight:", ""]
+        lines = [f"Highest protein {dietary_label(filters)} options at {location} tonight:", ""]
         lines.extend(
             f"✅ {item.name} — {format_grams(item.protein)}g protein per {format_serving(item)}"
             for item in candidates[:8]
@@ -368,7 +371,7 @@ def build_optimization_response(
             None,
         )
         response = (
-            f"The lowest calorie substantial vegan option at {hall} for {meal.lower() if meal else 'today'} "
+            f"The lowest calorie substantial vegan option at {location} for {meal.lower() if meal else 'today'} "
             f"is {lowest.name} at {format_calories(lowest.calories)} cal per {format_serving(lowest)}."
         )
         if protein_pick:
@@ -386,7 +389,7 @@ def build_optimization_response(
         ]
         if not candidates:
             return None
-        lines = [f"{dietary_label(filters).capitalize()} options at {hall} under {calorie_limit} calories:", ""]
+        lines = [f"{dietary_label(filters).capitalize()} options at {location} under {calorie_limit} calories:", ""]
         lines.extend(f"✅ {item.name} — {format_calories(item.calories)} cal per {format_serving(item)}" for item in candidates)
         return RuleBasedResponse("\n".join(lines), guardrail="calorie_limit")
 
@@ -396,7 +399,7 @@ def build_optimization_response(
             return None
         best = sorted(candidates, key=lambda item: item.calories_per_oz or 0, reverse=True)[0]
         return RuleBasedResponse(
-            f"The most calorie dense {dietary_label(filters)} option at {hall} tonight is "
+            f"The most calorie dense {dietary_label(filters)} option at {location} tonight is "
             f"{best.name} at {format_calories(best.calories)} calories per {format_serving(best)} "
             f"({format_grams(best.calories_per_oz)} cal/oz).",
             guardrail="calorie_density",
@@ -758,9 +761,17 @@ def matches_dietary_filters(item: MenuItem, filters: list[str]) -> bool:
 
 def filter_default_menu_items(items: list[MenuItem], content: str) -> list[MenuItem]:
     q = content.lower()
-    if any(category in q for category in DEFAULT_EXCLUDED_CATEGORIES) or "all" in q:
+    if any(category in q for category in DEFAULT_EXCLUDED_CATEGORIES) or asks_for_all_categories(q):
         return items
     return [item for item in items if not is_default_excluded(item)]
+
+
+def asks_for_all_categories(content: str) -> bool:
+    q = content.lower()
+    return bool(
+        re.search(r"\b(show|list|give me|include)\s+all\s+(items|categories|menu|foods?|options?)\b", q)
+        or re.search(r"\ball\s+(items|categories|menu|foods?)\b", q)
+    )
 
 
 def is_default_excluded(item: MenuItem) -> bool:

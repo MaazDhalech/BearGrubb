@@ -74,6 +74,37 @@ class MenuAnswerTests(unittest.TestCase):
                 ingredients="Dressing Ranch HALAL",
                 calories=90,
             ),
+            doc(
+                "Chocolate Whipped Cream Pie",
+                category="Dessert",
+                is_vegetarian=True,
+                calories=217,
+                serving_size=2,
+            ),
+            doc(
+                "Split Pea Soup",
+                category="Soup",
+                is_vegan=True,
+                is_vegetarian=True,
+                calories=232,
+                serving_size=8,
+            ),
+            doc(
+                "Assorted Dinner Rolls",
+                category="Side",
+                is_vegan=True,
+                is_vegetarian=True,
+                calories=108,
+                serving_size=1.2,
+            ),
+            doc(
+                "Chive",
+                category="Allergen Friendly",
+                is_vegan=True,
+                is_vegetarian=True,
+                calories=1,
+                serving_size=0.1,
+            ),
         ]
 
         response = menu_answers.build_menu_response(
@@ -91,7 +122,31 @@ class MenuAnswerTests(unittest.TestCase):
         self.assertIn("Vegan/Vegetarian (halal):", text)
         self.assertIn("Braised Mung Bean (vegan) — 126 cal per 4.16oz serving", text)
         self.assertNotIn("Ranch Dressing", text)
+        self.assertNotIn("Chocolate Whipped Cream Pie", text)
+        self.assertNotIn("Split Pea Soup", text)
+        self.assertNotIn("Assorted Dinner Rolls", text)
+        self.assertNotIn("Chive", text)
         self.assertTrue(text.endswith(menu_answers.HALAL_NOTE))
+
+    def test_all_dining_halls_does_not_disable_default_category_filters(self):
+        docs = [
+            doc("Halal Rosemary Chicken", ingredients="Chicken HALAL"),
+            doc("Split Pea Soup", category="Soup", is_vegan=True, is_vegetarian=True),
+            doc("Chocolate Whipped Cream Pie", category="Dessert", is_vegetarian=True),
+            doc("Chive", category="Allergen Friendly", is_vegan=True, is_vegetarian=True, calories=1, serving_size=0.1),
+        ]
+
+        response = menu_answers.build_menu_response(
+            "show halal options across all dining halls for dinner grouped by dining hall",
+            docs,
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("Halal Rosemary Chicken", response.content)
+        self.assertNotIn("Split Pea Soup", response.content)
+        self.assertNotIn("Chocolate Whipped Cream Pie", response.content)
+        self.assertNotIn("Chive", response.content)
 
     def test_missing_hall_names_available_hall(self):
         response = menu_answers.build_menu_response(
@@ -133,6 +188,7 @@ class MenuAnswerTests(unittest.TestCase):
             doc("Halal Beef Fajitas", ingredients="Beef HALAL", protein=12.83, calories=94, serving_size=3.18),
             doc("Halal Rosemary Chicken", ingredients="Chicken HALAL", protein=20.85, calories=153, serving_size=3.94),
             doc("Beef Kofta", ingredients="Beef HALAL", protein=19.94, calories=311, serving_size=4),
+            doc("Halal Chicken Breast", dining_hall="Cafe 3", ingredients="Chicken HALAL", protein=26.0, calories=136, serving_size=3.75),
         ]
 
         response = menu_answers.build_menu_response(
@@ -143,10 +199,12 @@ class MenuAnswerTests(unittest.TestCase):
 
         self.assertIsNotNone(response)
         lines = response.content.splitlines()
-        self.assertIn("Highest protein halal options at Crossroads tonight:", lines[0])
+        self.assertIn("Highest protein halal options at all dining halls tonight:", lines[0])
+        cafe_index = response.content.index("Halal Chicken Breast")
         chicken_index = response.content.index("Halal Rosemary Chicken")
         kofta_index = response.content.index("Beef Kofta")
         fajita_index = response.content.index("Halal Beef Fajitas")
+        self.assertLess(cafe_index, chicken_index)
         self.assertLess(chicken_index, kofta_index)
         self.assertLess(kofta_index, fajita_index)
 

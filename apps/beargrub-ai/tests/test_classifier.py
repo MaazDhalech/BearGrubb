@@ -124,6 +124,33 @@ class ClassifierTests(unittest.TestCase):
         )
         self.assertEqual(result["status"], "NOT_HALAL")
 
+    def test_berkeley_halal_marker_overrides_ambiguous_natural_flavor(self):
+        result = classifier.classify(
+            item(
+                "Chicken 8 Cut HALAL; Sauce BBQ (Natural Flavor); Spice Blend BBQ (Natural Flavor)",
+                short_name="Halal BBQ Roasted Chicken",
+                dietary_choices={"Halal": "Yes"},
+            ),
+            cache={},
+            cache_path=None,
+        )
+
+        self.assertEqual(result["status"], "HALAL")
+        self.assertIn("Berkeley XML marks this item halal", result["reason"])
+
+    def test_berkeley_halal_marker_does_not_override_forbidden_ingredient(self):
+        result = classifier.classify(
+            item(
+                "Chicken 8 Cut HALAL; Cooking Wine",
+                short_name="Halal Wine Chicken",
+                dietary_choices={"Halal": "Yes"},
+            ),
+            cache={},
+            cache_path=None,
+        )
+
+        self.assertEqual(result["status"], "NOT_HALAL")
+
     def test_gpt_fallback_is_used_for_ambiguous_base(self):
         fake_client = FakeOpenAIClient(
             {

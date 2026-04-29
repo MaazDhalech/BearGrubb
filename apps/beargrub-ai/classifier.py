@@ -53,6 +53,7 @@ GPT_REVIEW_PATTERNS = [
 ]
 
 VALID_STATUSES = {"HALAL", "NOT_HALAL", "UNCERTAIN"}
+CLASSIFICATION_CACHE_VERSION = "v2"
 
 
 def load_cache(path: str = CACHE_PATH) -> dict[str, dict[str, Any]]:
@@ -82,7 +83,7 @@ def normalize(ingredients: str) -> str:
 
 def get_cache_key(ingredients: str) -> str:
     normalized = normalize(ingredients)
-    return hashlib.md5(normalized.encode()).hexdigest()
+    return hashlib.md5(f"{CLASSIFICATION_CACHE_VERSION}:{normalized}".encode()).hexdigest()
 
 
 def deterministic_classify(normalized: str, ingredients: str = "") -> dict[str, Any] | None:
@@ -159,6 +160,8 @@ def classify(
 
     result = allergen_override_classify(item, normalized)
     if result is None:
+        result = explicit_halal_override_classify(item, normalized, ingredients)
+    if result is None:
         result = deterministic_classify(normalized, ingredients)
     if result is None:
         result = gpt_classify(ingredients, normalized, openai_client=openai_client)
@@ -184,6 +187,48 @@ def allergen_override_classify(item: dict[str, Any], normalized: str) -> dict[st
             shellfish_note=shellfish_note,
         )
     return None
+
+
+def explicit_halal_override_classify(
+    item: dict[str, Any],
+    normalized: str,
+    ingredients: str,
+) -> dict[str, Any] | None:
+    if not has_berkeley_halal_marker(item):
+        return None
+    if not normalized:
+        return None
+
+    contains_shellfish, shellfish_note = detect_shellfish(normalized)
+
+    for pattern, label in FORBIDDEN_PATTERNS:
+        if pattern == r"\bGELATIN\b":
+            if re.search(pattern, normalized) and "HALAL GELATIN" not in normalized:
+                return None
+        elif re.search(pattern, normalized):
+            return None
+
+    for segment in normalized_ingredient_segments(ingredients or normalized):
+        for meat in MEATS:
+            if re.search(rf"\b{meat}\b", segment) and "HALAL" not in segment:
+                return None
+
+    return _result(
+        "HALAL",
+        "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+        contains_shellfish=contains_shellfish,
+        shellfish_note=shellfish_note,
+    )
+
+
+def has_berkeley_halal_marker(item: dict[str, Any]) -> bool:
+    dietary_choices = item.get("dietary_choices") or {}
+    if str(dietary_choices.get("Halal", "")).strip().lower() == "yes":
+        return True
+    short_name = str(item.get("short_name") or "").strip().lower()
+    if short_name.startswith("halal "):
+        return True
+    return False
 
 
 def classify_all(
