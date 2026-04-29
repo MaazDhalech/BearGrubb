@@ -11,6 +11,14 @@ from config import DINING_HALLS, DINING_MENU_ENDPOINT, REQUEST_TIMEOUT_SECONDS
 
 logger = logging.getLogger(__name__)
 
+DIRECT_XML_MENU_BASE = "https://dining.berkeley.edu/wp-content/uploads/menus-exportimport"
+DIRECT_XML_FILES = {
+    "crossroads": "Crossroads",
+    "cafe3": "Cafe_3",
+    "clark-kerr": "Clark_Kerr_Campus",
+    "foothill": "Foothill",
+}
+
 NUTRIENT_FIELDS = [
     "calories",
     "fat",
@@ -28,6 +36,12 @@ NUTRIENT_FIELDS = [
 def build_menu_url(location_id: str, menu_date: str) -> str:
     query = urlencode({"location": location_id, "date": menu_date})
     return f"{DINING_MENU_ENDPOINT}?{query}"
+
+
+def build_direct_xml_url(location_id: str, menu_date: str) -> str:
+    filename = DIRECT_XML_FILES[location_id]
+    compact_date = menu_date.replace("-", "")
+    return f"{DIRECT_XML_MENU_BASE}/{filename}_{compact_date}.xml"
 
 
 def fetch_all(menu_date: str, hall: str = "ALL", session: Any | None = None) -> list[dict[str, Any]]:
@@ -56,6 +70,10 @@ def fetch_menu_xml(location_id: str, menu_date: str, session: Any | None = None)
 
     status_code = getattr(response, "status_code", None)
     if status_code != 200:
+        if status_code == 404:
+            fallback_root = fetch_direct_menu_xml(location_id, menu_date, session=session)
+            if fallback_root is not None:
+                return fallback_root
         logger.error(
             "Dining menu fetch failed for %s on %s with status %s",
             location_id,
@@ -68,6 +86,38 @@ def fetch_menu_xml(location_id: str, menu_date: str, session: Any | None = None)
         return parse_response_content(response.content)
     except (ET.ParseError, ValueError, TypeError):
         logger.exception("Failed to parse dining menu response for %s on %s", location_id, menu_date)
+        return None
+
+
+def fetch_direct_menu_xml(location_id: str, menu_date: str, session: Any | None = None) -> ET.Element | None:
+    if location_id not in DIRECT_XML_FILES:
+        return None
+    if session is None:
+        import requests
+
+        session = requests
+
+    url = build_direct_xml_url(location_id, menu_date)
+    try:
+        response = session.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
+    except Exception:
+        logger.exception("Failed to fetch direct dining XML for %s on %s", location_id, menu_date)
+        return None
+
+    status_code = getattr(response, "status_code", None)
+    if status_code != 200:
+        logger.error(
+            "Direct dining XML fetch failed for %s on %s with status %s",
+            location_id,
+            menu_date,
+            status_code,
+        )
+        return None
+
+    try:
+        return parse_response_content(response.content)
+    except (ET.ParseError, ValueError, TypeError):
+        logger.exception("Failed to parse direct dining XML for %s on %s", location_id, menu_date)
         return None
 
 
@@ -92,7 +142,9 @@ def parse_response_content(content: bytes | str) -> ET.Element:
 def parse_menu(root: ET.Element, dining_hall: str, menu_date: str) -> list[dict[str, Any]]:
     parsed: list[dict[str, Any]] = []
     for menu in root.findall(".//menu"):
-        meal_period = (menu.attrib.get("mealperiodname") or menu.attrib.get("name") or "").strip()
+        meal_period = normalize_meal_period(
+            menu.attrib.get("mealperiodname") or menu.attrib.get("name") or ""
+        )
         recipes = menu.find("recipes")
         if recipes is None or len(recipes) == 0:
             continue
@@ -141,6 +193,20 @@ def parse_recipe(
         **nutrients,
         "calories_per_oz": calories_per_oz,
     }
+
+
+def normalize_meal_period(raw_meal_period: str) -> str:
+    meal_period = (raw_meal_period or "").strip()
+    lower = meal_period.lower()
+    if "brunch" in lower:
+        return "Brunch"
+    if "breakfast" in lower:
+        return "Brunch"
+    if "lunch" in lower:
+        return "Lunch"
+    if "dinner" in lower:
+        return "Dinner"
+    return meal_period
 
 
 def parse_nutrients(raw: str) -> dict[str, float | None]:

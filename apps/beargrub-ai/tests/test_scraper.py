@@ -54,13 +54,21 @@ class FakeResponse:
 
 
 class FakeSession:
-    def __init__(self, status_by_location: dict[str, int] | None = None):
+    def __init__(
+        self,
+        status_by_location: dict[str, int] | None = None,
+        direct_status: int = 200,
+    ):
         self.status_by_location = status_by_location or {}
+        self.direct_status = direct_status
         self.urls: list[str] = []
 
     def get(self, url: str, timeout: int):
         self.urls.append(url)
-        location = parse_qs(urlparse(url).query)["location"][0]
+        query = parse_qs(urlparse(url).query)
+        if "location" not in query:
+            return FakeResponse(SAMPLE_XML, status_code=self.direct_status)
+        location = query["location"][0]
         status = self.status_by_location.get(location, 200)
         return FakeResponse(SAMPLE_XML, status_code=status)
 
@@ -90,6 +98,24 @@ class ScraperTests(unittest.TestCase):
         self.assertTrue(beet["is_vegan"])
         self.assertTrue(beet["is_vegetarian"])
 
+    def test_parse_menu_normalizes_seasonal_meal_period_names(self):
+        root = scraper.parse_response_content(
+            b"""
+            <root>
+              <menu mealperiodname="Spring - Breakfast"><recipes>
+                <recipe shortName="Oatmeal" servingSize="4" nutrients="100|0|0|0|0|0|20|2|1|4" />
+              </recipes></menu>
+              <menu mealperiodname="Spring - Dinner"><recipes>
+                <recipe shortName="Rice" servingSize="4" nutrients="100|0|0|0|0|0|20|2|1|4" />
+              </recipes></menu>
+            </root>
+            """
+        )
+
+        items = scraper.parse_menu(root, dining_hall="Crossroads", menu_date="2026-04-29")
+
+        self.assertEqual([item["meal_period"] for item in items], ["Brunch", "Dinner"])
+
     def test_fetch_all_loops_all_halls_and_continues_after_fetch_failure(self):
         session = FakeSession(status_by_location={"cafe3": 500})
 
@@ -110,6 +136,24 @@ class ScraperTests(unittest.TestCase):
         query = parse_qs(parsed_url.query)
         self.assertEqual(query["location"], ["clark-kerr"])
         self.assertEqual(query["date"], ["2026-04-27"])
+
+    def test_fetch_menu_xml_falls_back_to_direct_xml_when_endpoint_404s(self):
+        session = FakeSession(status_by_location={"crossroads": 404})
+
+        items = scraper.fetch_all("2026-04-29", hall="Crossroads", session=session)
+
+        self.assertEqual(len(items), 2)
+        self.assertEqual(len(session.urls), 2)
+        self.assertEqual(
+            session.urls[1],
+            "https://dining.berkeley.edu/wp-content/uploads/menus-exportimport/Crossroads_20260429.xml",
+        )
+
+    def test_build_direct_xml_url_uses_current_file_names(self):
+        self.assertEqual(
+            scraper.build_direct_xml_url("clark-kerr", "2026-04-29"),
+            "https://dining.berkeley.edu/wp-content/uploads/menus-exportimport/Clark_Kerr_Campus_20260429.xml",
+        )
 
 
 if __name__ == "__main__":

@@ -117,15 +117,19 @@ def embed_menu(
         Document(page_content=doc.page_content, metadata=_chroma_metadata(doc.metadata))
         for doc in menu_docs
     ]
-    db = Chroma.from_documents(
-        docs,
-        embeddings,
-        persist_directory=persist_directory,
-        collection_name=collection_name,
-    )
-    if hasattr(db, "persist"):
-        db.persist()
-    return db
+    try:
+        db = Chroma.from_documents(
+            docs,
+            embeddings,
+            persist_directory=persist_directory,
+            collection_name=collection_name,
+        )
+        if hasattr(db, "persist"):
+            db.persist()
+        return db
+    except Exception:
+        logger.exception("Failed to build Chroma menu store; using in-memory menu store")
+        return InMemoryMenuStore(menu_docs)
 
 
 def retrieve(db: Any, query: str, n_results: int = 8) -> list[Any]:
