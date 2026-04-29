@@ -15,6 +15,8 @@ HALL_ALIASES = {
     "foothill": "Foothill",
 }
 
+HALL_DISPLAY_ORDER = ["Cafe 3", "Crossroads", "Foothill", "Clark Kerr"]
+
 CROSSROADS_HOURS = "Crossroads runs Brunch from 10:30am to 3:00pm and Dinner from 4:30pm to 9:00pm."
 
 MEAT_TERMS = {
@@ -798,7 +800,7 @@ def format_halal_options(
     across_all = hall is None and len({item.hall for item in items if item.hall}) > 1
     if across_all:
         lines: list[str] = ["Halal options across all dining halls tonight:"]
-        for hall_name in sorted({item.hall for item in items}):
+        for hall_name in ordered_halls(items):
             hall_items = [item for item in items if item.hall == hall_name]
             lines.extend(["", f"{hall_name}:", *format_halal_groups(hall_items)])
     else:
@@ -848,6 +850,13 @@ def format_halal_groups(items: list[MenuItem]) -> list[str]:
         lines.extend(["Other:", ""])
         lines.extend(format_basic_item_line(item, include_diet=False) for item in other)
     return lines
+
+
+def ordered_halls(items: list[MenuItem]) -> list[str]:
+    present = {item.hall for item in items if item.hall}
+    ordered = [hall for hall in HALL_DISPLAY_ORDER if hall in present]
+    ordered.extend(sorted(present - set(HALL_DISPLAY_ORDER)))
+    return ordered
 
 
 def is_protein_item(item: MenuItem) -> bool:

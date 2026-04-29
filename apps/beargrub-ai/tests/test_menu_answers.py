@@ -110,7 +110,9 @@ class MenuAnswerTests(unittest.TestCase):
     def test_halal_options_without_hall_are_grouped_by_dining_hall(self):
         docs = [
             doc("Halal Rosemary Chicken", ingredients="Chicken HALAL"),
+            doc("Cafe 3 Halal Chicken", dining_hall="Cafe 3", ingredients="Chicken HALAL"),
             doc("Halal Ground Beef", dining_hall="Clark Kerr", ingredients="Beef HALAL"),
+            doc("Foothill Halal Chicken", dining_hall="Foothill", ingredients="Chicken HALAL"),
             doc("Braised Mung Bean", dining_hall="Clark Kerr", is_vegan=True, is_vegetarian=True),
         ]
 
@@ -122,8 +124,9 @@ class MenuAnswerTests(unittest.TestCase):
 
         self.assertIsNotNone(response)
         self.assertIn("Halal options across all dining halls tonight:", response.content)
-        self.assertIn("Crossroads:", response.content)
-        self.assertIn("Clark Kerr:", response.content)
+        self.assertLess(response.content.index("Cafe 3:"), response.content.index("Crossroads:"))
+        self.assertLess(response.content.index("Crossroads:"), response.content.index("Foothill:"))
+        self.assertLess(response.content.index("Foothill:"), response.content.index("Clark Kerr:"))
 
     def test_high_protein_halal_options_are_sorted_by_protein(self):
         docs = [

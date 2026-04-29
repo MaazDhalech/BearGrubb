@@ -67,6 +67,19 @@ class FakeSession:
         self.urls.append(url)
         query = parse_qs(urlparse(url).query)
         if "location" not in query:
+            file_stem = Path(urlparse(url).path).stem.rsplit("_", 1)[0]
+            legacy_to_location = {
+                "Cafe_3": "cafe3",
+                "Crossroads": "crossroads",
+                "Foothill": "foothill",
+                "Clark_Kerr_Campus": "clark-kerr",
+            }
+            status = self.status_by_location.get(
+                legacy_to_location.get(file_stem, file_stem),
+                self.direct_status,
+            )
+            if status != 200:
+                return FakeResponse(SAMPLE_XML, status_code=status)
             return FakeResponse(SAMPLE_XML, status_code=self.direct_status)
         location = query["location"][0]
         status = self.status_by_location.get(location, 200)
@@ -121,9 +134,11 @@ class ScraperTests(unittest.TestCase):
 
         items = scraper.fetch_all("2026-04-27", session=session)
 
-        self.assertEqual(len(session.urls), 4)
+        self.assertEqual(len(session.urls), 5)
         self.assertEqual(len(items), 6)
         self.assertNotIn("Cafe 3", {item["dining_hall"] for item in items})
+        self.assertTrue(session.urls[0].endswith("/Cafe_3_20260427.xml"))
+        self.assertIn("location=cafe3", session.urls[1])
 
     def test_fetch_all_single_hall_uses_expected_location_and_date(self):
         session = FakeSession()
@@ -132,22 +147,23 @@ class ScraperTests(unittest.TestCase):
 
         self.assertEqual(len(items), 2)
         self.assertEqual(len(session.urls), 1)
-        parsed_url = urlparse(session.urls[0])
-        query = parse_qs(parsed_url.query)
-        self.assertEqual(query["location"], ["clark-kerr"])
-        self.assertEqual(query["date"], ["2026-04-27"])
+        self.assertEqual(
+            session.urls[0],
+            "https://dining.berkeley.edu/wp-content/uploads/menus-exportimport/Clark_Kerr_Campus_20260427.xml",
+        )
 
-    def test_fetch_menu_xml_falls_back_to_direct_xml_when_endpoint_404s(self):
-        session = FakeSession(status_by_location={"crossroads": 404})
+    def test_fetch_menu_xml_falls_back_to_endpoint_when_direct_xml_fails(self):
+        session = FakeSession(direct_status=404)
 
         items = scraper.fetch_all("2026-04-29", hall="Crossroads", session=session)
 
         self.assertEqual(len(items), 2)
         self.assertEqual(len(session.urls), 2)
         self.assertEqual(
-            session.urls[1],
+            session.urls[0],
             "https://dining.berkeley.edu/wp-content/uploads/menus-exportimport/Crossroads_20260429.xml",
         )
+        self.assertIn("location=crossroads", session.urls[1])
 
     def test_build_direct_xml_url_uses_current_file_names(self):
         self.assertEqual(

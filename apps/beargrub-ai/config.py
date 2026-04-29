@@ -11,10 +11,10 @@ if load_dotenv:
     load_dotenv()
 
 DINING_HALLS = {
-    "Crossroads": "crossroads",
     "Cafe 3": "cafe3",
-    "Clark Kerr": "clark-kerr",
+    "Crossroads": "crossroads",
     "Foothill": "foothill",
+    "Clark Kerr": "clark-kerr",
 }
 
 DINING_MENU_ENDPOINT = "https://dining.berkeley.edu/wp-json/bc-dining/v1/dining-menu"

@@ -56,12 +56,16 @@ def fetch_all(menu_date: str, hall: str = "ALL", session: Any | None = None) -> 
 
 
 def fetch_menu_xml(location_id: str, menu_date: str, session: Any | None = None) -> ET.Element | None:
-    url = build_menu_url(location_id, menu_date)
     if session is None:
         import requests
 
         session = requests
 
+    direct_root = fetch_direct_menu_xml(location_id, menu_date, session=session)
+    if direct_root is not None:
+        return direct_root
+
+    url = build_menu_url(location_id, menu_date)
     try:
         response = session.get(url, timeout=REQUEST_TIMEOUT_SECONDS)
     except Exception:
@@ -70,10 +74,6 @@ def fetch_menu_xml(location_id: str, menu_date: str, session: Any | None = None)
 
     status_code = getattr(response, "status_code", None)
     if status_code != 200:
-        if status_code == 404:
-            fallback_root = fetch_direct_menu_xml(location_id, menu_date, session=session)
-            if fallback_root is not None:
-                return fallback_root
         logger.error(
             "Dining menu fetch failed for %s on %s with status %s",
             location_id,
