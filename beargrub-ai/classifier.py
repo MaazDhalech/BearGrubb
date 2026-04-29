@@ -9,40 +9,9 @@ from copy import deepcopy
 from typing import Any
 
 from config import CACHE_PATH, OPENAI_MODEL
+from prompts import CLASSIFICATION_PROMPT
 
 logger = logging.getLogger(__name__)
-
-CLASSIFICATION_PROMPT = """
-You are determining halal status for a UC Berkeley dining item.
-Classify based on ingredients only. Use these rules strictly:
-
-NOT_HALAL if:
-- Contains pork, lard, bacon, ham, gelatin (unless 'halal gelatin')
-- Contains alcohol: wine, beer, spirits, cooking wine, sherry
-- Contains vanilla extract (always contains alcohol)
-- Contains beef/chicken/lamb/turkey/duck NOT labeled HALAL in ingredient name
-
-UNCERTAIN if:
-- 'Natural flavors' with unknown source - quote exact ingredient
-- 'Enzymes' with unknown source - quote exact ingredient
-- Any additive where halal status is unknowable from ingredients alone
-- Ambiguous sauces or bases where meat source is unclear
-
-HALAL if:
-- All meat explicitly labeled HALAL in ingredient name
-- No forbidden or ambiguous ingredients
-
-SHELLFISH: halal - do not mark NOT_HALAL for shellfish.
-Always flag if shellfish present.
-
-Return JSON only, no markdown:
-{
-  "status": "HALAL" | "NOT_HALAL" | "UNCERTAIN",
-  "reason": "one sentence, quote the specific ingredient causing the decision",
-  "contains_shellfish": true | false,
-  "shellfish_note": "specific shellfish ingredient name" | null
-}
-"""
 
 FORBIDDEN_PATTERNS = [
     (r"\bPORK\b", "pork"),
