@@ -871,7 +871,7 @@ def requested_dietary_filters(content: str) -> list[str]:
 def looks_like_option_request(content: str) -> bool:
     q = content.lower()
     return bool(
-        re.search(r"\b(what's|what|any|show|list|options?|meals?|anything|where|which|can i eat)\b", q)
+        re.search(r"\b(what's|whats|what|any|show|list|options?|meals?|anything|where|which|can i eat)\b", q)
     )
 
 

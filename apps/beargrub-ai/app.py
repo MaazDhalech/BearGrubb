@@ -94,6 +94,7 @@ UNSUPPORTED_DATE_TERMS = {
 }
 
 DIETARY_OPTION_TERMS = {
+    "any",
     "available",
     "dish",
     "dishes",
@@ -301,7 +302,11 @@ def is_dietary_options_query(content: str) -> bool:
     filters = requested_dietary_filters(content)
     if not filters:
         return False
-    return bool(tokenize(content) & DIETARY_OPTION_TERMS)
+    q = content.lower()
+    return bool(
+        tokenize(content) & DIETARY_OPTION_TERMS
+        or re.search(r"\b(what(?:'s| is)?|whats)\b.*\b(at|for|today|tonight|brunch|lunch|dinner)\b", q)
+    )
 
 
 def retrieval_limit(content: str) -> int:
@@ -560,6 +565,23 @@ async def on_message(message):
         return
 
     chunks = retrieve(active_db, effective_user_content, n_results=retrieval_limit(effective_user_content))
+
+    if is_dietary_options_query(effective_user_content):
+        menu_response = build_menu_response(
+            effective_user_content,
+            chunks,
+            menu_date,
+            include_halal_disclaimer=disclaimer_needed,
+        )
+        if menu_response:
+            await send_static_response(
+                user_content,
+                menu_response.content,
+                history,
+                disclaimer_used=menu_response.disclaimer_used,
+                guardrail=menu_response.guardrail,
+            )
+            return
 
     dietary_options_response = build_dietary_options_response(
         effective_user_content,

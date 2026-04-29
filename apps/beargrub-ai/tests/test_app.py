@@ -215,12 +215,74 @@ class AppTests(unittest.TestCase):
         )
         openai_mock.assert_not_called()
         response = self.app.cl.user_session.get("history")[-1]["content"]
-        self.assertIn(self.app.HALAL_DISCLAIMER, response)
+        self.assertIn("classifications are ingredient-based", response)
         self.assertIn("Halal Rosemary Chicken", response)
-        self.assertIn("Vegan Lentil Soup", response)
         self.assertNotIn("Turkey Sandwich", response)
+        self.assertNotIn("Vegan Lentil Soup", response)
         self.assertNotIn("NOT_HALAL", response)
         self.assertTrue(self.app.cl.user_session.get("halal_disclaimer_shown"))
+
+    def test_on_message_formats_retrieved_halal_lunch_options_deterministically(self):
+        docs = [
+            menu_doc(
+                "Halal Blue Sage Beef Burger",
+                dining_hall="Clark Kerr",
+                meal_period="Lunch",
+                ingredients="Beef HALAL",
+                calories=933.1,
+                serving_size=8.51,
+                serving_size_unit="oz",
+                protein=56.94,
+            ),
+            menu_doc(
+                "Braised Mung Bean",
+                dining_hall="Clark Kerr",
+                meal_period="Lunch",
+                is_vegan=True,
+                is_vegetarian=True,
+                calories=126,
+                serving_size=4.16,
+                serving_size_unit="oz",
+            ),
+            menu_doc(
+                "Southwestern Corn Chowder",
+                dining_hall="Clark Kerr",
+                meal_period="Lunch",
+                category="Soup",
+                is_vegetarian=True,
+                calories=167,
+                serving_size=8,
+                serving_size_unit="oz",
+            ),
+        ]
+        openai_mock = Mock()
+
+        with (
+            patch.object(self.app, "ensure_fresh_menu", Mock(return_value=object())),
+            patch.object(self.app, "list_documents", Mock(return_value=[])),
+            patch.object(self.app, "retrieve", Mock(return_value=docs)) as retrieve_mock,
+            patch.object(self.app, "get_openai_client", openai_mock),
+        ):
+            asyncio.run(
+                self.app.on_message(
+                    SimpleNamespace(content="whats halal for lunch today at clark kerr")
+                )
+            )
+
+        retrieve_mock.assert_called_once_with(
+            ANY,
+            "whats halal for lunch today at clark kerr",
+            n_results=24,
+        )
+        openai_mock.assert_not_called()
+        response = self.app.cl.user_session.get("history")[-1]["content"]
+        self.assertIn("Here are the halal options at Clark Kerr for lunch:", response)
+        self.assertIn("Proteins:", response)
+        self.assertIn("✅ Halal Blue Sage Beef Burger — 933 cal per 8.51oz serving", response)
+        self.assertIn("Vegan/Vegetarian (halal):", response)
+        self.assertIn("Braised Mung Bean (vegan) — 126 cal per 4.16oz serving", response)
+        self.assertNotIn("Serving Size:", response)
+        self.assertNotIn("Southwestern Corn Chowder", response)
 
     def test_on_message_resolves_sort_by_hall_followup_to_previous_halal_query(self):
         docs = [
