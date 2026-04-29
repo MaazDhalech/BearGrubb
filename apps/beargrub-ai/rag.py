@@ -109,7 +109,7 @@ def embed_menu(
         return InMemoryMenuStore(menu_docs)
 
     try:
-        from langchain.schema import Document
+        from langchain_core.documents import Document
         from langchain_community.vectorstores import Chroma
         from langchain_openai import OpenAIEmbeddings
     except ImportError:
@@ -130,8 +130,6 @@ def embed_menu(
             persist_directory=persist_directory,
             collection_name=collection_name,
         )
-        if hasattr(db, "persist"):
-            db.persist()
         return db
     except Exception:
         logger.exception("Failed to build Chroma menu store; using in-memory menu store")
@@ -141,7 +139,7 @@ def embed_menu(
 def retrieve(db: Any, query: str, n_results: int = 8) -> list[Any]:
     """Extract filters from query, then semantic search with those filters."""
     filters = extract_filters(query)
-    return db.similarity_search(query, k=n_results, filter=filters)
+    return db.similarity_search(query, k=n_results, filter=vector_filter(filters))
 
 
 def is_stale(db: Any) -> bool:
@@ -239,7 +237,16 @@ def list_documents(db: Any, limit: int = 1000) -> list[MenuDocument]:
 def _matches_filter(metadata: dict[str, Any], filters: dict[str, Any] | None) -> bool:
     if not filters:
         return True
+    if "$and" in filters:
+        return all(_matches_filter(metadata, child_filter) for child_filter in filters["$and"])
     return all(metadata.get(key) == value for key, value in filters.items())
+
+
+def vector_filter(filters: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Return a Chroma-compatible filter while keeping the in-memory store compatible."""
+    if not filters or len(filters) <= 1:
+        return filters
+    return {"$and": [{key: value} for key, value in filters.items()]}
 
 
 def _terms(text: str) -> set[str]:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
 from datetime import date, timedelta
 from pathlib import Path
@@ -9,6 +10,14 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 import rag
+
+
+class FakeEmbeddings:
+    def embed_documents(self, texts):
+        return [[float(len(text) % 7), 1.0, 0.0] for text in texts]
+
+    def embed_query(self, text):
+        return [float(len(text) % 7), 1.0, 0.0]
 
 
 def menu_item(**overrides):
@@ -115,6 +124,54 @@ class RagTests(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].metadata["short_name"], "Vegan Lentil Soup")
         self.assertEqual(results[0].metadata["dining_hall"], "Cafe 3")
+
+    def test_vector_filter_uses_chroma_and_syntax_for_multiple_filters(self):
+        filters = rag.extract_filters("whats halal for lunch today at cafe 3")
+
+        self.assertEqual(
+            rag.vector_filter(filters),
+            {
+                "$and": [
+                    {"dining_hall": "Cafe 3"},
+                    {"halal_status": "HALAL"},
+                    {"meal_period": "Lunch"},
+                ]
+            },
+        )
+
+    def test_embed_menu_uses_chroma_when_available_and_filters_results(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db = rag.embed_menu(
+                [
+                    menu_item(
+                        dining_hall="Cafe 3",
+                        meal_period="Lunch",
+                        short_name="Cafe 3 Halal Chicken",
+                        ingredients="Chicken HALAL",
+                    ),
+                    menu_item(
+                        dining_hall="Foothill",
+                        meal_period="Lunch",
+                        short_name="Foothill Halal Chicken",
+                        ingredients="Chicken HALAL",
+                    ),
+                    menu_item(
+                        dining_hall="Cafe 3",
+                        meal_period="Dinner",
+                        short_name="Cafe 3 Dinner Chicken",
+                        ingredients="Chicken HALAL",
+                    ),
+                ],
+                embeddings=FakeEmbeddings(),
+                persist_directory=temp_dir,
+                collection_name="test_menu",
+            )
+
+            self.assertNotIsInstance(db, rag.InMemoryMenuStore)
+            results = rag.retrieve(db, "whats halal for lunch today at cafe 3", n_results=5)
+
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].metadata["short_name"], "Cafe 3 Halal Chicken")
 
     def test_retrieve_all_dining_halls_query_does_not_apply_hall_filter(self):
         db = rag.embed_menu(
