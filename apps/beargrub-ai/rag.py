@@ -62,10 +62,16 @@ def extract_filters(query: str) -> dict[str, Any] | None:
 
     hall_map = {
         "crossroads": "Crossroads",
+        "cross roads": "Crossroads",
+        "café 3": "Cafe 3",
         "cafe 3": "Cafe 3",
+        "cafe three": "Cafe 3",
         "cafe3": "Cafe 3",
+        "ckc": "Clark Kerr",
+        "clark kerr campus": "Clark Kerr",
         "clark kerr": "Clark Kerr",
         "clark": "Clark Kerr",
+        "foothills": "Foothill",
         "foothill": "Foothill",
     }
     for key, val in hall_map.items():

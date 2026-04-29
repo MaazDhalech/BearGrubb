@@ -284,6 +284,70 @@ class AppTests(unittest.TestCase):
         self.assertNotIn("Serving Size:", response)
         self.assertNotIn("Southwestern Corn Chowder", response)
 
+    def test_on_message_formats_retrieved_halal_options_for_each_dining_hall(self):
+        cases = [
+            ("crossroads", "Crossroads", "Dinner"),
+            ("cafe 3", "Cafe 3", "Lunch"),
+            ("foothill", "Foothill", "Lunch"),
+            ("clark kerr", "Clark Kerr", "Lunch"),
+        ]
+
+        for query_hall, display_hall, meal in cases:
+            with self.subTest(hall=display_hall, meal=meal):
+                self.app.cl.user_session.values.clear()
+                docs = [
+                    menu_doc(
+                        f"{display_hall} Halal Chicken",
+                        dining_hall=display_hall,
+                        meal_period=meal,
+                        ingredients="Chicken HALAL",
+                        calories=150,
+                        serving_size=4,
+                        serving_size_unit="oz",
+                    ),
+                    menu_doc(
+                        f"{display_hall} Lentil Stew",
+                        dining_hall=display_hall,
+                        meal_period=meal,
+                        is_vegan=True,
+                        is_vegetarian=True,
+                        calories=120,
+                        serving_size=5,
+                        serving_size_unit="oz",
+                    ),
+                    menu_doc(
+                        f"{display_hall} Soup",
+                        dining_hall=display_hall,
+                        meal_period=meal,
+                        category="Soup",
+                        is_vegan=True,
+                        is_vegetarian=True,
+                        calories=90,
+                        serving_size=8,
+                        serving_size_unit="oz",
+                    ),
+                ]
+                openai_mock = Mock()
+                prompt = f"whats halal for {meal.lower()} today at {query_hall}"
+
+                with (
+                    patch.object(self.app, "ensure_fresh_menu", Mock(return_value=object())),
+                    patch.object(self.app, "list_documents", Mock(return_value=[])),
+                    patch.object(self.app, "retrieve", Mock(return_value=docs)),
+                    patch.object(self.app, "get_openai_client", openai_mock),
+                ):
+                    asyncio.run(self.app.on_message(SimpleNamespace(content=prompt)))
+
+                openai_mock.assert_not_called()
+                response = self.app.cl.user_session.get("history")[-1]["content"]
+                self.assertIn(f"Here are the halal options at {display_hall} for {meal.lower()}", response)
+                self.assertIn("Proteins:", response)
+                self.assertIn(f"✅ {display_hall} Halal Chicken — 150 cal per 4oz serving", response)
+                self.assertIn("Vegan/Vegetarian (halal):", response)
+                self.assertIn(f"{display_hall} Lentil Stew (vegan) — 120 cal per 5oz serving", response)
+                self.assertNotIn("Serving Size:", response)
+                self.assertNotIn(f"{display_hall} Soup", response)
+
     def test_on_message_resolves_sort_by_hall_followup_to_previous_halal_query(self):
         docs = [
             menu_doc("Halal Rosemary Chicken"),

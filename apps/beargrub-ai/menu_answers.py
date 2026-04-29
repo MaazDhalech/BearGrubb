@@ -9,9 +9,16 @@ HALAL_NOTE = "Note: classifications are ingredient-based and intended as a guide
 
 HALL_ALIASES = {
     "crossroads": "Crossroads",
+    "cross roads": "Crossroads",
+    "café 3": "Cafe 3",
     "cafe 3": "Cafe 3",
+    "cafe three": "Cafe 3",
     "cafe3": "Cafe 3",
+    "ckc": "Clark Kerr",
+    "clark kerr campus": "Clark Kerr",
     "clark kerr": "Clark Kerr",
+    "clark": "Clark Kerr",
+    "foothills": "Foothill",
     "foothill": "Foothill",
 }
 
@@ -853,7 +860,7 @@ def parse_meal(content: str) -> str | None:
 
 
 def default_meal(content: str) -> str | None:
-    return "Dinner" if re.search(r"\b(today|now|available|options|meal|meals|anything|what's)\b", content.lower()) else None
+    return "Dinner" if re.search(r"\b(today|now|available|options|meal|meals|anything|what's|whats)\b", content.lower()) else None
 
 
 def requested_dietary_filters(content: str) -> list[str]:
