@@ -7,7 +7,7 @@ from datetime import date
 from typing import Any
 
 from classifier import classify_all, load_cache
-from config import OPENAI_MODEL
+from config import OPENAI_MODEL, POSTHOG_API_KEY
 from mcp_tools import MCP_TOOLS, handle_tool_call
 from prompts import SYSTEM_PROMPT
 from rag import embed_menu, is_stale, retrieve
@@ -20,6 +20,11 @@ try:
     import chainlit as cl
 except ImportError:
     cl = None
+
+try:
+    import posthog
+except ImportError:
+    posthog = None
 
 
 class _FallbackUserSession:
@@ -68,6 +73,39 @@ if cl is None:
 client = None
 db = None
 cache: dict[str, dict[str, Any]] = {}
+
+
+def configure_posthog() -> None:
+    if posthog is not None and POSTHOG_API_KEY:
+        posthog.api_key = POSTHOG_API_KEY
+
+
+def get_distinct_id() -> str | None:
+    distinct_id = cl.user_session.get("id")
+    return str(distinct_id) if distinct_id else None
+
+
+def capture_event(event: str, properties: dict[str, Any] | None = None) -> bool:
+    if posthog is None:
+        return False
+    distinct_id = get_distinct_id()
+    if not distinct_id:
+        logger.info("Skipping PostHog event %s because Chainlit session id is unavailable", event)
+        return False
+    safe_properties = sanitize_event_properties(properties or {})
+    posthog.capture(distinct_id, event, safe_properties)
+    return True
+
+
+def sanitize_event_properties(properties: dict[str, Any]) -> dict[str, Any]:
+    blocked_keys = {"content", "message", "query", "prompt", "response", "history", "context"}
+    sanitized: dict[str, Any] = {}
+    for key, value in properties.items():
+        if key.lower() in blocked_keys:
+            continue
+        if isinstance(value, str | int | float | bool) or value is None:
+            sanitized[key] = value
+    return sanitized
 
 
 def get_openai_client():
@@ -213,6 +251,7 @@ def run_tool_calls(tool_calls: list[dict[str, str]]) -> None:
 async def on_start():
     cl.user_session.set("history", [])
     cl.user_session.set("halal_disclaimer_shown", False)
+    capture_event("session_started")
 
 
 @cl.on_message
@@ -222,6 +261,14 @@ async def on_message(message):
     menu_date = str(date.today())
     history = cl.user_session.get("history", [])
     disclaimer_needed = should_show_halal_disclaimer(user_content)
+    capture_event(
+        "message_received",
+        {
+            "message_length": len(user_content),
+            "halal_query": is_halal_query(user_content),
+            "history_length": len(history),
+        },
+    )
 
     active_db = ensure_fresh_menu(menu_date)
     chunks = retrieve(active_db, user_content)
@@ -261,9 +308,18 @@ async def on_message(message):
     cl.user_session.set("history", append_history(history, user_content, msg.content))
     if disclaimer_needed:
         cl.user_session.set("halal_disclaimer_shown", True)
+    capture_event(
+        "response_sent",
+        {
+            "response_length": len(msg.content),
+            "tool_call_count": len(tool_calls),
+            "halal_disclaimer_shown": bool(disclaimer_needed),
+        },
+    )
 
 
 if os.getenv("BEARGRUB_AUTO_INIT", "1") == "1":
+    configure_posthog()
     try:
         init()
     except Exception:

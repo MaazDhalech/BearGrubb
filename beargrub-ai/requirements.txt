@@ -1,0 +1,9 @@
+chainlit
+langchain
+langchain-openai
+langchain-community
+chromadb
+openai
+requests
+python-dotenv
+posthog

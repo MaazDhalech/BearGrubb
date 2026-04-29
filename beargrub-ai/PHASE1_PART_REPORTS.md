@@ -127,3 +127,28 @@
 
 ### Next part
 - Add PostHog session/event handling, `requirements.txt`, final Phase 1 verification tests, and run the full suite before the final Phase 1 commit.
+
+## Part 7 - PostHog, Dependencies, And Final Phase 1 Metadata
+
+### What was built
+- Added PostHog configuration and event capture helpers in `app.py`.
+- Added `session_started`, `message_received`, and `response_sent` events using `cl.user_session.get('id')` as the distinct ID.
+- Added telemetry sanitization so raw user messages, prompts, responses, history, and retrieved context are not sent as analytics properties.
+- Added `requirements.txt` for Phase 1 local runtime dependencies.
+- Added `.env.example` with empty placeholders for OpenAI and PostHog keys plus `BEARGRUB_AUTO_INIT`.
+- Added `VULNERABILITY_LOG.md` consolidating open Phase 1 risks and deferred Phase 2 hardening.
+- Added tests for PostHog distinct ID usage, no-anonymous fallback, telemetry sanitization, session event capture, safe message/response metadata, requirements coverage, env placeholders, and vulnerability log coverage.
+
+### Deviations from the spec and why
+- Omitted `boto3` from Phase 1 `requirements.txt` even though it appears in the full spec dependency list. The user explicitly restricted this build to Phase 1 and asked not to touch AWS; boto3 should be introduced with the Phase 2 S3 work.
+- Added `.env.example` instead of a real `.env`. This documents required keys without committing secrets.
+- PostHog message events intentionally exclude raw query/response text. This is a privacy-preserving telemetry choice and reduces accidental leakage of sensitive user messages.
+
+### Updated vulnerability log
+- Analytics can leak sensitive user content if raw fields are sent. Mitigation: `sanitize_event_properties()` strips text-bearing keys and tests enforce safe event payloads.
+- Missing Chainlit session IDs would make PostHog attribution ambiguous. Mitigation: events are skipped rather than using `"anonymous"`, matching the spec's requirement to use the session ID.
+- Local runtime dependencies are not installed in this workspace. Mitigation: dependencies are declared in `requirements.txt`, while tests continue to use mocks/fallbacks without network installs.
+- No AWS/Docker work was performed in Phase 1.
+
+### Next part
+- Phase 1 implementation is complete. Next work should be final manual runtime validation with installed dependencies, followed by Phase 2 only when Docker/AWS work is explicitly allowed.
