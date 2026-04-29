@@ -4,3 +4,8 @@
 .DS_Store
 node_modules/
 package-lock.json
+/CalInclusiveDining/
+__pycache__/
+*.pyc
+.env
+/chroma_db/

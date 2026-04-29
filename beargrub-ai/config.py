@@ -1,0 +1,32 @@
+from __future__ import annotations
+
+import os
+
+try:
+    from dotenv import load_dotenv
+except ImportError:  # Dependencies are installed by requirements.txt in real local use.
+    load_dotenv = None
+
+if load_dotenv:
+    load_dotenv()
+
+DINING_HALLS = {
+    "Crossroads": "crossroads",
+    "Cafe 3": "cafe3",
+    "Clark Kerr": "clark-kerr",
+    "Foothill": "foothill",
+}
+
+DINING_MENU_ENDPOINT = "https://dining.berkeley.edu/wp-json/bc-dining/v1/dining-menu"
+
+COLLECTION_NAME = "beargrub_menu"
+CHROMA_PATH = "./chroma_db"
+CACHE_PATH = "./classification_cache.json"
+
+OPENAI_MODEL = "gpt-4o-mini"
+EMBEDDING_MODEL = "text-embedding-3-small"
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+POSTHOG_API_KEY = os.getenv("POSTHOG_API_KEY")
+
+REQUEST_TIMEOUT_SECONDS = 15
