@@ -137,6 +137,11 @@ class MenuItem:
 
 def build_pre_context_response(content: str) -> RuleBasedResponse | None:
     q = content.lower()
+    if re.fullmatch(r"\s*(hi|hello|hey|yo|sup|salam|assalamu alaikum)\s*[!.?]*\s*", q):
+        return RuleBasedResponse(
+            "Hi — I can help with Berkeley dining menus, halal status, dietary filters, allergens, and nutrition for today's dining hall options.",
+            guardrail="greeting",
+        )
     if re.search(r"\bnext\s+week\b|\bfuture\b", q):
         return RuleBasedResponse(
             "I only have access to today's menu data. I'm not able to show future menus.",

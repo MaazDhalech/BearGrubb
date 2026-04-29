@@ -239,6 +239,10 @@ class MenuAnswerTests(unittest.TestCase):
         self.assertIn("All other items on tonight's menu do not list tree nuts", allergy_response.content)
 
     def test_out_of_scope_and_hours_responses_do_not_need_menu_context(self):
+        self.assertIn(
+            "Berkeley dining menus",
+            menu_answers.build_pre_context_response("hi").content,
+        )
         self.assertEqual(
             menu_answers.build_pre_context_response("Can you recommend a good recipe using chicken?").content,
             "I can only help with what's available at Berkeley dining halls today. "
