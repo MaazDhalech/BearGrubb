@@ -41,6 +41,7 @@ class PosthogTests(unittest.TestCase):
 
     def test_capture_event_uses_chainlit_session_id(self):
         fake_posthog = Mock()
+        fake_posthog.api_key = "test-key"
         self.app.posthog = fake_posthog
         self.app.cl.user_session.set("id", "session-123")
 
@@ -48,14 +49,26 @@ class PosthogTests(unittest.TestCase):
 
         self.assertTrue(captured)
         fake_posthog.capture.assert_called_once_with(
-            "session-123",
-            "session_started",
-            {"message_length": 12},
+            event="session_started",
+            distinct_id="session-123",
+            properties={"message_length": 12},
         )
 
     def test_capture_event_skips_without_session_id_instead_of_using_anonymous(self):
         fake_posthog = Mock()
+        fake_posthog.api_key = "test-key"
         self.app.posthog = fake_posthog
+
+        captured = self.app.capture_event("session_started")
+
+        self.assertFalse(captured)
+        fake_posthog.capture.assert_not_called()
+
+    def test_capture_event_skips_when_posthog_has_no_api_key(self):
+        fake_posthog = Mock()
+        fake_posthog.api_key = None
+        self.app.posthog = fake_posthog
+        self.app.cl.user_session.set("id", "session-123")
 
         captured = self.app.capture_event("session_started")
 
@@ -81,14 +94,20 @@ class PosthogTests(unittest.TestCase):
     def test_on_start_captures_session_started(self):
         self.app.cl.user_session.set("id", "session-456")
         self.app.posthog = Mock()
+        self.app.posthog.api_key = "test-key"
 
         asyncio.run(self.app.on_start())
 
-        self.app.posthog.capture.assert_called_once_with("session-456", "session_started", {})
+        self.app.posthog.capture.assert_called_once_with(
+            event="session_started",
+            distinct_id="session-456",
+            properties={},
+        )
 
     def test_on_message_captures_only_safe_message_and_response_metadata(self):
         self.app.cl.user_session.set("id", "session-789")
         self.app.posthog = Mock()
+        self.app.posthog.api_key = "test-key"
         menu_doc = rag.MenuDocument("Item: Halal Chicken", {"date": "2026-04-29"})
         fake_client = SimpleNamespace(
             chat=SimpleNamespace(
@@ -104,16 +123,20 @@ class PosthogTests(unittest.TestCase):
             asyncio.run(self.app.on_message(SimpleNamespace(content="Is chicken halal?")))
 
         calls = self.app.posthog.capture.call_args_list
-        self.assertEqual([call.args[1] for call in calls], ["message_received", "response_sent"])
+        self.assertEqual(
+            [call.kwargs["event"] for call in calls],
+            ["message_received", "response_sent"],
+        )
         for call in calls:
-            properties = call.args[2]
+            properties = call.kwargs["properties"]
             self.assertNotIn("message", properties)
             self.assertNotIn("query", properties)
             self.assertNotIn("response", properties)
             self.assertNotIn("context", properties)
-        self.assertEqual(calls[0].args[2]["message_length"], len("Is chicken halal?"))
-        self.assertTrue(calls[0].args[2]["halal_query"])
-        self.assertEqual(calls[1].args[2]["response_length"], len("Answer text"))
+            self.assertEqual(call.kwargs["distinct_id"], "session-789")
+        self.assertEqual(calls[0].kwargs["properties"]["message_length"], len("Is chicken halal?"))
+        self.assertTrue(calls[0].kwargs["properties"]["halal_query"])
+        self.assertEqual(calls[1].kwargs["properties"]["response_length"], len("Answer text"))
 
 
 if __name__ == "__main__":

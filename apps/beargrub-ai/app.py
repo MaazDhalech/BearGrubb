@@ -92,12 +92,14 @@ def get_distinct_id() -> str | None:
 def capture_event(event: str, properties: dict[str, Any] | None = None) -> bool:
     if posthog is None:
         return False
+    if not (POSTHOG_API_KEY or getattr(posthog, "api_key", None)):
+        return False
     distinct_id = get_distinct_id()
     if not distinct_id:
         logger.info("Skipping PostHog event %s because Chainlit session id is unavailable", event)
         return False
     safe_properties = sanitize_event_properties(properties or {})
-    posthog.capture(distinct_id, event, safe_properties)
+    posthog.capture(event=event, distinct_id=distinct_id, properties=safe_properties)
     return True
 
 
