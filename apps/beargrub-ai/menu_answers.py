@@ -40,6 +40,17 @@ DEFAULT_EXCLUDED_CATEGORIES = {
     "condiment",
 }
 
+DEFAULT_EXCLUDED_ITEM_PHRASES = {
+    "chive",
+    "chives",
+    "curly parsley",
+    "italian parsley",
+    "nutritional yeast",
+    "pumpkin seeds",
+    "shredded vegan mozzarella cheese",
+    "sour cream",
+}
+
 STOPWORDS = {
     "a",
     "all",
@@ -56,12 +67,14 @@ STOPWORDS = {
     "from",
     "hall",
     "halal",
+    "had",
     "have",
     "how",
     "i",
     "in",
     "is",
     "me",
+    "many",
     "menu",
     "much",
     "of",
@@ -72,6 +85,7 @@ STOPWORDS = {
     "the",
     "there",
     "tonight",
+    "today",
     "vegan",
     "vegetarian",
     "what",
@@ -176,6 +190,7 @@ def build_menu_response(
         build_crossroads_lunch_response,
         build_pork_response,
         build_allergy_response,
+        build_item_availability_response,
         build_halal_status_response,
         build_optimization_response,
         build_portion_calorie_response,
@@ -201,6 +216,38 @@ def build_crossroads_lunch_response(
             guardrail="unsupported_meal_period",
         )
     return None
+
+
+def build_item_availability_response(
+    content: str,
+    items: list[MenuItem],
+    menu_date: str,
+    include_halal_disclaimer: bool,
+) -> RuleBasedResponse | None:
+    q = content.lower().strip()
+    if not re.match(r"^(is|are)\s+there\b", q):
+        return None
+    if re.search(r"\b(anything|options?|meals?|can i eat)\b", q):
+        return None
+    item_terms = item_query_terms(content)
+    if not item_terms:
+        return None
+    hall = parse_hall(content)
+    meal = parse_meal(content) or default_meal(content)
+    scoped = filter_scope(items, hall=hall, meal=meal)
+    match = best_item_match(content, scoped, strict=True)
+    requested_name = clean_requested_item_name(content)
+    location = hall or default_hall(scoped or items)
+    if match is None:
+        return RuleBasedResponse(
+            f"I don't see {requested_name} on today's menu at {location}.",
+            guardrail="item_availability",
+        )
+    meal_text = f" for {match.meal.lower()}" if match.meal else ""
+    return RuleBasedResponse(
+        f"Yes — {match.name} is on today's menu at {match.hall}{meal_text}.",
+        guardrail="item_availability",
+    )
 
 
 def build_dietary_list_response(
@@ -630,7 +677,12 @@ def looks_like_option_request(content: str) -> bool:
 
 def is_halal_status_question(content: str) -> bool:
     q = content.lower().strip()
-    return "halal" in q and bool(re.match(r"^(is|are)\b", q)) and "anything" not in q
+    return (
+        "halal" in q
+        and bool(re.match(r"^(is|are)\b", q))
+        and "anything" not in q
+        and not re.match(r"^(is|are)\s+there\b", q)
+    )
 
 
 def is_nutrition_question(content: str) -> bool:
@@ -711,7 +763,13 @@ def filter_default_menu_items(items: list[MenuItem], content: str) -> list[MenuI
 
 def is_default_excluded(item: MenuItem) -> bool:
     haystack = f"{item.category} {item.name}".lower()
-    return any(term in haystack for term in DEFAULT_EXCLUDED_CATEGORIES)
+    if any(term in haystack for term in DEFAULT_EXCLUDED_CATEGORIES):
+        return True
+    if item.serving_size is not None and item.serving_size <= 0.5:
+        return True
+    if item.calories is not None and item.calories <= 10:
+        return True
+    return any(phrase in item.name.lower() for phrase in DEFAULT_EXCLUDED_ITEM_PHRASES)
 
 
 def unique_items(items: list[MenuItem]) -> list[MenuItem]:
@@ -737,7 +795,7 @@ def format_halal_options(
     meal: str | None,
     include_halal_disclaimer: bool,
 ) -> str:
-    across_all = hall is None and ("all dining halls" in content.lower() or "across" in content.lower())
+    across_all = hall is None and len({item.hall for item in items if item.hall}) > 1
     if across_all:
         lines: list[str] = ["Halal options across all dining halls tonight:"]
         for hall_name in sorted({item.hall for item in items}):
@@ -929,25 +987,45 @@ def has_allergen(item: MenuItem, allergen: str) -> bool:
     return allergen in haystack
 
 
-def best_item_match(content: str, items: list[MenuItem]) -> MenuItem | None:
+def best_item_match(content: str, items: list[MenuItem], strict: bool = False) -> MenuItem | None:
     query_terms = item_query_terms(content)
     if not query_terms:
         return None
 
-    def score(item: MenuItem) -> tuple[int, int, int]:
+    def score(item: MenuItem) -> tuple[int, int, int, int]:
         name_terms = terms(item.name)
         overlap = len(query_terms & name_terms)
         phrase_bonus = 5 if item.name.lower() in content.lower() else 0
         ingredient_bonus = 1 if query_terms & terms(item.ingredients) else 0
-        return overlap + phrase_bonus + ingredient_bonus, overlap, len(name_terms)
+        missing_terms = len(query_terms - name_terms - terms(item.ingredients))
+        return overlap + phrase_bonus + ingredient_bonus, overlap, -missing_terms, len(name_terms)
 
     best = sorted(items, key=score, reverse=True)[0]
     best_score = score(best)
-    return best if best_score[0] > 0 and best_score[1] > 0 else None
+    if best_score[0] <= 0 or best_score[1] <= 0:
+        return None
+    if strict and best_score[2] < 0:
+        return None
+    if len(query_terms) >= 3 and best_score[1] / len(query_terms) < 0.67:
+        return None
+    return best
 
 
 def item_query_terms(content: str) -> set[str]:
-    return {term for term in terms(content) if term not in STOPWORDS and not term.isdigit()}
+    return {
+        term
+        for term in terms(content)
+        if term not in STOPWORDS
+        and not term.isdigit()
+        and not re.fullmatch(r"\d+(?:\.\d+)?oz", term)
+    }
+
+
+def clean_requested_item_name(content: str) -> str:
+    cleaned = re.sub(r"^\s*(is|are)\s+there\s+", "", content, flags=re.I)
+    cleaned = re.sub(r"\b(at|for)\s+(crossroads|cafe\s*3|clark\s+kerr|foothill|brunch|lunch|dinner|today|tonight)\b.*$", "", cleaned, flags=re.I)
+    cleaned = cleaned.strip(" ?!.")
+    return cleaned or "that item"
 
 
 def terms(text: str) -> set[str]:

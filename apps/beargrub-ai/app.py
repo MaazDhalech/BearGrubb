@@ -236,6 +236,34 @@ def should_show_halal_disclaimer(content: str) -> bool:
     return is_halal_query(content) and not cl.user_session.get("halal_disclaimer_shown", False)
 
 
+def resolve_followup_content(user_content: str, history: list[dict[str, str]]) -> str:
+    q = user_content.lower().strip()
+    if not re.search(r"\b(sort|group|organize)\b.*\b(dining hall|hall)\b", q):
+        return user_content
+    previous_user_messages = [
+        message.get("content", "")
+        for message in reversed(history)
+        if message.get("role") == "user"
+    ]
+    previous_dietary_query = next(
+        (
+            message
+            for message in previous_user_messages
+            if any(term in message.lower() for term in ["halal", "vegan", "vegetarian", "veggie"])
+        ),
+        "",
+    )
+    if not previous_dietary_query:
+        return user_content
+    if "halal" in previous_dietary_query.lower():
+        return "show halal options across all dining halls for dinner grouped by dining hall"
+    if "vegan" in previous_dietary_query.lower():
+        return "show vegan options across all dining halls for dinner grouped by dining hall"
+    if "vegetarian" in previous_dietary_query.lower() or "veggie" in previous_dietary_query.lower():
+        return "show vegetarian options across all dining halls for dinner grouped by dining hall"
+    return user_content
+
+
 def tokenize(content: str) -> set[str]:
     return set(re.findall(r"[a-z0-9]+", content.lower()))
 
@@ -480,17 +508,18 @@ async def on_message(message):
     user_content = message.content
     menu_date = str(date.today())
     history = cl.user_session.get("history", [])
-    disclaimer_needed = should_show_halal_disclaimer(user_content)
+    effective_user_content = resolve_followup_content(user_content, history)
+    disclaimer_needed = should_show_halal_disclaimer(effective_user_content)
     capture_event(
         "message_received",
         {
             "message_length": len(user_content),
-            "halal_query": is_halal_query(user_content),
+            "halal_query": is_halal_query(effective_user_content),
             "history_length": len(history),
         },
     )
 
-    pre_context_response = build_pre_context_response(user_content)
+    pre_context_response = build_pre_context_response(effective_user_content)
     if pre_context_response:
         await send_static_response(
             user_content,
@@ -501,7 +530,7 @@ async def on_message(message):
         )
         return
 
-    unsupported_date_response = build_unsupported_date_range_response(user_content, menu_date)
+    unsupported_date_response = build_unsupported_date_range_response(effective_user_content, menu_date)
     if unsupported_date_response:
         await send_static_response(
             user_content,
@@ -515,7 +544,7 @@ async def on_message(message):
     all_docs = list_documents(active_db)
 
     menu_response = build_menu_response(
-        user_content,
+        effective_user_content,
         all_docs,
         menu_date,
         include_halal_disclaimer=disclaimer_needed,
@@ -530,10 +559,10 @@ async def on_message(message):
         )
         return
 
-    chunks = retrieve(active_db, user_content, n_results=retrieval_limit(user_content))
+    chunks = retrieve(active_db, effective_user_content, n_results=retrieval_limit(effective_user_content))
 
     dietary_options_response = build_dietary_options_response(
-        user_content,
+        effective_user_content,
         chunks,
         menu_date,
         include_halal_disclaimer=disclaimer_needed,
@@ -549,9 +578,9 @@ async def on_message(message):
         )
         return
 
-    if not chunks and not is_refresh_request(user_content):
+    if not chunks and not is_refresh_request(effective_user_content):
         response_content, disclaimer_used = build_no_context_response(
-            user_content,
+            effective_user_content,
             menu_date,
             include_halal_disclaimer=disclaimer_needed,
         )
@@ -566,7 +595,7 @@ async def on_message(message):
 
     context = build_context(chunks)
     messages = build_messages(
-        user_content,
+        effective_user_content,
         context,
         history,
         menu_date=menu_date,
@@ -580,10 +609,10 @@ async def on_message(message):
 
     if tool_calls:
         run_tool_calls(tool_calls)
-        refreshed_chunks = retrieve(db, user_content)
+        refreshed_chunks = retrieve(db, effective_user_content)
         refreshed_context = build_context(refreshed_chunks)
         refreshed_messages = build_messages(
-            user_content,
+            effective_user_content,
             refreshed_context,
             history,
             menu_date=menu_date,

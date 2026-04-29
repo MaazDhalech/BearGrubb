@@ -222,6 +222,33 @@ class AppTests(unittest.TestCase):
         self.assertNotIn("NOT_HALAL", response)
         self.assertTrue(self.app.cl.user_session.get("halal_disclaimer_shown"))
 
+    def test_on_message_resolves_sort_by_hall_followup_to_previous_halal_query(self):
+        docs = [
+            menu_doc("Halal Rosemary Chicken"),
+            menu_doc("Halal Ground Beef", dining_hall="Clark Kerr"),
+        ]
+        self.app.cl.user_session.set(
+            "history",
+            [
+                {"role": "user", "content": "give me halal meal options for today"},
+                {"role": "assistant", "content": "Halal options across all dining halls tonight:"},
+            ],
+        )
+        openai_mock = Mock()
+
+        with (
+            patch.object(self.app, "ensure_fresh_menu", Mock(return_value=object())),
+            patch.object(self.app, "list_documents", Mock(return_value=docs)),
+            patch.object(self.app, "get_openai_client", openai_mock),
+        ):
+            asyncio.run(self.app.on_message(SimpleNamespace(content="sort by dining hall")))
+
+        openai_mock.assert_not_called()
+        response = self.app.cl.user_session.get("history")[-1]["content"]
+        self.assertIn("Halal options across all dining halls tonight:", response)
+        self.assertIn("Crossroads:", response)
+        self.assertIn("Clark Kerr:", response)
+
     def test_on_message_empty_retrieval_returns_no_context_without_model_call(self):
         openai_mock = Mock()
 

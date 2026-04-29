@@ -107,6 +107,24 @@ class MenuAnswerTests(unittest.TestCase):
             "Would you like to see vegan options there instead?",
         )
 
+    def test_halal_options_without_hall_are_grouped_by_dining_hall(self):
+        docs = [
+            doc("Halal Rosemary Chicken", ingredients="Chicken HALAL"),
+            doc("Halal Ground Beef", dining_hall="Clark Kerr", ingredients="Beef HALAL"),
+            doc("Braised Mung Bean", dining_hall="Clark Kerr", is_vegan=True, is_vegetarian=True),
+        ]
+
+        response = menu_answers.build_menu_response(
+            "give me halal meal options for today",
+            docs,
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("Halal options across all dining halls tonight:", response.content)
+        self.assertIn("Crossroads:", response.content)
+        self.assertIn("Clark Kerr:", response.content)
+
     def test_high_protein_halal_options_are_sorted_by_protein(self):
         docs = [
             doc("Halal Beef Fajitas", ingredients="Beef HALAL", protein=12.83, calories=94, serving_size=3.18),
@@ -183,6 +201,19 @@ class MenuAnswerTests(unittest.TestCase):
             response.content,
             "✅ HALAL — contains 'Chicken Thigh Boneless HALAL' explicitly labeled in ingredients. "
             "Note: contains oyster (shellfish).",
+        )
+
+    def test_is_there_unknown_item_does_not_fuzzy_match_wrong_chicken(self):
+        response = menu_answers.build_menu_response(
+            "is there Halal BBQ Roasted Chicken",
+            [doc("Halal North African-style Roasted Chicken", ingredients="Chicken HALAL")],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertEqual(
+            response.content,
+            "I don't see Halal BBQ Roasted Chicken on today's menu at Crossroads.",
         )
 
     def test_nutrition_and_portion_calculation_use_serving_metadata(self):
