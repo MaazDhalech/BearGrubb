@@ -203,6 +203,8 @@ def build_pre_context_response(content: str) -> RuleBasedResponse | None:
         hall = parse_hall(content)
         if hall == "Crossroads" or hall is None:
             return RuleBasedResponse(CROSSROADS_HOURS, guardrail="hours")
+    if looks_like_meal_plan_request(content):
+        return None
     for pattern, response, guardrail in OUT_OF_SCOPE_PATTERNS:
         if pattern.search(content):
             return RuleBasedResponse(response, guardrail=guardrail)
@@ -225,6 +227,7 @@ def build_menu_response(
         build_pork_response,
         build_allergy_response,
         build_item_availability_response,
+        build_meal_plan_response,
         build_optimization_response,
         build_combined_halal_and_nutrition_response,
         build_multi_item_nutrition_response,
@@ -443,6 +446,109 @@ def build_optimization_response(
         )
 
     return None
+
+
+def build_meal_plan_response(
+    content: str,
+    items: list[MenuItem],
+    menu_date: str,
+    include_halal_disclaimer: bool,
+) -> RuleBasedResponse | None:
+    if not looks_like_meal_plan_request(content):
+        return None
+
+    calorie_limit = extract_calorie_limit(content)
+    protein_target = extract_protein_target(content)
+    if calorie_limit is None or protein_target is None:
+        return RuleBasedResponse(
+            "Tell me a calorie cap and protein target and I can build a meal plan from today's Berkeley Dining menu.",
+            guardrail="meal_plan_missing_targets",
+        )
+
+    hall = parse_hall(content)
+    meal = parse_meal(content)
+    filters = requested_dietary_filters(content)
+    location = hall or "all dining halls"
+    meal_text = f" for {meal.lower()}" if meal else " for today"
+    scope_items = filter_scope(items, hall=hall, meal=meal)
+    if filters:
+        scope_items = [item for item in scope_items if matches_dietary_filters(item, filters)]
+    else:
+        scope_items = [item for item in scope_items if item.halal_status != "NOT_HALAL"]
+    scope_items = filter_default_menu_items(unique_items(scope_items), content)
+    if filters == ["halal"]:
+        scope_items = apply_default_optimization_scope(content, scope_items, filters)
+
+    candidates = meal_plan_candidates(scope_items)
+    if not candidates:
+        label = f" {dietary_label(filters)}" if filters else ""
+        return RuleBasedResponse(
+            f"I couldn't find enough{label} high-protein menu items at {location}{meal_text} to build a meal plan.",
+            guardrail="meal_plan_no_candidates",
+        )
+
+    selected = choose_meal_plan(candidates, calorie_limit, protein_target)
+    if not selected:
+        return RuleBasedResponse(
+            f"I couldn't build a plan under {calorie_limit} calories with today's menu data. "
+            "Try a higher calorie cap or a lower protein target.",
+            guardrail="meal_plan_impossible",
+        )
+
+    total_calories = sum(entry["item"].calories * entry["servings"] for entry in selected)
+    total_protein = sum(entry["item"].protein * entry["servings"] for entry in selected)
+    total_fat = sum((entry["item"].fat or 0) * entry["servings"] for entry in selected)
+    total_carbs = sum((entry["item"].carbs or 0) * entry["servings"] for entry in selected)
+
+    reached_target = total_protein >= protein_target and total_calories <= calorie_limit
+    diet_label = f"{dietary_label(filters)} " if filters else ""
+    if reached_target:
+        lines = [
+            f"Here is a {diet_label}meal plan from {location}{meal_text} under {calorie_limit} calories hitting {protein_target}g protein:",
+            "",
+        ]
+    else:
+        lines = [
+            f"Closest {diet_label}meal plan I can build from {location}{meal_text} under {calorie_limit} calories:",
+            "",
+        ]
+
+    for entry in selected:
+        item = entry["item"]
+        servings = entry["servings"]
+        calories = item.calories * servings
+        protein = item.protein * servings
+        serving_oz = item.serving_size * servings if item.serving_size is not None else None
+        portion = f"{format_number(servings)} serving" if servings == 1 else f"{format_number(servings)} servings"
+        if serving_oz is not None:
+            portion += f" ({format_number(serving_oz)}{item.serving_unit or 'oz'})"
+        lines.append(
+            f"- {item.hall} {item.meal}: {item.name} — {portion}: "
+            f"{round(calories)} cal | {format_number(protein)}g protein"
+        )
+
+    lines.extend(
+        [
+            "",
+            f"Total: {round(total_calories)} cal | {format_number(total_protein)}g protein | "
+            f"{format_number(total_fat)}g fat | {format_number(total_carbs)}g carbs",
+        ]
+    )
+    if not reached_target:
+        lines.append(
+            f"This stays under {calorie_limit} calories but only reaches {format_number(total_protein)}g protein. "
+            "The remaining target is not reachable with the current menu candidates and serving limits."
+        )
+    if not filters:
+        lines.append("Items classified NOT HALAL are excluded by default.")
+    lines.append("Nutrition is calculated from Berkeley Dining serving data; adjust portions based on what you actually eat.")
+    if include_halal_disclaimer and "halal" in filters:
+        lines.extend(["", HALAL_NOTE])
+    return RuleBasedResponse(
+        "\n".join(lines),
+        disclaimer_used=include_halal_disclaimer and "halal" in filters,
+        guardrail="meal_plan",
+    )
 
 
 def build_combined_halal_and_nutrition_response(
@@ -913,6 +1019,17 @@ def is_portion_question(content: str) -> bool:
     )
 
 
+def looks_like_meal_plan_request(content: str) -> bool:
+    q = content.lower()
+    if re.search(r"\bmeal[- ]?plan\b|\bplan\s+(?:for|my|me|a)\b", q):
+        return True
+    return bool(
+        re.search(r"\b(?:hit(?:ting)?|target(?:ing)?|goal)\b", q)
+        and "protein" in q
+        and re.search(r"\bunder\s+\d+", q)
+    )
+
+
 def asks_for_hours(content: str) -> bool:
     return bool(re.search(r"\b(open|hours?|time does .* open|when does .* open)\b", content.lower()))
 
@@ -1082,6 +1199,56 @@ def is_protein_item(item: MenuItem) -> bool:
         return False
     haystack = f"{item.name} {item.category} {item.ingredients}".lower()
     return any(term in haystack for term in MEAT_TERMS)
+
+
+def meal_plan_candidates(items: list[MenuItem]) -> list[MenuItem]:
+    candidates = [
+        item
+        for item in items
+        if item.calories is not None
+        and item.protein is not None
+        and item.calories > 0
+        and item.protein >= 5
+    ]
+    return sorted(
+        candidates,
+        key=lambda item: (
+            -((item.protein or 0) / (item.calories or 1)),
+            -(1 if is_protein_item(item) else 0),
+            item.calories or 0,
+            item.name.lower(),
+        ),
+    )
+
+
+def choose_meal_plan(
+    candidates: list[MenuItem],
+    calorie_limit: int,
+    protein_target: int,
+) -> list[dict[str, Any]]:
+    selected: list[dict[str, Any]] = []
+    total_calories = 0.0
+    total_protein = 0.0
+    max_servings_per_item = 4
+
+    for item in candidates:
+        if total_protein >= protein_target:
+            break
+        servings = 0
+        assert item.calories is not None
+        assert item.protein is not None
+        while (
+            servings < max_servings_per_item
+            and total_protein < protein_target
+            and total_calories + item.calories <= calorie_limit
+        ):
+            servings += 1
+            total_calories += item.calories
+            total_protein += item.protein
+        if servings:
+            selected.append({"item": item, "servings": servings})
+
+    return selected
 
 
 def apply_default_optimization_scope(
@@ -1365,4 +1532,13 @@ def fraction_descriptor(fraction: float) -> str:
 
 def extract_calorie_limit(content: str) -> int | None:
     match = re.search(r"\bunder\s+(\d+)\s*(?:cal|calories)?\b", content.lower())
+    return int(match.group(1)) if match else None
+
+
+def extract_protein_target(content: str) -> int | None:
+    q = content.lower()
+    match = re.search(r"\b(\d{2,3})\s*(?:g|grams?)\s*(?:of\s+)?protein\b", q)
+    if match:
+        return int(match.group(1))
+    match = re.search(r"\bprotein\s*(?:target|goal)?\s*(?:of|:)?\s*(\d{2,3})\b", q)
     return int(match.group(1)) if match else None

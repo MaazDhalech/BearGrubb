@@ -218,6 +218,47 @@ class MenuAnswerTests(unittest.TestCase):
         self.assertLess(kofta_index, fajita_index)
         self.assertNotIn("Baked Jerk Tofu", response.content)
 
+    def test_meal_plan_request_is_not_blocked_as_recipe(self):
+        response = menu_answers.build_pre_context_response(
+            "can you help me make a meal plan for today under 2000 calories hitting 200 grams of protein"
+        )
+
+        self.assertIsNone(response)
+
+    def test_meal_plan_builds_from_menu_under_calorie_and_protein_targets(self):
+        docs = [
+            doc("Halal Chicken Breast", dining_hall="Cafe 3", meal_period="Dinner", ingredients="Chicken HALAL", protein=23.46, calories=136, serving_size=3.75),
+            doc("Halal Rosemary Chicken", dining_hall="Crossroads", meal_period="Dinner", ingredients="Chicken HALAL", protein=20.85, calories=153, serving_size=3.94),
+            doc("Halal Beef Fajitas", dining_hall="Foothill", meal_period="Dinner", ingredients="Beef HALAL", protein=12.83, calories=94, serving_size=3.18),
+            doc("Baked Jerk Tofu", dining_hall="Crossroads", meal_period="Dinner", is_vegan=True, is_vegetarian=True, protein=24.94, calories=298, serving_size=4),
+            doc("Citrus Glaze Pork", halal_status="NOT_HALAL", halal_reason="Contains pork", ingredients="Pork", protein=90, calories=200, serving_size=4),
+        ]
+
+        response = menu_answers.build_menu_response(
+            "can you help me make a meal plan for today under 2000 calories hitting 200 grams of protein",
+            docs,
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("under 2000 calories hitting 200g protein", response.content)
+        self.assertIn("Halal Chicken Breast", response.content)
+        self.assertIn("Halal Rosemary Chicken", response.content)
+        self.assertIn("Halal Beef Fajitas", response.content)
+        self.assertIn("Total: 1379 cal | 207.71g protein", response.content)
+        self.assertNotIn("Citrus Glaze Pork", response.content)
+
+    def test_meal_plan_reports_closest_when_target_is_not_reachable(self):
+        response = menu_answers.build_menu_response(
+            "make a meal plan under 300 calories hitting 80 grams of protein",
+            [doc("Halal Chicken Breast", ingredients="Chicken HALAL", protein=23.46, calories=136, serving_size=3.75)],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("Closest meal plan", response.content)
+        self.assertIn("only reaches 46.92g protein", response.content)
+
     def test_halal_and_vegan_query_lists_vegan_items_only(self):
         docs = [
             doc("Halal Rosemary Chicken", ingredients="Chicken HALAL"),
