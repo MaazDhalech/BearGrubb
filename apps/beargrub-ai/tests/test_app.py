@@ -12,6 +12,7 @@ from unittest.mock import Mock, patch
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 os.environ["BEARGRUB_AUTO_INIT"] = "0"
+os.environ["BEARGRUB_TEST_MODE"] = "1"
 
 import app
 import rag
@@ -19,6 +20,7 @@ import rag
 
 def reload_app():
     os.environ["BEARGRUB_AUTO_INIT"] = "0"
+    os.environ["BEARGRUB_TEST_MODE"] = "1"
     return importlib.reload(app)
 
 

@@ -48,7 +48,7 @@ Set `OPENAI_API_KEY` in `apps/beargrub-ai/.env`. `POSTHOG_API_KEY` is optional f
 Run the assistant:
 
 ```bash
-chainlit run app.py -w
+chainlit run app.py -w -h
 ```
 
 Run tests from the repository root:

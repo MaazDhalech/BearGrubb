@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 try:
+    if os.getenv("BEARGRUB_TEST_MODE") == "1":
+        raise ImportError
     import chainlit as cl
 except ImportError:
     cl = None
@@ -55,11 +57,13 @@ class _FallbackChainlit:
     Message = _FallbackMessage
 
     @staticmethod
-    def on_chat_start():
-        def decorator(func):
-            return func
+    def on_chat_start(func=None):
+        if func is None:
+            def decorator(inner_func):
+                return inner_func
 
-        return decorator
+            return decorator
+        return func
 
     @staticmethod
     def on_message(func):
@@ -247,7 +251,7 @@ def run_tool_calls(tool_calls: list[dict[str, str]]) -> None:
         db = handle_tool_call(name, arguments, db, cache=cache)
 
 
-@cl.on_chat_start()
+@cl.on_chat_start
 async def on_start():
     cl.user_session.set("history", [])
     cl.user_session.set("halal_disclaimer_shown", False)
