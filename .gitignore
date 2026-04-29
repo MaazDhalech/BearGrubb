@@ -3,9 +3,13 @@
 /htmlWebscraper.py
 .DS_Store
 node_modules/
-package-lock.json
+.next/
 /CalInclusiveDining/
-__pycache__/
+**/__pycache__/
 *.pyc
 .env
-/chroma_db/
+*.log
+.venv/
+venv/
+apps/beargrub-ai/chroma_db/
+apps/beargrub-ai/classification_cache.local.json
