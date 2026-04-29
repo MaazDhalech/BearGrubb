@@ -124,6 +124,7 @@ def embed_menu(
         for doc in menu_docs
     ]
     try:
+        reset_chroma_collection(Chroma, embeddings, persist_directory, collection_name)
         db = Chroma.from_documents(
             docs,
             embeddings,
@@ -134,6 +135,24 @@ def embed_menu(
     except Exception:
         logger.exception("Failed to build Chroma menu store; using in-memory menu store")
         return InMemoryMenuStore(menu_docs)
+
+
+def reset_chroma_collection(
+    chroma_class: Any,
+    embeddings: Any,
+    persist_directory: str,
+    collection_name: str,
+) -> None:
+    """Remove the previous persisted collection before rebuilding today's menu."""
+    try:
+        existing = chroma_class(
+            collection_name=collection_name,
+            embedding_function=embeddings,
+            persist_directory=persist_directory,
+        )
+        existing.delete_collection()
+    except Exception:
+        logger.debug("No existing Chroma collection to reset", exc_info=True)
 
 
 def retrieve(db: Any, query: str, n_results: int = 8) -> list[Any]:

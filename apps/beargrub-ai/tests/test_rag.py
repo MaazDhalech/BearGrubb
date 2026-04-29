@@ -173,6 +173,26 @@ class RagTests(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].metadata["short_name"], "Cafe 3 Halal Chicken")
 
+    def test_embed_menu_replaces_existing_chroma_collection(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            rag.embed_menu(
+                [menu_item(short_name="Old Halal Chicken")],
+                embeddings=FakeEmbeddings(),
+                persist_directory=temp_dir,
+                collection_name="test_menu_replace",
+            )
+            second_db = rag.embed_menu(
+                [menu_item(short_name="Fresh Halal Beef", ingredients="Beef HALAL")],
+                embeddings=FakeEmbeddings(),
+                persist_directory=temp_dir,
+                collection_name="test_menu_replace",
+            )
+
+            docs = rag.list_documents(second_db)
+
+        self.assertEqual(len(docs), 1)
+        self.assertEqual(docs[0].metadata["short_name"], "Fresh Halal Beef")
+
     def test_retrieve_all_dining_halls_query_does_not_apply_hall_filter(self):
         db = rag.embed_menu(
             [

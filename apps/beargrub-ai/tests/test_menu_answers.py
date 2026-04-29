@@ -105,6 +105,13 @@ class MenuAnswerTests(unittest.TestCase):
                 calories=1,
                 serving_size=0.1,
             ),
+            doc(
+                "Batch Quinoa",
+                is_vegan=True,
+                is_vegetarian=True,
+                calories=3305,
+                serving_size=103.89,
+            ),
         ]
 
         response = menu_answers.build_menu_response(
@@ -126,6 +133,7 @@ class MenuAnswerTests(unittest.TestCase):
         self.assertNotIn("Split Pea Soup", text)
         self.assertNotIn("Assorted Dinner Rolls", text)
         self.assertNotIn("Chive", text)
+        self.assertNotIn("Batch Quinoa", text)
         self.assertTrue(text.endswith(menu_answers.HALAL_NOTE))
 
     def test_all_dining_halls_does_not_disable_default_category_filters(self):
@@ -189,6 +197,7 @@ class MenuAnswerTests(unittest.TestCase):
             doc("Halal Rosemary Chicken", ingredients="Chicken HALAL", protein=20.85, calories=153, serving_size=3.94),
             doc("Beef Kofta", ingredients="Beef HALAL", protein=19.94, calories=311, serving_size=4),
             doc("Halal Chicken Breast", dining_hall="Cafe 3", ingredients="Chicken HALAL", protein=26.0, calories=136, serving_size=3.75),
+            doc("Baked Jerk Tofu", is_vegan=True, is_vegetarian=True, protein=99.0, calories=298, serving_size=4),
         ]
 
         response = menu_answers.build_menu_response(
@@ -207,6 +216,7 @@ class MenuAnswerTests(unittest.TestCase):
         self.assertLess(cafe_index, chicken_index)
         self.assertLess(chicken_index, kofta_index)
         self.assertLess(kofta_index, fajita_index)
+        self.assertNotIn("Baked Jerk Tofu", response.content)
 
     def test_halal_and_vegan_query_lists_vegan_items_only(self):
         docs = [
@@ -243,6 +253,26 @@ class MenuAnswerTests(unittest.TestCase):
         self.assertIn("Braised Mung Bean", response.content)
         self.assertNotIn("Beef Kofta", response.content)
 
+    def test_halal_under_calories_defaults_to_protein_items(self):
+        docs = [
+            doc("Halal Beef Fajitas", ingredients="Beef HALAL", calories=94, serving_size=3.18),
+            doc("Halal Rosemary Chicken", ingredients="Chicken HALAL", calories=153, serving_size=3.94),
+            doc("Braised Mung Bean", is_vegan=True, is_vegetarian=True, calories=126, serving_size=4.16),
+            doc("Forbidden Rice", is_vegan=True, is_vegetarian=True, calories=151, serving_size=5.44),
+        ]
+
+        response = menu_answers.build_menu_response(
+            "What can I eat at Crossroads tonight that's halal and under 200 calories?",
+            docs,
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("Halal Beef Fajitas", response.content)
+        self.assertIn("Halal Rosemary Chicken", response.content)
+        self.assertNotIn("Braised Mung Bean", response.content)
+        self.assertNotIn("Forbidden Rice", response.content)
+
     def test_halal_status_uses_classification_reason_and_shellfish_note(self):
         response = menu_answers.build_menu_response(
             "Is the Thai BBQ chicken halal?",
@@ -263,6 +293,24 @@ class MenuAnswerTests(unittest.TestCase):
             "✅ HALAL — contains 'Chicken Thigh Boneless HALAL' explicitly labeled in ingredients. "
             "Note: contains oyster (shellfish).",
         )
+
+    def test_halal_status_takes_precedence_for_pork_named_item(self):
+        response = menu_answers.build_menu_response(
+            "Is Citrus Glaze Pork halal?",
+            [
+                doc(
+                    "Citrus Glaze Pork",
+                    halal_status="NOT_HALAL",
+                    halal_reason="Contains pork",
+                    ingredients="Pork Shoulder",
+                ),
+                doc("Meatlovers Pizza", halal_status="NOT_HALAL", ingredients="Pepperoni; Pork Sausage"),
+            ],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.content, "❌ NOT HALAL — contains pork")
 
     def test_is_there_unknown_item_does_not_fuzzy_match_wrong_chicken(self):
         response = menu_answers.build_menu_response(

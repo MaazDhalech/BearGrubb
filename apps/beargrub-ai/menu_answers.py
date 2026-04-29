@@ -221,10 +221,10 @@ def build_menu_response(
 
     builders = [
         build_crossroads_lunch_response,
+        build_halal_status_response,
         build_pork_response,
         build_allergy_response,
         build_item_availability_response,
-        build_halal_status_response,
         build_optimization_response,
         build_combined_halal_and_nutrition_response,
         build_multi_item_nutrition_response,
@@ -361,6 +361,7 @@ def build_optimization_response(
     scope_items = filter_scope(items, hall=hall, meal=meal)
     scope_items = [item for item in scope_items if matches_dietary_filters(item, filters)]
     scope_items = filter_default_menu_items(unique_items(scope_items), content)
+    scope_items = apply_default_optimization_scope(content, scope_items, filters)
 
     if "high protein" in q and "low carb" in q:
         candidates = [item for item in scope_items if item.protein is not None and item.carbs is not None]
@@ -982,7 +983,11 @@ def is_default_excluded(item: MenuItem) -> bool:
         return True
     if item.serving_size is not None and item.serving_size <= 0.5:
         return True
+    if item.serving_size is not None and item.serving_size > 32:
+        return True
     if item.calories is not None and item.calories <= 10:
+        return True
+    if item.calories is not None and item.calories > 1500:
         return True
     return any(phrase in item.name.lower() for phrase in DEFAULT_EXCLUDED_ITEM_PHRASES)
 
@@ -1077,6 +1082,25 @@ def is_protein_item(item: MenuItem) -> bool:
         return False
     haystack = f"{item.name} {item.category} {item.ingredients}".lower()
     return any(term in haystack for term in MEAT_TERMS)
+
+
+def apply_default_optimization_scope(
+    content: str,
+    items: list[MenuItem],
+    filters: list[str],
+) -> list[MenuItem]:
+    if filters != ["halal"] or explicitly_includes_plant_based_options(content):
+        return items
+    protein_items = [item for item in items if is_protein_item(item)]
+    return protein_items or items
+
+
+def explicitly_includes_plant_based_options(content: str) -> bool:
+    q = content.lower()
+    return bool(
+        re.search(r"\binclud(?:e|es|ing)?\s+(?:vegan|vegetarian|veggie|plant[- ]based)\b", q)
+        or re.search(r"\bwith\s+(?:vegan|vegetarian|veggie|plant[- ]based)\b", q)
+    )
 
 
 def dietary_label(filters: list[str]) -> str:
