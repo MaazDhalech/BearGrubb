@@ -62,30 +62,47 @@ STOPWORDS = {
     "any",
     "are",
     "at",
+    "ate",
     "cal",
     "calories",
+    "carb",
+    "carbs",
+    "cholesterol",
     "can",
     "crossroads",
     "dinner",
+    "fat",
+    "fiber",
     "for",
     "from",
     "hall",
     "halal",
+    "half",
     "had",
     "have",
     "how",
     "i",
+    "if",
     "in",
     "is",
+    "macro",
+    "macros",
     "me",
     "many",
     "menu",
     "much",
     "of",
+    "only",
     "on",
     "options",
     "oz",
+    "protein",
+    "quarter",
+    "s",
+    "sodium",
+    "some",
     "serving",
+    "servings",
     "the",
     "there",
     "tonight",
@@ -170,6 +187,11 @@ def build_pre_context_response(content: str) -> RuleBasedResponse | None:
             "I only have access to today's menu. Historical menus aren't available yet.",
             guardrail="unsupported_historical_menu",
         )
+    if re.search(r"\bdon'?t know how much\b|\bnot sure how much\b", q):
+        return RuleBasedResponse(
+            "No problem — if you tell me the item name I can show you the nutrition for the default serving size, and you can estimate from there.",
+            guardrail="unknown_portion",
+        )
     if asks_for_hours(content):
         hall = parse_hall(content)
         if hall == "Crossroads" or hall is None:
@@ -197,7 +219,10 @@ def build_menu_response(
         build_item_availability_response,
         build_halal_status_response,
         build_optimization_response,
+        build_combined_halal_and_nutrition_response,
+        build_multi_item_nutrition_response,
         build_portion_calorie_response,
+        build_ambiguous_nutrition_response,
         build_nutrition_response,
         build_dietary_list_response,
     ]
@@ -216,7 +241,8 @@ def build_crossroads_lunch_response(
 ) -> RuleBasedResponse | None:
     if parse_hall(content) == "Crossroads" and parse_meal(content) == "Lunch":
         return RuleBasedResponse(
-            f"{CROSSROADS_HOURS} Would you like to see halal options for brunch or dinner?",
+            "Crossroads doesn't serve lunch — it runs Brunch from 10:30am to 3:00pm and Dinner from 4:30pm to 9:00pm. "
+            "Would you like to see halal options for brunch or dinner?",
             guardrail="unsupported_meal_period",
         )
     return None
@@ -240,7 +266,7 @@ def build_item_availability_response(
     meal = parse_meal(content) or default_meal(content)
     scoped = filter_scope(items, hall=hall, meal=meal)
     match = best_item_match(content, scoped, strict=True)
-    requested_name = clean_requested_item_name(content)
+    requested_name = clean_requested_item_name(content, strip_query_terms=False)
     location = hall or default_hall(scoped or items)
     if match is None:
         return RuleBasedResponse(
@@ -267,6 +293,9 @@ def build_dietary_list_response(
         return None
 
     hall = parse_hall(content)
+    unknown_hall = parse_unknown_hall(content) if hall is None else None
+    if unknown_hall:
+        return RuleBasedResponse(missing_hall_response(unknown_hall, items, filters), guardrail="missing_hall")
     meal = parse_meal(content) or default_meal(content)
     if hall and hall not in present_halls(items):
         return RuleBasedResponse(missing_hall_response(hall, items, filters), guardrail="missing_hall")
@@ -408,6 +437,117 @@ def build_optimization_response(
     return None
 
 
+def build_combined_halal_and_nutrition_response(
+    content: str,
+    items: list[MenuItem],
+    menu_date: str,
+    include_halal_disclaimer: bool,
+) -> RuleBasedResponse | None:
+    q = content.lower()
+    if "halal" not in q or not is_nutrition_question(content) or " and " not in q:
+        return None
+    list_part, nutrition_part = content.rsplit(" and ", 1)
+    dietary_response = build_dietary_list_response(
+        list_part,
+        items,
+        menu_date,
+        include_halal_disclaimer,
+    )
+    if dietary_response is None:
+        return None
+    nutrition_response = build_nutrition_response(
+        nutrition_part,
+        items,
+        menu_date,
+        include_halal_disclaimer=False,
+    )
+    if nutrition_response is None:
+        nutrition_response = build_portion_calorie_response(
+            nutrition_part,
+            items,
+            menu_date,
+            include_halal_disclaimer=False,
+        )
+    if nutrition_response is None:
+        return None
+    return RuleBasedResponse(
+        f"{dietary_response.content}\n\n{nutrition_response.content}",
+        disclaimer_used=dietary_response.disclaimer_used,
+        guardrail="combined_halal_nutrition",
+    )
+
+
+def build_multi_item_nutrition_response(
+    content: str,
+    items: list[MenuItem],
+    menu_date: str,
+    include_halal_disclaimer: bool,
+) -> RuleBasedResponse | None:
+    q = content.lower()
+    if not re.search(r"\b(total|combined)\b", q):
+        if not re.search(r"\b(calorie|calories|macros?)\b", q):
+            return None
+    if "," not in content and " and " not in q:
+        return None
+    if not is_nutrition_question(content):
+        return None
+
+    wants_macros = "macro" in q
+    entries = parse_consumed_items(content, items)
+    if len(entries) < 2:
+        return None
+
+    missing = [entry["label"] for entry in entries if entry["item"] is None]
+    if missing:
+        return RuleBasedResponse(
+            f"I couldn't match these items on today's Berkeley Dining menu: {', '.join(missing)}.",
+            guardrail="multi_item_missing",
+        )
+
+    lines = ["Combined macros:" if wants_macros else "Here's your total:", ""]
+    total_calories = 0.0
+    total_protein = 0.0
+    total_fat = 0.0
+    total_carbs = 0.0
+    total_sodium = 0.0
+    include_sodium = True
+    for entry in entries:
+        item = entry["item"]
+        assert isinstance(item, MenuItem)
+        factor = entry["factor"]
+        oz = entry["oz"]
+        calories = (item.calories or 0) * factor
+        protein = (item.protein or 0) * factor
+        fat = (item.fat or 0) * factor
+        carbs = (item.carbs or 0) * factor
+        sodium = (item.sodium or 0) * factor if item.sodium is not None else 0
+        include_sodium = include_sodium and item.sodium is not None
+        total_calories += calories
+        total_protein += protein
+        total_fat += fat
+        total_carbs += carbs
+        total_sodium += sodium
+        portion = format_number(oz) + (item.serving_unit or "oz") if oz is not None else format_serving(item, include_word=False)
+        if wants_macros:
+            lines.append(
+                f"{item.name} ({portion}): {round(calories)} cal | {format_number(protein)}g protein | {format_number(fat)}g fat"
+            )
+        else:
+            lines.append(f"{item.name} ({portion}): {round(calories)} cal")
+
+    if wants_macros:
+        total = (
+            f"Total: {round(total_calories)} cal | {format_number(total_protein)}g protein | "
+            f"{format_number(total_fat)}g fat | {format_number(total_carbs)}g carbs"
+        )
+        if include_sodium:
+            total += f" | {format_mg(total_sodium)}mg sodium"
+        lines.append(total)
+    else:
+        lines.append(f"Total: approximately {round(total_calories)} calories.")
+    return RuleBasedResponse("\n".join(lines), guardrail="multi_item_nutrition")
+
+
 def build_halal_status_response(
     content: str,
     items: list[MenuItem],
@@ -418,7 +558,11 @@ def build_halal_status_response(
         return None
     item = best_item_match(content, items)
     if item is None:
-        return None
+        requested_name = clean_requested_item_name(content, strip_query_terms=True)
+        return RuleBasedResponse(
+            f"I don't see {requested_name} on today's Berkeley Dining menu.",
+            guardrail="missing_item_status",
+        )
     status = item.halal_status
     if status == "HALAL":
         response = f"✅ HALAL — {halal_positive_reason(item)}"
@@ -444,29 +588,33 @@ def build_nutrition_response(
         return None
     item = best_item_match(content, items)
     if item is None:
-        return None
+        requested_name = clean_requested_item_name(content, strip_query_terms=True)
+        return RuleBasedResponse(
+            f"I don't see {requested_name} on today's Berkeley Dining menu.",
+            guardrail="missing_item_nutrition",
+        )
     q = content.lower()
     if "macro" in q:
         return RuleBasedResponse(format_macros(item), guardrail="macros")
     if "protein" in q:
         return RuleBasedResponse(
-            f"{item.name} has {format_grams(item.protein)}g of protein per serving ({format_serving(item, include_word=False)}).",
+            f"{item.name} {verb_for_item(item)} {format_grams(item.protein)}g of protein per serving ({format_serving(item, include_word=False)}).",
             guardrail="protein",
         )
     if "sodium" in q:
         suffix = " — notably high." if item.sodium is not None and item.sodium >= 1000 else "."
         return RuleBasedResponse(
-            f"{item.name} has {format_mg(item.sodium)}mg of sodium per serving ({format_serving(item, include_word=False)}){suffix}",
+            f"{item.name} {verb_for_item(item)} {format_mg(item.sodium)}mg of sodium per serving ({format_serving(item, include_word=False)}){suffix}",
             guardrail="sodium",
         )
     if "fiber" in q:
         return RuleBasedResponse(
-            f"{item.name} has {format_grams(item.fiber)}g of fiber per serving ({format_serving(item, include_word=False)}).",
+            f"{item.name} {verb_for_item(item)} {format_grams(item.fiber)}g of fiber per serving ({format_serving(item, include_word=False)}).",
             guardrail="fiber",
         )
     if "cholesterol" in q:
         return RuleBasedResponse(
-            f"{item.name} has {format_mg(item.cholesterol)}mg of cholesterol per serving ({format_serving(item, include_word=False)}).",
+            f"{item.name} {verb_for_item(item)} {format_mg(item.cholesterol)}mg of cholesterol per serving ({format_serving(item, include_word=False)}).",
             guardrail="cholesterol",
         )
     if "carbon footprint" in q:
@@ -482,17 +630,51 @@ def build_nutrition_response(
     return None
 
 
+def build_ambiguous_nutrition_response(
+    content: str,
+    items: list[MenuItem],
+    menu_date: str,
+    include_halal_disclaimer: bool,
+) -> RuleBasedResponse | None:
+    if not is_nutrition_question(content):
+        return None
+    q = content.lower()
+    if not re.search(r"\b(some|a little|a bit of)\b", q):
+        return None
+    requested_terms = item_query_terms(content)
+    if len(requested_terms) != 1:
+        return None
+    term = next(iter(requested_terms))
+    matches = [
+        item
+        for item in filter_scope(items, hall=parse_hall(content), meal=parse_meal(content) or default_meal(content))
+        if term in terms(item.name)
+    ]
+    matches = unique_items(matches)
+    if len(matches) <= 1:
+        return None
+    names = ", ".join(item.name for item in matches[:4])
+    return RuleBasedResponse(
+        f"Could you be more specific about which {term} and how much? Today's menu has a few {term} options with different nutrition: {names}.",
+        guardrail="ambiguous_nutrition_item",
+    )
+
+
 def build_portion_calorie_response(
     content: str,
     items: list[MenuItem],
     menu_date: str,
     include_halal_disclaimer: bool,
 ) -> RuleBasedResponse | None:
-    if not is_portion_question(content) or "calorie" not in content.lower():
+    if not is_portion_question(content):
         return None
     item = best_item_match(content, items)
     if item is None or item.calories is None or item.serving_size is None:
-        return None
+        requested_name = clean_requested_item_name(content, strip_query_terms=True)
+        return RuleBasedResponse(
+            f"I don't see {requested_name} on today's Berkeley Dining menu.",
+            guardrail="missing_item_portion",
+        )
     oz = extract_oz_amount(content)
     descriptor = None
     if oz is None:
@@ -525,7 +707,8 @@ def build_pork_response(
 ) -> RuleBasedResponse | None:
     if "pork" not in content.lower() or not re.search(r"\b(is|are|anything|there)\b", content.lower()):
         return None
-    hall = parse_hall(content) or default_hall(items)
+    hall = parse_hall(content)
+    location = hall or default_hall(items)
     meal = parse_meal(content) or default_meal(content)
     candidates = [
         item
@@ -533,10 +716,10 @@ def build_pork_response(
         if re.search(r"\b(pork|bacon|ham|pepperoni|salami)\b", f"{item.name} {item.ingredients}", re.I)
     ]
     if not candidates:
-        return RuleBasedResponse(f"I don't see pork listed at {hall} tonight.", guardrail="pork")
+        return RuleBasedResponse(f"I don't see pork listed at {location} tonight.", guardrail="pork")
     joined = ", ".join(f"{item.name} ({item.category})" for item in unique_items(candidates))
     return RuleBasedResponse(
-        f"Yes, the following items at {hall} contain pork: {joined}.",
+        f"Yes, the following items at {location} contain pork: {joined}.",
         guardrail="pork",
     )
 
@@ -550,7 +733,8 @@ def build_allergy_response(
     allergen = parse_allergen(content)
     if allergen is None:
         return None
-    hall = parse_hall(content) or default_hall(items)
+    hall = parse_hall(content)
+    location = hall or default_hall(items)
     meal = parse_meal(content) or default_meal(content)
     scope = filter_scope(items, hall=hall, meal=meal)
 
@@ -575,12 +759,12 @@ def build_allergy_response(
     if avoid:
         names = ", ".join(item.name for item in unique_items(avoid))
         return RuleBasedResponse(
-            f"The following items at {hall} contain {allergen} and should be avoided: {names}. "
+            f"The following items at {location} contain {allergen} and should be avoided: {names}. "
             f"All other items on tonight's menu do not list {allergen} as an allergen.",
             guardrail="allergy",
         )
     return RuleBasedResponse(
-        f"I don't see {allergen} flagged as an allergen for items at {hall} tonight.",
+        f"I don't see {allergen} flagged as an allergen for items at {location} tonight.",
         guardrail="allergy",
     )
 
@@ -643,6 +827,17 @@ def parse_hall(content: str) -> str | None:
     for alias, hall in HALL_ALIASES.items():
         if alias in q:
             return hall
+    return None
+
+
+def parse_unknown_hall(content: str) -> str | None:
+    q = content.lower()
+    if "dining hall" in q or "hall" in q:
+        match = re.search(r"\bat\s+([a-z0-9 ]+?)(?:\s+for|\s+(?:brunch|lunch|dinner|today|tonight)|[?.!]|$)", q)
+        if match:
+            candidate = match.group(1).strip()
+            if candidate and parse_hall(candidate) is None:
+                return candidate.title()
     return None
 
 
@@ -893,6 +1088,10 @@ def format_basic_item_line(item: MenuItem, include_diet: bool = False) -> str:
     return f"{item.name}{diet} — {format_calories(item.calories)} cal per {format_serving(item)}"
 
 
+def verb_for_item(item: MenuItem) -> str:
+    return "have" if item.name.lower().endswith("s") else "has"
+
+
 def format_serving(item: MenuItem, include_word: bool = True) -> str:
     if item.serving_size is None:
         return "serving" if include_word else "serving"
@@ -999,7 +1198,14 @@ def parse_allergen(content: str) -> str | None:
 def has_allergen(item: MenuItem, allergen: str) -> bool:
     haystack = " ".join(item.allergens_present).lower()
     if allergen == "gluten":
-        return "gluten" in haystack or "wheat" in haystack
+        text = f"{item.name} {item.ingredients}".lower()
+        if "gluten free" in text or "gluten-free" in text:
+            return False
+        likely_gluten = re.search(
+            r"\b(gluten|wheat|flour|bread|rolls?|croissants?|waffles?|pancakes?|pasta|penne|orecchiette|orzo|couscous)\b",
+            text,
+        )
+        return "gluten" in haystack or "wheat" in haystack or bool(likely_gluten)
     if allergen == "tree nuts":
         return "tree nut" in haystack or "tree nuts" in haystack
     if allergen == "shellfish":
@@ -1026,6 +1232,8 @@ def best_item_match(content: str, items: list[MenuItem], strict: bool = False) -
         return None
     if strict and best_score[2] < 0:
         return None
+    if best_score[2] < 0 and len(query_terms) >= 2 and best_score[1] / len(query_terms) <= 0.5:
+        return None
     if len(query_terms) >= 3 and best_score[1] / len(query_terms) < 0.67:
         return None
     return best
@@ -1041,11 +1249,57 @@ def item_query_terms(content: str) -> set[str]:
     }
 
 
-def clean_requested_item_name(content: str) -> str:
+def clean_requested_item_name(content: str, strip_query_terms: bool = False) -> str:
     cleaned = re.sub(r"^\s*(is|are)\s+there\s+", "", content, flags=re.I)
+    cleaned = re.sub(r"^\s*(is|are|what(?:'s| is)|how much|how many)\s+", "", cleaned, flags=re.I)
+    if strip_query_terms:
+        cleaned = re.sub(r"\b(halal|calories?|cal|macros?|protein|sodium|fiber|cholesterol)\b", "", cleaned, flags=re.I)
     cleaned = re.sub(r"\b(at|for)\s+(crossroads|cafe\s*3|clark\s+kerr|foothill|brunch|lunch|dinner|today|tonight)\b.*$", "", cleaned, flags=re.I)
-    cleaned = cleaned.strip(" ?!.")
+    cleaned = re.sub(r"\b(in|of|a|an|the|serving|half|quarter|one|and|much|many|if|only|ate|had)\b", " ", cleaned, flags=re.I)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip(" ?!.")
     return cleaned or "that item"
+
+
+def parse_consumed_items(content: str, items: list[MenuItem]) -> list[dict[str, Any]]:
+    cleaned = re.sub(r"^.*?\b(?:had|ate)\b", "", content, flags=re.I)
+    cleaned = re.sub(r",?\s*\b(?:how many|how much|what are|what is|what's)\b.*$", "", cleaned, flags=re.I)
+    cleaned = re.sub(r"\b(?:total calories|calories|what are my total macros|what are my macros|total macros|combined macros)\b.*$", "", cleaned, flags=re.I)
+    parts = [
+        part.strip(" .?!")
+        for part in re.split(r",|\band\b", cleaned, flags=re.I)
+        if part.strip(" .?!")
+    ]
+    entries: list[dict[str, Any]] = []
+    for part in parts:
+        label = clean_consumed_part_label(part)
+        if not label:
+            continue
+        item = best_item_match(label, items)
+        factor = 1.0
+        oz = None
+        if item is not None:
+            oz = extract_oz_amount(part)
+            if oz is not None and item.serving_size:
+                factor = oz / item.serving_size
+            else:
+                fraction = extract_serving_fraction(part)
+                if fraction is not None:
+                    factor = fraction
+                    oz = item.serving_size * fraction if item.serving_size is not None else None
+                elif re.search(r"\bserving and a half\b|\bone and a half servings?\b", part, re.I):
+                    factor = 1.5
+                    oz = item.serving_size * factor if item.serving_size is not None else None
+                else:
+                    oz = item.serving_size
+        entries.append({"label": label, "item": item, "factor": factor, "oz": oz})
+    return entries
+
+
+def clean_consumed_part_label(part: str) -> str:
+    cleaned = re.sub(r"\b\d+(?:\.\d+)?\s*oz\b", "", part, flags=re.I)
+    cleaned = re.sub(r"\b(a|an|the|of|serving|servings|half|quarter|one|and|a half|some)\b", " ", cleaned, flags=re.I)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned
 
 
 def terms(text: str) -> set[str]:

@@ -308,6 +308,121 @@ class MenuAnswerTests(unittest.TestCase):
             "Halal Rosemary Chicken is 153 cal per 3.94oz serving. At 6oz that's approximately 233 calories.",
         )
 
+    def test_unknown_item_does_not_fuzzy_match_partial_name(self):
+        response = menu_answers.build_menu_response(
+            "How many calories in unicorn curry?",
+            [doc("Thai Green Curry Shrimp", calories=96, serving_size=5.34)],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertEqual(
+            response.content,
+            "I don't see unicorn curry on today's Berkeley Dining menu.",
+        )
+
+    def test_broad_pork_query_searches_all_halls(self):
+        response = menu_answers.build_menu_response(
+            "Is there pork tonight?",
+            [
+                doc("Halal Rosemary Chicken", ingredients="Chicken HALAL"),
+                doc("Citrus Glaze Pork", dining_hall="Crossroads", ingredients="Pork Shoulder"),
+            ],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("contain pork", response.content)
+        self.assertIn("Citrus Glaze Pork", response.content)
+
+    def test_broad_allergy_filter_searches_all_halls(self):
+        response = menu_answers.build_menu_response(
+            "I'm vegan and avoiding gluten, what can I eat?",
+            [
+                doc("Quinoa", dining_hall="Cafe 3", is_vegan=True, is_vegetarian=True, allergens_present=""),
+                doc("Penne Pasta", dining_hall="Crossroads", is_vegan=True, is_vegetarian=True, allergens_present="Gluten"),
+            ],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("Vegan options without gluten flagged:", response.content)
+        self.assertIn("Quinoa", response.content)
+        self.assertNotIn("Penne Pasta", response.content)
+
+    def test_gluten_filter_excludes_obvious_pasta_when_allergen_flag_is_missing(self):
+        response = menu_answers.build_menu_response(
+            "I'm vegan and avoiding gluten, what can I eat?",
+            [
+                doc("Quinoa", dining_hall="Cafe 3", is_vegan=True, is_vegetarian=True, allergens_present=""),
+                doc("Penne Pasta", dining_hall="Cafe 3", is_vegan=True, is_vegetarian=True, allergens_present=""),
+                doc("Gluten Free Penne Pasta", dining_hall="Cafe 3", is_vegan=True, is_vegetarian=True, allergens_present=""),
+                doc("Spiced Couscous", dining_hall="Cafe 3", is_vegan=True, is_vegetarian=True, allergens_present=""),
+            ],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        lines = response.content.splitlines()
+        self.assertIn("Quinoa", response.content)
+        self.assertIn("Gluten Free Penne Pasta", response.content)
+        self.assertFalse(any(line.startswith("Penne Pasta —") for line in lines))
+        self.assertNotIn("Spiced Couscous", response.content)
+
+    def test_combined_halal_list_and_calorie_lookup(self):
+        response = menu_answers.build_menu_response(
+            "What's halal at Crossroads for dinner and how many calories is halal rosemary chicken?",
+            [
+                doc("Halal Rosemary Chicken", ingredients="Chicken HALAL", calories=153, serving_size=3.94),
+                doc("Wild Pilaf Rice", is_vegan=True, is_vegetarian=True, calories=91, serving_size=3),
+            ],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("Here are the halal options at Crossroads for dinner tonight:", response.content)
+        self.assertIn("Halal Rosemary Chicken is 153 calories per serving", response.content)
+
+    def test_multi_item_macro_totals(self):
+        response = menu_answers.build_menu_response(
+            "I had halal rosemary chicken, quinoa, and forbidden rice. What are my total macros?",
+            [
+                doc("Halal Rosemary Chicken", calories=153, serving_size=3.94, protein=20.85, fat=7.06, carbs=0.06, sodium=301),
+                doc("Quinoa", calories=155, serving_size=4.3, protein=5.0, fat=2.5, carbs=28.0, sodium=10),
+                doc("Forbidden Rice", calories=151, serving_size=5.44, protein=4.03, fat=1.51, carbs=33.0, sodium=5),
+            ],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("Combined macros:", response.content)
+        self.assertIn("Total:", response.content)
+        self.assertIn("protein", response.content)
+
+    def test_unknown_hall_names_missing_data(self):
+        response = menu_answers.build_menu_response(
+            "Any vegan options at nonexistent hall for dinner?",
+            [doc("Quinoa", is_vegan=True, is_vegetarian=True)],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("I don't have menu data for Nonexistent Hall for today", response.content)
+
+    def test_crossroads_lunch_explains_available_meal_periods(self):
+        response = menu_answers.build_menu_response(
+            "What's halal at Crossroads for lunch?",
+            [doc("Halal Rosemary Chicken", ingredients="Chicken HALAL")],
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertEqual(
+            response.content,
+            "Crossroads doesn't serve lunch — it runs Brunch from 10:30am to 3:00pm and Dinner from 4:30pm to 9:00pm. "
+            "Would you like to see halal options for brunch or dinner?",
+        )
+
     def test_pork_and_tree_nut_responses_use_ingredients_and_allergens(self):
         docs = [
             doc("Roasted Pork Loin", category="Center Plate", ingredients="Pork Loin"),
