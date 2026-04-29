@@ -63,3 +63,24 @@
 
 ### Next part
 - Build `mcp_tools.py` with the `get_menu` safety-net tool definition and a handler that fetches, classifies, and re-embeds menu data when the user explicitly asks to refresh.
+
+## Part 4 - MCP Refresh Safety Net
+
+### What was built
+- Added `mcp_tools.py` with the `get_menu` MCP tool schema from the spec.
+- Added `handle_tool_call()` for manual menu refreshes: validate tool arguments, fetch menu data, classify it, and re-embed the refreshed menu store.
+- Added a no-data safety path that keeps the existing store if a manual refresh fetch returns no menu items.
+- Added MCP tests for tool schema, successful refresh flow, fetch-empty fallback, unknown tool rejection, and argument validation.
+
+### Deviations from the spec and why
+- `handle_tool_call()` accepts an optional `cache` argument so the app can reuse the module-level classification cache instead of forcing a reload. Existing spec-style calls with `(name, args, db)` still work.
+- If `fetch_all()` returns no items, the handler returns the existing `db` instead of embedding an empty store. This avoids wiping good local data after a transient Berkeley dining XML/API failure.
+- Added explicit argument validation for dining hall and date format before fetching. The MCP schema describes the shape, but runtime validation makes direct calls safer.
+
+### Updated vulnerability log
+- Tool calls can arrive with malformed arguments. Mitigation: `handle_tool_call()` validates dining hall and ISO date before fetching.
+- Manual refresh can be triggered when upstream dining data is temporarily unavailable. Mitigation: empty refresh results preserve the existing store.
+- Refresh still depends on remote Berkeley menu data and OpenAI classification for ambiguous ingredients. Mitigation: scraper/classifier failure behaviors from earlier parts remain in effect.
+
+### Next part
+- Build `prompts.py` with `SYSTEM_PROMPT` and `CLASSIFICATION_PROMPT` constants, then update classifier imports to use the shared classification prompt.
