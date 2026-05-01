@@ -10,6 +10,23 @@ from config import CHROMA_PATH, COLLECTION_NAME, EMBEDDING_MODEL
 
 logger = logging.getLogger(__name__)
 
+EXCLUDED_CATEGORIES_FOR_DIETARY_LIST: frozenset[str] = frozenset({
+    "salad bar", "dessert", "bread & pastries", "bread", "soups",
+    "dressing", "sauce", "bakery", "beverage", "condiment",
+})
+
+MEAT_TERMS_FOR_SORT: frozenset[str] = frozenset({
+    "beef", "chicken", "turkey", "lamb", "kofta", "fajita", "steak",
+    "meat", "sausage", "fish", "salmon", "shrimp", "pork", "duck",
+})
+
+_LIST_QUERY_PATTERNS: tuple[str, ...] = (
+    "what is", "what are", "show me", "list", " any ", " all ",
+    "options", "available", "tonight", "today", "for dinner",
+    "for brunch", "for breakfast", "for lunch", "what can i eat",
+    "whats halal", "what's halal", "whats vegan", "what's vegan",
+)
+
 
 @dataclass(frozen=True)
 class MenuDocument:
@@ -41,8 +58,14 @@ class InMemoryMenuStore:
 
         return sorted(candidates, key=score, reverse=True)[:k]
 
-    def get(self, limit: int = 1, include: list[str] | None = None) -> dict[str, list[Any]]:
-        selected = self.docs[:limit]
+    def get(
+        self,
+        limit: int = 1,
+        include: list[str] | None = None,
+        where: dict[str, Any] | None = None,
+    ) -> dict[str, list[Any]]:
+        candidates = [doc for doc in self.docs if _matches_filter(doc.metadata, where)]
+        selected = candidates[:limit]
         result: dict[str, list[Any]] = {}
         include = include or ["metadatas", "documents"]
         if "metadatas" in include:
@@ -90,10 +113,62 @@ def extract_filters(query: str) -> dict[str, Any] | None:
         filters["meal_period"] = "Brunch"
     elif "lunch" in q:
         filters["meal_period"] = "Lunch"
-    elif "dinner" in q:
+    elif "dinner" in q or "tonight" in q:
         filters["meal_period"] = "Dinner"
 
     return filters if filters else None
+
+
+def is_list_query(query: str) -> bool:
+    """True when the query is asking for a list of items rather than a specific question."""
+    q = query.lower()
+    return any(pattern in q for pattern in _LIST_QUERY_PATTERNS)
+
+
+def _get_by_filter(db: Any, filters: dict[str, Any] | None, limit: int = 50) -> list[Any]:
+    """Fetch documents by metadata filter without semantic ranking."""
+    chroma_filter = vector_filter(filters) if filters else None
+    if isinstance(db, InMemoryMenuStore):
+        result = db.get(limit=limit, include=["metadatas", "documents"], where=chroma_filter)
+    else:
+        result = db.get(where=chroma_filter, limit=limit, include=["metadatas", "documents"])
+    documents = result.get("documents") or []
+    metadatas = result.get("metadatas") or []
+    return [
+        MenuDocument(page_content=str(doc), metadata=dict(meta or {}))
+        for doc, meta in zip(documents, metadatas, strict=False)
+    ]
+
+
+def _is_excluded_for_dietary_list(doc: Any) -> bool:
+    meta = doc.metadata if hasattr(doc, "metadata") else {}
+    category = str(meta.get("category", "")).lower().strip()
+    name = str(meta.get("short_name", "")).lower().strip()
+    return category in EXCLUDED_CATEGORIES_FOR_DIETARY_LIST or any(
+        excl in name for excl in EXCLUDED_CATEGORIES_FOR_DIETARY_LIST
+    )
+
+
+def _item_sort_key(doc: Any) -> int:
+    meta = doc.metadata if hasattr(doc, "metadata") else {}
+    halal_status = meta.get("halal_status", "")
+    name = str(meta.get("short_name", "")).lower()
+    content = str(getattr(doc, "page_content", "")).lower()
+    is_halal = halal_status == "HALAL"
+    has_meat = any(term in name or term in content for term in MEAT_TERMS_FOR_SORT)
+    is_vegan = bool(meta.get("is_vegan", False))
+    is_vegetarian = bool(meta.get("is_vegetarian", False))
+    if is_halal and has_meat:
+        return 0
+    if is_vegan or is_vegetarian:
+        return 1
+    return 2
+
+
+def sort_and_filter_chunks(chunks: list[Any], has_dietary_filters: bool) -> list[Any]:
+    if has_dietary_filters:
+        chunks = [c for c in chunks if not _is_excluded_for_dietary_list(c)]
+    return sorted(chunks, key=_item_sort_key)
 
 
 def embed_menu(
@@ -156,9 +231,23 @@ def reset_chroma_collection(
 
 
 def retrieve(db: Any, query: str, n_results: int = 8) -> list[Any]:
-    """Extract filters from query, then semantic search with those filters."""
+    """Smart retrieval: list queries use metadata get(), conversational queries use semantic search."""
     filters = extract_filters(query)
-    return db.similarity_search(query, k=n_results, filter=vector_filter(filters))
+
+    if is_list_query(query):
+        has_dietary = bool(filters and any(
+            k in filters for k in ("halal_status", "is_vegan", "is_vegetarian")
+        ))
+        chunks = _get_by_filter(db, filters, limit=50)
+        return sort_and_filter_chunks(chunks, has_dietary)
+
+    # Conversational: strip dietary status filters so item is retrieved regardless of halal_status
+    non_dietary = {
+        k: v for k, v in (filters or {}).items()
+        if k not in ("halal_status", "is_vegan", "is_vegetarian")
+    }
+    chroma_filter = vector_filter(non_dietary) if non_dietary else None
+    return db.similarity_search(query, k=n_results, filter=chroma_filter)
 
 
 def is_stale(db: Any) -> bool:

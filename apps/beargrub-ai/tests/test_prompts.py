@@ -24,15 +24,14 @@ class PromptTests(unittest.TestCase):
         self.assertIn("Never estimate", prompt)
         self.assertIn("calories_per_oz", prompt)
         self.assertIn("total_calories = calories_per_oz * user_oz", prompt)
-        self.assertIn("sum calculations", prompt)
+        self.assertIn("sum all items and show breakdown then total", prompt)
 
     def test_system_prompt_contains_core_dietary_rules(self):
         prompt = prompts.SYSTEM_PROMPT
 
-        self.assertIn("Only surface halal status if the user asks about halal", prompt)
+        self.assertIn("Only surface halal status when the user asks about halal", prompt)
         self.assertIn("Classifications are ingredient-based", prompt)
-        self.assertIn("Use your own judgment for this item", prompt)
-        self.assertIn("Do not invent menu items", prompt)
+        self.assertIn("Never invent menu items", prompt)
 
     def test_classification_prompt_requires_json_and_shellfish_handling(self):
         prompt = prompts.CLASSIFICATION_PROMPT

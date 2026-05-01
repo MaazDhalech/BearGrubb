@@ -1,39 +1,68 @@
 # BearGrub
 
-BearGrub contains three UC Berkeley dining projects:
+BearGrub is a UC Berkeley dining assistant. `apps/beargrub-ai/` is the active app. The other two directories are legacy projects preserved for reference.
 
-- `apps/beargrub-ai/` - the current Phase 1 Chainlit dining assistant with scraper, halal classification, RAG retrieval, MCP refresh support, PostHog telemetry, and tests.
-- `apps/calinclusive-dining/` - the legacy Flask API and data scripts for halal, vegan, and vegetarian meal endpoints.
-- `apps/halaliverse/` - the legacy Next.js frontend for browsing halal, vegetarian, and vegan options.
+## Architecture
+
+```
+User message (Chainlit)
+        │
+        ▼
+┌───────────────────────────────────────────────────────┐
+│                       app.py                          │
+│  on_message()                                         │
+│    │                                                  │
+│    ├─ ensure_fresh_menu() ──► scraper.py              │
+│    │       │                   fetch_all()            │
+│    │       │                       │                  │
+│    │       │                  classifier.py           │
+│    │       │                   classify_all()         │
+│    │       │                       │                  │
+│    │       └──────────────────► rag.py                │
+│    │                            embed_menu()          │
+│    │                            [ChromaDB / InMemory] │
+│    │                                                  │
+│    ├─ retrieve() ──────────► rag.py                   │
+│    │       │                  extract_filters()       │
+│    │       │                  is_list_query()?        │
+│    │       │                  ├─ YES → db.get()       │
+│    │       │                  │        (metadata)     │
+│    │       │                  └─ NO  → similarity_    │
+│    │       │                           search()       │
+│    │       │                  sort_and_filter_chunks()│
+│    │       │                                          │
+│    └─ GPT (gpt-4o-mini) ◄── build_messages()         │
+│            │                  SYSTEM_PROMPT + context │
+│            │                  history[-10:]           │
+│            │                                          │
+│            ├─ tool call? ──► mcp_tools.py             │
+│            │                 get_menu → refresh       │
+│            │                                          │
+│            └─ stream response ──► Chainlit UI         │
+└───────────────────────────────────────────────────────┘
+
+Halal classification (classifier.py):
+  cache.json → deterministic rules → GPT fallback
+```
 
 ## Repository Layout
 
-```text
+```
 apps/
-  beargrub-ai/
-    app.py
-    scraper.py
-    classifier.py
-    rag.py
-    mcp_tools.py
-    prompts.py
-    tests/
-  calinclusive-dining/
-    app.py
-    MealClassification.py
-    generate_data.py
-    archive/
-    test-json/
-  halaliverse/
-    app/
-    package.json
+  beargrub-ai/         ← active app
+    app.py             — Chainlit entrypoint, message routing, OpenAI streaming, PostHog telemetry
+    scraper.py         — fetches Berkeley Dining XML menus for all halls
+    classifier.py      — halal classification: cache → rules → GPT; writes classification_cache.json
+    rag.py             — ChromaDB-backed vector store, InMemoryMenuStore fallback, smart retrieval
+    mcp_tools.py       — MCP get_menu tool for autonomous live menu refresh
+    prompts.py         — SYSTEM_PROMPT and CLASSIFICATION_PROMPT
+    menu_answers.py    — legacy deterministic response builders (no longer used)
+    tests/             — unit tests for all modules
+  calinclusive-dining/ ← legacy Flask API
+  halaliverse/         ← legacy Next.js frontend
 ```
 
-## BearGrub AI
-
-BearGrub AI is the active app. It uses Python, Chainlit, OpenAI, LangChain, and ChromaDB.
-
-### Local Setup
+## Local Setup
 
 ```bash
 cd apps/beargrub-ai
@@ -43,46 +72,20 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Set `OPENAI_API_KEY` in `apps/beargrub-ai/.env`. `POSTHOG_API_KEY` is optional for local testing.
-
-Run the assistant:
+Set `OPENAI_API_KEY` in `apps/beargrub-ai/.env`. `POSTHOG_API_KEY` is optional.
 
 ```bash
-chainlit run app.py -w -h
+.venv/bin/chainlit run app.py
 ```
 
-Run tests from the repository root:
+Run tests:
 
 ```bash
-python3 -m unittest discover -s apps/beargrub-ai/tests -v
+cd apps/beargrub-ai && .venv/bin/python -m pytest tests/ -v
 ```
 
-## Legacy Flask API
+## Legacy
 
-The legacy Flask backend is preserved in `apps/calinclusive-dining/`.
+`apps/calinclusive-dining/` — Flask API exposing `/api/halal-meals`, `/api/vegan-meals`, `/api/vegetarian-meals`.
 
-```bash
-cd apps/calinclusive-dining
-python3 -m venv .venv
-source .venv/bin/activate
-pip install flask flask-cors requests openai
-python app.py
-```
-
-The API listens on `http://127.0.0.1:5000` and exposes:
-
-- `GET /api/halal-meals`
-- `GET /api/vegan-meals`
-- `GET /api/vegetarian-meals`
-
-## Legacy Next.js Frontend
-
-The legacy frontend is preserved in `apps/halaliverse/`.
-
-```bash
-cd apps/halaliverse
-npm install
-npm run dev
-```
-
-Visit `http://localhost:3000`. It expects the legacy Flask API at `http://127.0.0.1:5000`.
+`apps/halaliverse/` — Next.js frontend that consumed the Flask API. Expects it at `http://127.0.0.1:5000`.

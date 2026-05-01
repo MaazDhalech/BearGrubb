@@ -3,16 +3,14 @@ from __future__ import annotations
 import json
 import logging
 import os
-import re
 from datetime import date
 from typing import Any
 
 from classifier import classify_all, load_cache
-from config import OPENAI_MODEL, POSTHOG_API_KEY
-from menu_answers import build_menu_response, build_pre_context_response
+from config import DEBUG, OPENAI_MODEL, POSTHOG_API_KEY
 from mcp_tools import MCP_TOOLS, handle_tool_call
 from prompts import SYSTEM_PROMPT
-from rag import embed_menu, is_stale, list_documents, retrieve
+from rag import embed_menu, extract_filters, is_list_query, is_stale, retrieve
 from scraper import fetch_all
 
 logger = logging.getLogger(__name__)
@@ -79,36 +77,6 @@ if cl is None:
 client = None
 db = None
 cache: dict[str, dict[str, Any]] = {}
-
-HALAL_DISCLAIMER = (
-    "Classifications are ingredient-based and intended as a guide, not a religious ruling."
-)
-
-UNSUPPORTED_DATE_TERMS = {
-    "tomorrow",
-    "week",
-    "weekly",
-    "weekend",
-    "wek",
-    "yesterday",
-}
-
-DIETARY_OPTION_TERMS = {
-    "any",
-    "available",
-    "dish",
-    "dishes",
-    "find",
-    "meal",
-    "meals",
-    "option",
-    "options",
-    "serve",
-    "served",
-    "serves",
-    "serving",
-    "show",
-}
 
 
 def configure_posthog() -> None:
@@ -237,221 +205,6 @@ def should_show_halal_disclaimer(content: str) -> bool:
     return is_halal_query(content) and not cl.user_session.get("halal_disclaimer_shown", False)
 
 
-def resolve_followup_content(user_content: str, history: list[dict[str, str]]) -> str:
-    q = user_content.lower().strip()
-    if not re.search(r"\b(sort|group|organize)\b.*\b(dining hall|hall)\b", q):
-        return user_content
-    previous_user_messages = [
-        message.get("content", "")
-        for message in reversed(history)
-        if message.get("role") == "user"
-    ]
-    previous_dietary_query = next(
-        (
-            message
-            for message in previous_user_messages
-            if any(term in message.lower() for term in ["halal", "vegan", "vegetarian", "veggie"])
-        ),
-        "",
-    )
-    if not previous_dietary_query:
-        return user_content
-    if "halal" in previous_dietary_query.lower():
-        return "show halal options across all dining halls for dinner grouped by dining hall"
-    if "vegan" in previous_dietary_query.lower():
-        return "show vegan options across all dining halls for dinner grouped by dining hall"
-    if "vegetarian" in previous_dietary_query.lower() or "veggie" in previous_dietary_query.lower():
-        return "show vegetarian options across all dining halls for dinner grouped by dining hall"
-    return user_content
-
-
-def tokenize(content: str) -> set[str]:
-    return set(re.findall(r"[a-z0-9]+", content.lower()))
-
-
-def asks_for_unsupported_date_range(content: str) -> bool:
-    tokens = tokenize(content)
-    if tokens & UNSUPPORTED_DATE_TERMS:
-        return True
-    return bool(re.search(r"\bnext\s+(week|mon|monday|tue|tuesday|wed|wednesday|thu|thursday|fri|friday|sat|saturday|sun|sunday)\b", content.lower()))
-
-
-def build_unsupported_date_range_response(content: str, menu_date: str) -> str | None:
-    if not asks_for_unsupported_date_range(content):
-        return None
-    return (
-        f"I only have today's Berkeley Dining menu loaded for {menu_date}. "
-        "I can't answer weekly, future, or past menu requests yet. "
-        "Ask for today's options or a specific item from today's menu."
-    )
-
-
-def requested_dietary_filters(content: str) -> list[str]:
-    q = content.lower()
-    filters: list[str] = []
-    if "halal" in q:
-        filters.append("halal")
-    if "vegan" in q:
-        filters.append("vegan")
-    if "vegetarian" in q or "veggie" in q:
-        filters.append("vegetarian")
-    return filters
-
-
-def is_dietary_options_query(content: str) -> bool:
-    filters = requested_dietary_filters(content)
-    if not filters:
-        return False
-    q = content.lower()
-    return bool(
-        tokenize(content) & DIETARY_OPTION_TERMS
-        or re.search(r"\b(what(?:'s| is)?|whats)\b.*\b(at|for|today|tonight|brunch|lunch|dinner)\b", q)
-    )
-
-
-def retrieval_limit(content: str) -> int:
-    return 24 if is_dietary_options_query(content) else 8
-
-
-def doc_matches_dietary_filters(doc: Any, filters: list[str]) -> bool:
-    metadata = getattr(doc, "metadata", {}) or {}
-    for requested_filter in filters:
-        if requested_filter == "halal" and metadata.get("halal_status") != "HALAL":
-            return False
-        if requested_filter == "vegan" and metadata.get("is_vegan") is not True:
-            return False
-        if requested_filter == "vegetarian" and metadata.get("is_vegetarian") is not True:
-            return False
-    return True
-
-
-def dietary_filter_label(filters: list[str]) -> str:
-    labels = {"halal": "halal", "vegan": "vegan", "vegetarian": "vegetarian"}
-    return " and ".join(labels[requested_filter] for requested_filter in filters)
-
-
-def extract_doc_name(doc: Any) -> str:
-    metadata = getattr(doc, "metadata", {}) or {}
-    short_name = str(metadata.get("short_name") or "").strip()
-    if short_name:
-        return short_name
-    match = re.search(r"^Item:\s*(.+)$", getattr(doc, "page_content", ""), re.MULTILINE)
-    return match.group(1).strip() if match else "Unnamed item"
-
-
-def format_dietary_option_line(doc: Any, filters: list[str]) -> str:
-    metadata = getattr(doc, "metadata", {}) or {}
-    hall = str(metadata.get("dining_hall") or "Unknown dining hall").strip()
-    meal = str(metadata.get("meal_period") or "").strip()
-    name = extract_doc_name(doc)
-    details: list[str] = []
-    if meal:
-        details.append(meal)
-    if "halal" in filters and metadata.get("contains_shellfish") is True:
-        details.append("contains shellfish")
-    suffix = f" ({', '.join(details)})" if details else ""
-    return f"- {hall}: {name}{suffix}"
-
-
-def unique_docs_by_item(docs: list[Any]) -> list[Any]:
-    seen: set[tuple[str, str, str]] = set()
-    unique: list[Any] = []
-    for doc in docs:
-        metadata = getattr(doc, "metadata", {}) or {}
-        key = (
-            str(metadata.get("dining_hall") or ""),
-            str(metadata.get("meal_period") or ""),
-            extract_doc_name(doc),
-        )
-        if key in seen:
-            continue
-        seen.add(key)
-        unique.append(doc)
-    return unique
-
-
-def build_dietary_options_response(
-    content: str,
-    chunks: list[Any],
-    menu_date: str,
-    include_halal_disclaimer: bool = False,
-) -> tuple[str, bool] | None:
-    if not is_dietary_options_query(content):
-        return None
-
-    filters = requested_dietary_filters(content)
-    matching_docs = [
-        doc for doc in unique_docs_by_item(chunks) if doc_matches_dietary_filters(doc, filters)
-    ]
-    label = dietary_filter_label(filters)
-    lines: list[str] = []
-    disclaimer_used = include_halal_disclaimer and "halal" in filters
-    if disclaimer_used:
-        lines.append(HALAL_DISCLAIMER)
-
-    if not matching_docs:
-        lines.append(f"I couldn't find any {label} options in today's menu for {menu_date}.")
-        lines.append("Try a dining hall, meal period, or item name to narrow the search.")
-        return "\n".join(lines), disclaimer_used
-
-    matching_docs = sorted(
-        matching_docs,
-        key=lambda doc: (
-            str((getattr(doc, "metadata", {}) or {}).get("dining_hall") or ""),
-            str((getattr(doc, "metadata", {}) or {}).get("meal_period") or ""),
-            extract_doc_name(doc),
-        ),
-    )
-    lines.append(f"Today's {label} options I found for {menu_date}:")
-    lines.extend(format_dietary_option_line(doc, filters) for doc in matching_docs)
-    return "\n".join(lines), disclaimer_used
-
-
-def build_no_context_response(
-    content: str,
-    menu_date: str,
-    include_halal_disclaimer: bool = False,
-) -> tuple[str, bool]:
-    lines: list[str] = []
-    disclaimer_used = include_halal_disclaimer and is_halal_query(content)
-    if disclaimer_used:
-        lines.append(HALAL_DISCLAIMER)
-    lines.append(
-        f"I couldn't find matching items in today's Berkeley Dining menu for {menu_date}. "
-        "Try a dining hall, meal period, or exact menu item."
-    )
-    return "\n".join(lines), disclaimer_used
-
-
-def is_refresh_request(content: str) -> bool:
-    q = content.lower()
-    return "refresh" in q or "reload" in q or "update menu" in q
-
-
-async def send_static_response(
-    user_content: str,
-    assistant_content: str,
-    history: list[dict[str, str]],
-    disclaimer_used: bool = False,
-    guardrail: str | None = None,
-) -> None:
-    msg = cl.Message(content=assistant_content)
-    await msg.send()
-    cl.user_session.set("history", append_history(history, user_content, msg.content))
-    if disclaimer_used:
-        cl.user_session.set("halal_disclaimer_shown", True)
-    capture_event(
-        "response_sent",
-        {
-            "response_length": len(msg.content),
-            "tool_call_count": 0,
-            "halal_disclaimer_shown": bool(disclaimer_used),
-            "deterministic_response": True,
-            "guardrail": guardrail,
-        },
-    )
-
-
 def create_completion(openai_client: Any, messages: list[dict[str, str]], tools: list[dict[str, Any]] | None):
     kwargs: dict[str, Any] = {
         "model": OPENAI_MODEL,
@@ -513,111 +266,34 @@ async def on_message(message):
     user_content = message.content
     menu_date = str(date.today())
     history = cl.user_session.get("history", [])
-    effective_user_content = resolve_followup_content(user_content, history)
-    disclaimer_needed = should_show_halal_disclaimer(effective_user_content)
+    disclaimer_needed = should_show_halal_disclaimer(user_content)
+
     capture_event(
         "message_received",
         {
             "message_length": len(user_content),
-            "halal_query": is_halal_query(effective_user_content),
+            "halal_query": is_halal_query(user_content),
             "history_length": len(history),
         },
     )
 
-    pre_context_response = build_pre_context_response(effective_user_content)
-    if pre_context_response:
-        await send_static_response(
-            user_content,
-            pre_context_response.content,
-            history,
-            disclaimer_used=pre_context_response.disclaimer_used,
-            guardrail=pre_context_response.guardrail,
-        )
-        return
-
-    unsupported_date_response = build_unsupported_date_range_response(effective_user_content, menu_date)
-    if unsupported_date_response:
-        await send_static_response(
-            user_content,
-            unsupported_date_response,
-            history,
-            guardrail="unsupported_date_range",
-        )
-        return
-
     active_db = ensure_fresh_menu(menu_date)
-    all_docs = list_documents(active_db)
+    chunks = retrieve(active_db, user_content)
 
-    menu_response = build_menu_response(
-        effective_user_content,
-        all_docs,
-        menu_date,
-        include_halal_disclaimer=disclaimer_needed,
-    )
-    if menu_response:
-        await send_static_response(
-            user_content,
-            menu_response.content,
-            history,
-            disclaimer_used=menu_response.disclaimer_used,
-            guardrail=menu_response.guardrail,
-        )
-        return
-
-    chunks = retrieve(active_db, effective_user_content, n_results=retrieval_limit(effective_user_content))
-
-    if is_dietary_options_query(effective_user_content):
-        menu_response = build_menu_response(
-            effective_user_content,
-            chunks,
-            menu_date,
-            include_halal_disclaimer=disclaimer_needed,
-        )
-        if menu_response:
-            await send_static_response(
-                user_content,
-                menu_response.content,
-                history,
-                disclaimer_used=menu_response.disclaimer_used,
-                guardrail=menu_response.guardrail,
-            )
-            return
-
-    dietary_options_response = build_dietary_options_response(
-        effective_user_content,
-        chunks,
-        menu_date,
-        include_halal_disclaimer=disclaimer_needed,
-    )
-    if dietary_options_response:
-        response_content, disclaimer_used = dietary_options_response
-        await send_static_response(
-            user_content,
-            response_content,
-            history,
-            disclaimer_used=disclaimer_used,
-            guardrail="dietary_options",
-        )
-        return
-
-    if not chunks and not is_refresh_request(effective_user_content):
-        response_content, disclaimer_used = build_no_context_response(
-            effective_user_content,
-            menu_date,
-            include_halal_disclaimer=disclaimer_needed,
-        )
-        await send_static_response(
-            user_content,
-            response_content,
-            history,
-            disclaimer_used=disclaimer_used,
-            guardrail="empty_retrieval",
-        )
-        return
+    if DEBUG:
+        filters = extract_filters(user_content)
+        list_q = is_list_query(user_content)
+        print(f"[DEBUG] query={user_content!r}")
+        print(f"[DEBUG] filters={filters}")
+        print(f"[DEBUG] is_list_query={list_q}")
+        print(f"[DEBUG] chunk_count={len(chunks)}")
+        for i, chunk in enumerate(chunks):
+            preview = getattr(chunk, "page_content", str(chunk))[:200]
+            print(f"[DEBUG] chunk[{i}]={preview!r}")
 
     context = build_context(chunks)
     messages = build_messages(
-        effective_user_content,
+        user_content,
         context,
         history,
         menu_date=menu_date,
@@ -631,10 +307,10 @@ async def on_message(message):
 
     if tool_calls:
         run_tool_calls(tool_calls)
-        refreshed_chunks = retrieve(db, effective_user_content)
+        refreshed_chunks = retrieve(db, user_content)
         refreshed_context = build_context(refreshed_chunks)
         refreshed_messages = build_messages(
-            effective_user_content,
+            user_content,
             refreshed_context,
             history,
             menu_date=menu_date,
