@@ -8,42 +8,65 @@ BearGrub is a UC Berkeley dining assistant. `apps/beargrub-ai/` is the active ap
 User message (Chainlit)
         │
         ▼
-┌───────────────────────────────────────────────────────┐
-│                       app.py                          │
-│  on_message()                                         │
-│    │                                                  │
-│    ├─ ensure_fresh_menu() ──► scraper.py              │
-│    │       │                   fetch_all()            │
-│    │       │                       │                  │
-│    │       │                  classifier.py           │
-│    │       │                   classify_all()         │
-│    │       │                       │                  │
-│    │       └──────────────────► rag.py                │
-│    │                            embed_menu()          │
-│    │                            [ChromaDB / InMemory] │
-│    │                                                  │
-│    ├─ retrieve() ──────────► rag.py                   │
-│    │       │                  extract_filters()       │
-│    │       │                  is_list_query()?        │
-│    │       │                  ├─ YES → db.get()       │
-│    │       │                  │        (metadata)     │
-│    │       │                  └─ NO  → similarity_    │
-│    │       │                           search()       │
-│    │       │                  sort_and_filter_chunks()│
-│    │       │                                          │
-│    └─ GPT (gpt-4o-mini) ◄── build_messages()         │
-│            │                  SYSTEM_PROMPT + context │
-│            │                  history[-10:]           │
-│            │                                          │
-│            ├─ tool call? ──► mcp_tools.py             │
-│            │                 get_menu → refresh       │
-│            │                                          │
-│            └─ stream response ──► Chainlit UI         │
-└───────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────┐
+│                           app.py                              │
+│  on_message()                                                 │
+│    │                                                          │
+│    ├─ ensure_fresh_menu()                                     │
+│    │    └─ if stale/missing ──► scraper.py  fetch_all()       │
+│    │                                │                         │
+│    │                           classifier.py classify_all()   │
+│    │                                │                         │
+│    │                           rag.py  embed_menu()           │
+│    │                                [ChromaDB / InMemory]     │
+│    │                                                          │
+│    ├─ retrieve() ──────────► rag.py                           │
+│    │                          extract_filters()               │
+│    │                          is_list_query()?                │
+│    │                          ├─ YES → db.get()  (metadata)   │
+│    │                          └─ NO  → similarity_search()    │
+│    │                          sort_and_filter_chunks()        │
+│    │                                                          │
+│    └─ build_messages()                                        │
+│         SYSTEM_PROMPT + retrieved context + history[-10:]     │
+│              │                                                │
+│              ▼                                                │
+│         GPT (gpt-4o-mini) ◄─────────────────────────────┐    │
+│              │           tools=MCP_TOOLS offered         │    │
+│              │                                           │    │
+│         stream chunks                                    │    │
+│              │                                           │    │
+│    ┌─────────┴──────────┐                                │    │
+│    │                    │                                │    │
+│  text token        tool_call:                            │    │
+│  → Chainlit UI     get_menu                              │    │
+│                         │                                │    │
+│                    mcp_tools.py                          │    │
+│                    handle_tool_call()                    │    │
+│                    scraper → classifier → embed_menu()   │    │
+│                         │                                │    │
+│                    retrieve() on fresh db                │    │
+│                         │                                │    │
+│                    build_messages() + "menu refreshed"   │    │
+│                         └────────────────────────────────┘    │
+│                         (second GPT call, no tools)           │
+└───────────────────────────────────────────────────────────────┘
 
-Halal classification (classifier.py):
-  cache.json → deterministic rules → GPT fallback
+Halal classification pipeline (classifier.py):
+  classification_cache.json → deterministic rules → GPT fallback
 ```
+
+### MCP tool: `get_menu`
+
+`MCP_TOOLS` is passed as the `tools` parameter on every GPT call. GPT decides autonomously whether to invoke it based on this instruction in the tool description:
+
+> "Only call if the user explicitly asks to refresh or if data seems incorrect for today."
+
+In practice it fires in two scenarios:
+1. **Explicit user request** — "refresh the menu", "reload", "update the menu"
+2. **GPT self-correction** — GPT detects a mismatch between what the user describes and what the context shows, and judges a refresh is warranted
+
+When invoked, the full scrape → classify → embed pipeline reruns and GPT gets a second completion with the fresh context. The second call passes `tools=None` to prevent recursive tool calls.
 
 ## Repository Layout
 

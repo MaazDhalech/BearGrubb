@@ -10,21 +10,29 @@ from config import CHROMA_PATH, COLLECTION_NAME, EMBEDDING_MODEL
 
 logger = logging.getLogger(__name__)
 
-EXCLUDED_CATEGORIES_FOR_DIETARY_LIST: frozenset[str] = frozenset({
-    "salad bar", "dessert", "bread & pastries", "bread", "soups",
-    "dressing", "sauce", "bakery", "beverage", "condiment",
-})
-
 MEAT_TERMS_FOR_SORT: frozenset[str] = frozenset({
     "beef", "chicken", "turkey", "lamb", "kofta", "fajita", "steak",
     "meat", "sausage", "fish", "salmon", "shrimp", "pork", "duck",
 })
 
+# Queries that should return the full menu for the relevant hall/meal
+# rather than going through semantic search. When in doubt, be a list query.
 _LIST_QUERY_PATTERNS: tuple[str, ...] = (
-    "what is", "what are", "show me", "list", " any ", " all ",
-    "options", "available", "tonight", "today", "for dinner",
-    "for brunch", "for breakfast", "for lunch", "what can i eat",
-    "whats halal", "what's halal", "whats vegan", "what's vegan",
+    "what is", "what are", "what do", "what can",
+    "show me", "show", "list", "find", "give me",
+    " any ", " all ", "options", "available",
+    "tonight", "today", "this morning", "this evening",
+    "for dinner", "for brunch", "for breakfast", "for lunch",
+    "at dinner", "at brunch", "at breakfast", "at lunch",
+    "at crossroads", "at cafe 3", "at clark kerr", "at foothill", "at ckc",
+    "what halal", "whats halal", "what's halal",
+    "what vegan", "whats vegan", "what's vegan",
+    "what vegetarian", "whats vegetarian", "what's vegetarian",
+    "highest protein", "lowest calorie", "most protein",
+    "high protein", "low calorie", "low fat",
+    "meal plan", "build me", "plan for",
+    "gluten free", "gluten-free", "allergen", "allergens",
+    "which dining", "where can", "which hall",
 )
 
 
@@ -125,28 +133,22 @@ def is_list_query(query: str) -> bool:
     return any(pattern in q for pattern in _LIST_QUERY_PATTERNS)
 
 
-def _get_by_filter(db: Any, filters: dict[str, Any] | None, limit: int = 50) -> list[Any]:
+def _get_by_filter(db: Any, filters: dict[str, Any] | None, limit: int = 400) -> list[Any]:
     """Fetch documents by metadata filter without semantic ranking."""
     chroma_filter = vector_filter(filters) if filters else None
     if isinstance(db, InMemoryMenuStore):
         result = db.get(limit=limit, include=["metadatas", "documents"], where=chroma_filter)
     else:
-        result = db.get(where=chroma_filter, limit=limit, include=["metadatas", "documents"])
+        if chroma_filter:
+            result = db.get(where=chroma_filter, limit=limit, include=["metadatas", "documents"])
+        else:
+            result = db.get(limit=limit, include=["metadatas", "documents"])
     documents = result.get("documents") or []
     metadatas = result.get("metadatas") or []
     return [
         MenuDocument(page_content=str(doc), metadata=dict(meta or {}))
         for doc, meta in zip(documents, metadatas, strict=False)
     ]
-
-
-def _is_excluded_for_dietary_list(doc: Any) -> bool:
-    meta = doc.metadata if hasattr(doc, "metadata") else {}
-    category = str(meta.get("category", "")).lower().strip()
-    name = str(meta.get("short_name", "")).lower().strip()
-    return category in EXCLUDED_CATEGORIES_FOR_DIETARY_LIST or any(
-        excl in name for excl in EXCLUDED_CATEGORIES_FOR_DIETARY_LIST
-    )
 
 
 def _item_sort_key(doc: Any) -> int:
@@ -163,12 +165,6 @@ def _item_sort_key(doc: Any) -> int:
     if is_vegan or is_vegetarian:
         return 1
     return 2
-
-
-def sort_and_filter_chunks(chunks: list[Any], has_dietary_filters: bool) -> list[Any]:
-    if has_dietary_filters:
-        chunks = [c for c in chunks if not _is_excluded_for_dietary_list(c)]
-    return sorted(chunks, key=_item_sort_key)
 
 
 def embed_menu(
@@ -230,18 +226,24 @@ def reset_chroma_collection(
         logger.debug("No existing Chroma collection to reset", exc_info=True)
 
 
-def retrieve(db: Any, query: str, n_results: int = 8) -> list[Any]:
-    """Smart retrieval: list queries use metadata get(), conversational queries use semantic search."""
+def retrieve(db: Any, query: str, n_results: int = 20) -> list[Any]:
+    """
+    List queries (broad/availability): fetch ALL items for the hall/meal period and let
+    GPT filter and reason over the full menu. No dietary pre-filtering.
+    Specific item queries: semantic search with a wide k, no dietary filters.
+    """
     filters = extract_filters(query)
 
     if is_list_query(query):
-        has_dietary = bool(filters and any(
-            k in filters for k in ("halal_status", "is_vegan", "is_vegetarian")
-        ))
-        chunks = _get_by_filter(db, filters, limit=50)
-        return sort_and_filter_chunks(chunks, has_dietary)
+        # Only use location/time as metadata filters — GPT handles dietary logic
+        location_filters = {
+            k: v for k, v in (filters or {}).items()
+            if k in ("dining_hall", "meal_period")
+        }
+        chunks = _get_by_filter(db, location_filters or None, limit=400)
+        return sorted(chunks, key=_item_sort_key)
 
-    # Conversational: strip dietary status filters so item is retrieved regardless of halal_status
+    # Specific item query — semantic search, strip dietary filters to avoid blindness
     non_dietary = {
         k: v for k, v in (filters or {}).items()
         if k not in ("halal_status", "is_vegan", "is_vegetarian")
@@ -279,6 +281,8 @@ Category: {item.get('category', '')}
 Serving Size: {serving_text}
 Halal Status: {item.get('halal_status', 'UNCERTAIN')}
 Halal Reason: {item.get('halal_reason', '')}
+Vegan: {item.get('is_vegan', False)}
+Vegetarian: {item.get('is_vegetarian', False)}
 Contains Shellfish: {item.get('contains_shellfish', False)}
 Shellfish Note: {shellfish_note}
 Allergens: {allergens_present}
