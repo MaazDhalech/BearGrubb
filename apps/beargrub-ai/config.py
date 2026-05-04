@@ -29,6 +29,8 @@ EMBEDDING_MODEL = "text-embedding-3-small"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 POSTHOG_API_KEY = os.getenv("POSTHOG_API_KEY")
+S3_BUCKET = os.getenv("S3_BUCKET", "")
+AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 
 REQUEST_TIMEOUT_SECONDS = 15
 

@@ -29,7 +29,7 @@ class ProjectMetadataTests(unittest.TestCase):
                 "posthog",
             },
         )
-        self.assertNotIn("boto3", requirements)
+        self.assertIn("boto3", requirements)
 
     def test_env_example_declares_only_expected_keys_without_secret_values(self):
         env_text = (PROJECT_ROOT / ".env.example").read_text()

@@ -14,6 +14,7 @@ from mcp_tools import MCP_TOOLS, handle_tool_call
 from prompts import SYSTEM_PROMPT
 from rag import embed_menu, extract_filters, is_list_query, is_stale, retrieve
 from refresh import RefreshSummary, refresh_menu_store
+from storage import storage_from_env
 
 logger = logging.getLogger(__name__)
 
@@ -130,23 +131,44 @@ def get_openai_client():
 
 
 def init(menu_date: str | None = None) -> Any:
-    """Server startup path. Loads cache, fetches today's menus, classifies, and embeds."""
+    """Server startup path. Loads cache and menu — from S3 if available, else live scrape."""
     global db, cache
     menu_date = menu_date or str(date.today())
+    storage = storage_from_env()
+
+    # Pull classification cache from S3 so cold containers start warm
+    if hasattr(storage, "sync_cache_from_s3"):
+        from config import CACHE_PATH
+        storage.sync_cache_from_s3(CACHE_PATH)
+
     cache = load_cache()
-    db = refresh_menu(menu_date, existing_db=db)
+
+    # Try loading today's classified menu from storage before hitting Berkeley's API
+    stored_items = storage.load_classified_items(menu_date=menu_date, requested_hall="ALL")
+    if stored_items:
+        logger.info("Loaded %d classified items from storage for %s", len(stored_items), menu_date)
+        db = embed_menu(stored_items, use_chroma=False)
+    else:
+        db = refresh_menu(menu_date, existing_db=db, storage=storage)
+
     return db
 
 
-def refresh_menu(menu_date: str, existing_db: Any = None) -> Any:
+def refresh_menu(menu_date: str, existing_db: Any = None, storage: Any = None) -> Any:
     global last_refresh_summary
     result = refresh_menu_store(
         menu_date=menu_date,
         existing_db=existing_db,
         cache=cache,
         persist_snapshot=True,
+        storage_backend=storage or storage_from_env(),
     )
     last_refresh_summary = result.summary
+    # Sync updated cache back to S3 after a fresh scrape
+    s = storage or storage_from_env()
+    if hasattr(s, "sync_cache_to_s3"):
+        from config import CACHE_PATH
+        s.sync_cache_to_s3(CACHE_PATH)
     if not result.summary.success:
         logger.warning("Menu refresh did not produce a fresh embedded store: %s", result.summary.to_dict())
     return result.store
