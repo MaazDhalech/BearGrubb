@@ -55,14 +55,16 @@ The Docker image defines a health check against the Chainlit HTTP root. A health
 python refresh.py --date "$(date +%F)" --hall ALL --json
 ```
 
-## App Runner Shape
+## ECS Fargate Shape
 
-Use an image-based service:
+Use an image-based service on Amazon ECS with Fargate:
 
-- Port: `8000`, or set `PORT` if the platform injects a port.
-- Environment variables: `OPENAI_API_KEY`, optional `POSTHOG_API_KEY`, optional `BEARGRUB_AUTO_INIT=1`.
-- Health path: `/`.
-- Instance storage: ephemeral is acceptable for Phase 2 because refresh can rebuild `chroma_db/` and `menu_data/`; persistent object storage is still a later production hardening step.
+- Image: pushed to ECR (`beargrub-ai:latest`)
+- Port: `8000`
+- Environment variables: `OPENAI_API_KEY`, `S3_BUCKET`, `AWS_REGION`, optional `POSTHOG_API_KEY`
+- Health path: `/`
+- GitHub Actions deploys via: build → ECR push → ECS task definition update → service redeploy
+- Required GitHub secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `ECS_CLUSTER`, `ECS_SERVICE`, `ECS_TASK_DEFINITION`
 
 ## Failure Policy
 

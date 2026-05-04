@@ -70,7 +70,8 @@ class PosthogTests(unittest.TestCase):
         self.app.posthog = fake_posthog
         self.app.cl.user_session.set("id", "session-123")
 
-        captured = self.app.capture_event("session_started")
+        with patch.object(self.app, "POSTHOG_API_KEY", ""):
+            captured = self.app.capture_event("session_started")
 
         self.assertFalse(captured)
         fake_posthog.capture.assert_not_called()
