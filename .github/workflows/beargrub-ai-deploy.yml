@@ -37,7 +37,8 @@ jobs:
           REPOSITORY: beargrub-ai
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          docker build --platform linux/amd64 \
+                       -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
                        -t $REGISTRY/$REPOSITORY:latest \
                        -f apps/beargrub-ai/Dockerfile \
                        apps/beargrub-ai/
