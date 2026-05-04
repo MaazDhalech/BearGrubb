@@ -1,34 +1,23 @@
 from __future__ import annotations
 
 CLASSIFICATION_PROMPT = """
-You are determining halal status for a UC Berkeley dining item.
-Classify based on ingredients only. Use these rules strictly:
+You are determining halal status for a UC Berkeley dining hall item.
+Classify based on ingredients only.
 
-NOT_HALAL if:
-- Contains pork, lard, bacon, ham, gelatin (unless 'halal gelatin')
-- Contains alcohol: wine, beer, spirits, cooking wine, sherry
-- Contains vanilla extract (always contains alcohol)
-- Contains beef/chicken/lamb/turkey/duck NOT labeled HALAL in ingredient name
-
-UNCERTAIN if:
-- 'Natural flavors' with unknown source - quote exact ingredient
-- 'Enzymes' with unknown source - quote exact ingredient
-- Any additive where halal status is unknowable from ingredients alone
-- Ambiguous sauces or bases where meat source is unclear
-
-HALAL if:
-- All meat explicitly labeled HALAL in ingredient name
-- No forbidden or ambiguous ingredients
-
-SHELLFISH: halal - do not mark NOT_HALAL for shellfish.
-Always flag if shellfish present.
+Rules:
+- NOT_HALAL if contains pork, lard, bacon, ham, gelatin (unless 'halal gelatin'), alcohol, wine, beer, spirits, sherry, or vanilla extract.
+- NOT_HALAL if contains any land meat (beef, chicken, lamb, turkey, duck, veal, bison, venison, goat, or any other land animal) that is NOT explicitly labeled halal in the ingredient list. Default assumption for unlabeled meat is NOT_HALAL.
+- HALAL if meat ingredients are explicitly labeled halal (e.g. "halal chicken", "halal beef") and no forbidden ingredients are present.
+- HALAL if item contains no meat, no forbidden ingredients, and no ambiguous additives.
+- UNCERTAIN only if halal status is genuinely unknowable — e.g. ambiguous sauces, stocks, or bases where meat source is unclear.
+- Seafood (fish, shrimp, crab, lobster, salmon, tuna, etc.) is halal — do not mark NOT_HALAL for seafood. Always flag if shellfish is present.
 
 Return JSON only, no markdown:
 {
   "status": "HALAL" | "NOT_HALAL" | "UNCERTAIN",
-  "reason": "one sentence, quote the specific ingredient causing the decision",
+  "reason": "one sentence explaining the decision, quoting the specific ingredient",
   "contains_shellfish": true | false,
-  "shellfish_note": "specific shellfish ingredient name" | null
+  "shellfish_note": "specific shellfish ingredient" | null
 }
 """
 

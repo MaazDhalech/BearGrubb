@@ -13,47 +13,13 @@ from prompts import CLASSIFICATION_PROMPT
 
 logger = logging.getLogger(__name__)
 
-FORBIDDEN_PATTERNS = [
-    (r"\bPORK\b", "pork"),
-    (r"\bLARD\b", "lard"),
-    (r"\bBACON\b", "bacon"),
-    (r"\bHAM\b", "ham"),
-    (r"\bANCHOV(Y|IES)\b", "anchovy paste"),
-    (r"\bGELATIN\b", "gelatin"),
-    (r"\bWINE\b", "wine"),
-    (r"\bBEER\b", "beer"),
-    (r"\bSHERRY\b", "sherry"),
-    (r"\bALCOHOL\b", "alcohol"),
-    (r"\bSPIRITS\b", "spirits"),
-    (r"\bVANILLA EXTRACT\b", "vanilla extract"),
-]
-
-MEATS = ["BEEF", "CHICKEN", "LAMB", "TURKEY", "VEAL", "DUCK"]
-
 SHELLFISH_TERMS = [
-    "SHELLFISH",
-    "SHRIMP",
-    "PRAWN",
-    "CRAB",
-    "LOBSTER",
-    "OYSTER",
-    "CLAM",
-    "MUSSEL",
-    "SCALLOP",
-]
-
-AMBIGUOUS_PATTERNS = [
-    (r"\bNATURAL FLAVORS?\b", "natural flavors with unknown source"),
-    (r"\bENZYMES?\b", "enzymes with unknown source"),
-]
-
-GPT_REVIEW_PATTERNS = [
-    r"\bBASE\b",
-    r"\bDEMI GLACE\b",
+    "SHELLFISH", "SHRIMP", "PRAWN", "CRAB", "LOBSTER",
+    "OYSTER", "CLAM", "MUSSEL", "SCALLOP",
 ]
 
 VALID_STATUSES = {"HALAL", "NOT_HALAL", "UNCERTAIN"}
-CLASSIFICATION_CACHE_VERSION = "v2"
+CLASSIFICATION_CACHE_VERSION = "v3"
 
 
 def load_cache(path: str = CACHE_PATH) -> dict[str, dict[str, Any]]:
@@ -74,7 +40,6 @@ def save_cache(cache: dict[str, dict[str, Any]], path: str = CACHE_PATH) -> None
 
 
 def normalize(ingredients: str) -> str:
-    """Normalize before any string matching or hashing."""
     s = (ingredients or "").upper()
     s = re.sub(r"[^A-Z0-9\s]", " ", s)
     s = re.sub(r"\s+", " ", s).strip()
@@ -86,62 +51,11 @@ def get_cache_key(ingredients: str) -> str:
     return hashlib.md5(f"{CLASSIFICATION_CACHE_VERSION}:{normalized}".encode()).hexdigest()
 
 
-def deterministic_classify(normalized: str, ingredients: str = "") -> dict[str, Any] | None:
-    contains_shellfish, shellfish_note = detect_shellfish(normalized)
-
-    if not normalized:
-        return _result(
-            "UNCERTAIN",
-            "No ingredient data available",
-            contains_shellfish=contains_shellfish,
-            shellfish_note=shellfish_note,
-        )
-
-    for pattern, label in FORBIDDEN_PATTERNS:
-        if pattern == r"\bGELATIN\b":
-            if re.search(pattern, normalized) and "HALAL GELATIN" not in normalized:
-                return _result(
-                    "NOT_HALAL",
-                    f"Contains {label}",
-                    contains_shellfish=contains_shellfish,
-                    shellfish_note=shellfish_note,
-                )
-        elif re.search(pattern, normalized):
-            return _result(
-                "NOT_HALAL",
-                f"Contains {label}",
-                contains_shellfish=contains_shellfish,
-                shellfish_note=shellfish_note,
-            )
-
-    for segment in normalized_ingredient_segments(ingredients or normalized):
-        for meat in MEATS:
-            if re.search(rf"\b{meat}\b", segment) and "HALAL" not in segment:
-                return _result(
-                    "NOT_HALAL",
-                    f"Contains {meat.lower()} not labeled halal",
-                    contains_shellfish=contains_shellfish,
-                    shellfish_note=shellfish_note,
-                )
-
-    for pattern, reason in AMBIGUOUS_PATTERNS:
-        if re.search(pattern, normalized):
-            return _result(
-                "UNCERTAIN",
-                f"Contains {reason}",
-                contains_shellfish=contains_shellfish,
-                shellfish_note=shellfish_note,
-            )
-
-    if any(re.search(pattern, normalized) for pattern in GPT_REVIEW_PATTERNS):
-        return None
-
-    return _result(
-        "HALAL",
-        "No forbidden or ambiguous ingredients found",
-        contains_shellfish=contains_shellfish,
-        shellfish_note=shellfish_note,
-    )
+def detect_shellfish(normalized: str) -> tuple[bool, str | None]:
+    for term in SHELLFISH_TERMS:
+        if re.search(rf"\b{term}\b", normalized):
+            return True, term.title()
+    return False, None
 
 
 def classify(
@@ -151,84 +65,18 @@ def classify(
     cache_path: str | None = CACHE_PATH,
 ) -> dict[str, Any]:
     ingredients = item.get("ingredients") or ""
-    normalized = normalize(ingredients)
     key = get_cache_key(ingredients)
     active_cache = cache if cache is not None else load_cache(cache_path or CACHE_PATH)
 
     if key in active_cache:
         return deepcopy(_coerce_result(active_cache[key]))
 
-    result = allergen_override_classify(item, normalized)
-    if result is None:
-        result = explicit_halal_override_classify(item, normalized, ingredients)
-    if result is None:
-        result = deterministic_classify(normalized, ingredients)
-    if result is None:
-        result = gpt_classify(ingredients, normalized, openai_client=openai_client)
+    result = gpt_classify(ingredients, openai_client=openai_client)
 
     active_cache[key] = result
     if cache_path is not None:
         save_cache(active_cache, cache_path)
     return deepcopy(result)
-
-
-def allergen_override_classify(item: dict[str, Any], normalized: str) -> dict[str, Any] | None:
-    allergens_present = {
-        str(allergen).strip().upper()
-        for allergen in item.get("allergens_present") or []
-        if str(allergen).strip()
-    }
-    if item.get("is_vegan") and "ALCOHOL" in allergens_present and "ALCOHOL" not in normalized:
-        contains_shellfish, shellfish_note = detect_shellfish(normalized)
-        return _result(
-            "UNCERTAIN",
-            "Marked vegan but Berkeley XML flags alcohol as an allergen",
-            contains_shellfish=contains_shellfish,
-            shellfish_note=shellfish_note,
-        )
-    return None
-
-
-def explicit_halal_override_classify(
-    item: dict[str, Any],
-    normalized: str,
-    ingredients: str,
-) -> dict[str, Any] | None:
-    if not has_berkeley_halal_marker(item):
-        return None
-    if not normalized:
-        return None
-
-    contains_shellfish, shellfish_note = detect_shellfish(normalized)
-
-    for pattern, label in FORBIDDEN_PATTERNS:
-        if pattern == r"\bGELATIN\b":
-            if re.search(pattern, normalized) and "HALAL GELATIN" not in normalized:
-                return None
-        elif re.search(pattern, normalized):
-            return None
-
-    for segment in normalized_ingredient_segments(ingredients or normalized):
-        for meat in MEATS:
-            if re.search(rf"\b{meat}\b", segment) and "HALAL" not in segment:
-                return None
-
-    return _result(
-        "HALAL",
-        "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
-        contains_shellfish=contains_shellfish,
-        shellfish_note=shellfish_note,
-    )
-
-
-def has_berkeley_halal_marker(item: dict[str, Any]) -> bool:
-    dietary_choices = item.get("dietary_choices") or {}
-    if str(dietary_choices.get("Halal", "")).strip().lower() == "yes":
-        return True
-    short_name = str(item.get("short_name") or "").strip().lower()
-    if short_name.startswith("halal "):
-        return True
-    return False
 
 
 def classify_all(
@@ -261,23 +109,18 @@ def classify_all(
 
 def gpt_classify(
     ingredients: str,
-    normalized: str,
     openai_client: Any | None = None,
 ) -> dict[str, Any]:
+    normalized = normalize(ingredients)
     contains_shellfish, shellfish_note = detect_shellfish(normalized)
+
     if openai_client is None:
         try:
             from openai import OpenAI
-
             openai_client = OpenAI()
         except ImportError:
-            logger.warning("OpenAI package is not installed; returning UNCERTAIN classification")
-            return _result(
-                "UNCERTAIN",
-                "Unable to classify ambiguous ingredients without OpenAI client",
-                contains_shellfish=contains_shellfish,
-                shellfish_note=shellfish_note,
-            )
+            logger.warning("OpenAI package not installed; returning UNCERTAIN")
+            return _result("UNCERTAIN", "Cannot classify without OpenAI client", contains_shellfish, shellfish_note)
 
     response = openai_client.chat.completions.create(
         model=OPENAI_MODEL,
@@ -291,28 +134,14 @@ def gpt_classify(
     try:
         parsed = json.loads(content)
     except (TypeError, json.JSONDecodeError):
-        logger.warning("OpenAI classification returned invalid JSON: %r", content)
-        parsed = {
-            "status": "UNCERTAIN",
-            "reason": "Classifier returned invalid JSON",
-        }
-    result = _coerce_result(parsed)
+        logger.warning("GPT classification returned invalid JSON: %r", content)
+        parsed = {"status": "UNCERTAIN", "reason": "Classifier returned invalid JSON"}
 
+    result = _coerce_result(parsed)
     if contains_shellfish:
         result["contains_shellfish"] = True
         result["shellfish_note"] = shellfish_note
     return result
-
-
-def normalized_ingredient_segments(ingredients: str) -> list[str]:
-    return [normalize(segment) for segment in (ingredients or "").split(";") if normalize(segment)]
-
-
-def detect_shellfish(normalized: str) -> tuple[bool, str | None]:
-    for term in SHELLFISH_TERMS:
-        if re.search(rf"\b{term}\b", normalized):
-            return True, term.title()
-    return False, None
 
 
 def _coerce_result(value: dict[str, Any]) -> dict[str, Any]:

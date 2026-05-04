@@ -38,8 +38,8 @@ class PromptTests(unittest.TestCase):
 
         self.assertIn("Return JSON only", prompt)
         self.assertIn('"status": "HALAL" | "NOT_HALAL" | "UNCERTAIN"', prompt)
-        self.assertIn("SHELLFISH: halal", prompt)
-        self.assertIn("do not mark NOT_HALAL for shellfish", prompt)
+        self.assertIn("do not mark NOT_HALAL for seafood", prompt)
+        self.assertIn("NOT_HALAL", prompt)
 
     def test_classifier_uses_shared_classification_prompt(self):
         self.assertIs(classifier.CLASSIFICATION_PROMPT, prompts.CLASSIFICATION_PROMPT)
