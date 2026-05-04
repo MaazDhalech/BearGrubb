@@ -83,7 +83,6 @@ STOPWORDS = {
     "for",
     "from",
     "hall",
-    "halal",
     "half",
     "had",
     "have",
@@ -459,7 +458,18 @@ def build_optimization_response(
             item for item in scope_items if item.calories is not None and item.calories <= calorie_limit
         ]
         if not candidates:
-            return None
+            # scope_items may be protein-only; retry against the full dietary scope
+            full_scope = filter_default_menu_items(
+                unique_items([i for i in filter_scope(items, hall=hall, meal=meal) if matches_dietary_filters(i, filters)]),
+                content,
+            )
+            candidates = [i for i in full_scope if i.calories is not None and i.calories <= calorie_limit]
+        if not candidates:
+            label = dietary_label(filters)
+            return RuleBasedResponse(
+                f"I couldn't find any {label} options at {location} under {calorie_limit} calories today.",
+                guardrail="calorie_limit_no_results",
+            )
         lines = [f"{dietary_label(filters).capitalize()} options at {location} under {calorie_limit} calories:", ""]
         lines.extend(f"✅ {item.name} — {format_calories(item.calories)} cal per {format_serving(item)}" for item in candidates)
         return RuleBasedResponse("\n".join(lines), guardrail="calorie_limit")
@@ -1563,8 +1573,19 @@ def fraction_descriptor(fraction: float) -> str:
 
 
 def extract_calorie_limit(content: str) -> int | None:
-    match = re.search(r"\bunder\s+(\d+)\s*(?:cal|calories)?\b", content.lower())
-    return int(match.group(1)) if match else None
+    q = content.lower()
+    for pattern in (
+        r"\bunder\s+([\d,]+)\s*(?:cal(?:ories?)?)?\b",
+        r"\bbelow\s+([\d,]+)\s*(?:cal(?:ories?)?)?\b",
+        r"\bless\s+than\s+([\d,]+)\s*(?:cal(?:ories?)?)?\b",
+        r"\bat\s+most\s+([\d,]+)\s*(?:cal(?:ories?)?)?\b",
+        r"\bmax(?:imum)?\s+([\d,]+)\s*(?:cal(?:ories?)?)?\b",
+        r"\b<=\s*([\d,]+)\s*(?:cal(?:ories?)?)?\b",
+    ):
+        match = re.search(pattern, q)
+        if match:
+            return int(match.group(1).replace(",", ""))
+    return None
 
 
 def extract_protein_target(content: str) -> int | None:

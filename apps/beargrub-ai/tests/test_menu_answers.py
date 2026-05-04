@@ -565,5 +565,75 @@ class MenuAnswerTests(unittest.TestCase):
                 self.assertIn(expected, response.content)
 
 
+    def test_calorie_limit_respected_when_no_protein_items_under_cap(self):
+        # "under 100 calories" should not fall through to an uncapped halal list
+        docs = [
+            doc("Halal Ground Beef", ingredients="Beef HALAL", calories=300, serving_size=4.08),
+            doc("Halal Rosemary Chicken", ingredients="Chicken HALAL", calories=153, serving_size=3.94),
+            doc("Steamed Broccoli", is_vegan=True, is_vegetarian=True, calories=31, serving_size=3.84),
+            doc("Jasmine Rice", is_vegan=True, is_vegetarian=True, calories=89, serving_size=3),
+        ]
+
+        response = menu_answers.build_menu_response(
+            "What can I eat at Crossroads dinner that's halal and under 100 calories?",
+            docs,
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        # No item above 100 cal should appear
+        self.assertNotIn("Halal Ground Beef", response.content)
+        self.assertNotIn("Halal Rosemary Chicken", response.content)
+        # Vegan fallback items under 100 cal should appear
+        self.assertIn("Steamed Broccoli", response.content)
+        self.assertIn("Jasmine Rice", response.content)
+
+    def test_calorie_limit_alternative_phrasings(self):
+        docs = [
+            doc("Halal Beef Fajitas", ingredients="Beef HALAL", calories=94, serving_size=3.18),
+            doc("Halal Ground Beef", ingredients="Beef HALAL", calories=300, serving_size=4.08),
+        ]
+
+        for query in (
+            "What's halal at Crossroads below 200 calories?",
+            "What's halal at Crossroads less than 200 calories?",
+            "What's halal at Crossroads max 200 calories?",
+        ):
+            with self.subTest(query=query):
+                response = menu_answers.build_menu_response(query, docs, "2026-04-29")
+                self.assertIsNotNone(response)
+                self.assertIn("Halal Beef Fajitas", response.content)
+                self.assertNotIn("Halal Ground Beef", response.content)
+
+    def test_vegan_fake_meat_item_correctly_identified_as_halal(self):
+        # "Halal Vegan Chicken Tenders" must match over generic "Chicken Tenders"
+        docs = [
+            doc(
+                "Halal Vegan Chicken Tenders",
+                is_vegan=True,
+                is_vegetarian=True,
+                halal_status="HALAL",
+                halal_reason="Vegan item",
+                ingredients="Textured Soy Protein; Breading",
+            ),
+            doc(
+                "Chicken Tenders",
+                halal_status="NOT_HALAL",
+                halal_reason="Contains chicken not labeled halal",
+                ingredients="Chicken Breast; Breadcrumbs",
+            ),
+        ]
+
+        response = menu_answers.build_menu_response(
+            "Is the Halal Vegan Chicken Tenders halal?",
+            docs,
+            "2026-04-29",
+        )
+
+        self.assertIsNotNone(response)
+        self.assertIn("✅ HALAL", response.content)
+        self.assertNotIn("NOT HALAL", response.content)
+
+
 if __name__ == "__main__":
     unittest.main()
