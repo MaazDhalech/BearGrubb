@@ -11,6 +11,7 @@ from classifier import classify_all
 from config import DINING_HALLS
 from rag import embed_menu
 from scraper import fetch_all
+from storage import LocalMenuStorage
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,8 @@ class RefreshSummary:
     classified_item_count: int = 0
     classification_counts: dict[str, int] = field(default_factory=dict)
     embedded: bool = False
+    snapshot_saved: bool = False
+    snapshot_path: str | None = None
     kept_existing_store: bool = False
     errors: list[str] = field(default_factory=list)
 
@@ -62,6 +65,8 @@ def refresh_menu_store(
     classifier: ClassifyFn = classify_all,
     embedder: EmbedFn = embed_menu,
     build_empty_store_on_total_failure: bool = True,
+    persist_snapshot: bool = False,
+    storage_backend: LocalMenuStorage | None = None,
 ) -> RefreshResult:
     menu_date = menu_date or str(date.today())
     halls = selected_halls(hall)
@@ -119,6 +124,21 @@ def refresh_menu_store(
         return RefreshResult(store=existing_db, summary=summary)
 
     summary.embedded = True
+    if persist_snapshot:
+        storage_backend = storage_backend or LocalMenuStorage()
+        try:
+            record = storage_backend.save_snapshot(
+                menu_date=menu_date,
+                requested_hall=hall,
+                raw_items=raw_items,
+                classified_items=classified_items,
+                summary=summary.to_dict(),
+            )
+            summary.snapshot_saved = True
+            summary.snapshot_path = record.snapshot_dir
+        except Exception as exc:
+            summary.errors.append(f"snapshot persistence failed: {exc}")
+            logger.exception("Menu refresh snapshot persistence failed for %s", menu_date)
     return RefreshResult(store=store, summary=summary)
 
 
@@ -150,6 +170,8 @@ def format_summary(summary: RefreshSummary) -> str:
         f"Classified items: {summary.classified_item_count}",
         f"Classification counts: {summary.classification_counts}",
         f"Embedded new store: {summary.embedded}",
+        f"Snapshot saved: {summary.snapshot_saved}",
+        f"Snapshot path: {summary.snapshot_path or 'None'}",
         f"Kept existing store: {summary.kept_existing_store}",
     ]
     if summary.errors:
@@ -163,12 +185,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--date", default=str(date.today()), help="Menu date in YYYY-MM-DD format")
     parser.add_argument("--hall", default="ALL", choices=[*DINING_HALLS.keys(), "ALL"])
     parser.add_argument("--json", action="store_true", help="Print machine-readable refresh summary")
+    parser.add_argument("--no-persist", action="store_true", help="Do not write local menu snapshots")
     args = parser.parse_args(argv)
 
     result = refresh_menu_store(
         menu_date=args.date,
         hall=args.hall,
         build_empty_store_on_total_failure=False,
+        persist_snapshot=not args.no_persist,
     )
     if args.json:
         print(json.dumps(result.summary.to_dict(), indent=2, sort_keys=True))

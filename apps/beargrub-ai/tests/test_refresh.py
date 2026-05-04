@@ -54,6 +54,45 @@ class RefreshTests(unittest.TestCase):
         self.assertEqual(result.summary.failed_halls, [])
         embedder.assert_called_once()
 
+    def test_successful_refresh_can_persist_snapshot(self):
+        storage_backend = Mock()
+        storage_backend.save_snapshot.return_value = Mock(snapshot_dir="/tmp/menu-snapshot")
+
+        result = refresh.refresh_menu_store(
+            menu_date="2026-04-29",
+            hall="Crossroads",
+            fetcher=Mock(return_value=[item("Halal Chicken")]),
+            classifier=lambda raw_items, cache=None: list(raw_items),
+            embedder=Mock(return_value=object()),
+            persist_snapshot=True,
+            storage_backend=storage_backend,
+        )
+
+        self.assertTrue(result.summary.success)
+        self.assertTrue(result.summary.snapshot_saved)
+        self.assertEqual(result.summary.snapshot_path, "/tmp/menu-snapshot")
+        storage_backend.save_snapshot.assert_called_once()
+
+    def test_snapshot_failure_is_reported_without_discarding_embedded_store(self):
+        embedded_store = object()
+        storage_backend = Mock()
+        storage_backend.save_snapshot.side_effect = OSError("disk full")
+
+        result = refresh.refresh_menu_store(
+            menu_date="2026-04-29",
+            hall="Crossroads",
+            fetcher=Mock(return_value=[item("Halal Chicken")]),
+            classifier=lambda raw_items, cache=None: list(raw_items),
+            embedder=Mock(return_value=embedded_store),
+            persist_snapshot=True,
+            storage_backend=storage_backend,
+        )
+
+        self.assertIs(result.store, embedded_store)
+        self.assertTrue(result.summary.success)
+        self.assertFalse(result.summary.snapshot_saved)
+        self.assertTrue(any("snapshot persistence failed" in error for error in result.summary.errors))
+
     def test_partial_hall_failure_still_embeds_available_items(self):
         def fetcher(menu_date, hall):
             if hall == "Cafe 3":

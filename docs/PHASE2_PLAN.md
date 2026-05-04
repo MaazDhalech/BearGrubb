@@ -51,10 +51,10 @@ Edge cases:
 
 Deliverables:
 
-- Raw XML snapshot storage.
-- Normalized menu JSON storage.
-- Classification cache backup/restore.
-- Local storage implementation for dev.
+- Parsed raw-item snapshot storage.
+- Classified menu JSON storage.
+- Latest snapshot pointer.
+- Local storage implementation for dev and single-node deploys.
 - S3 implementation for production.
 
 Edge cases:

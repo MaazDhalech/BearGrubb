@@ -22,6 +22,7 @@ DINING_MENU_ENDPOINT = "https://dining.berkeley.edu/wp-json/bc-dining/v1/dining-
 COLLECTION_NAME = "beargrub_menu"
 CHROMA_PATH = "./chroma_db"
 CACHE_PATH = "./classification_cache.json"
+MENU_DATA_PATH = "./menu_data"
 
 OPENAI_MODEL = "gpt-4o-mini"
 EMBEDDING_MODEL = "text-embedding-3-small"

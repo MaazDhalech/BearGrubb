@@ -119,7 +119,7 @@ Refresh today's menu data from the command line:
 cd apps/beargrub-ai && .venv/bin/python refresh.py --date "$(date +%F)" --hall ALL
 ```
 
-Use `--json` for a machine-readable refresh summary with fetched halls, failed halls, item counts, and classification counts. The refresh command exits nonzero if no fresh menu can be built.
+Use `--json` for a machine-readable refresh summary with fetched halls, failed halls, item counts, classification counts, and snapshot path. The refresh command exits nonzero if no fresh menu can be built. Successful refreshes write local snapshots under `apps/beargrub-ai/menu_data/`, which is ignored by Git.
 
 The live 100-case prompt eval remains available for manual or scheduled checks:
 

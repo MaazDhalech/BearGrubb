@@ -135,7 +135,12 @@ def init(menu_date: str | None = None) -> Any:
 
 def refresh_menu(menu_date: str, existing_db: Any = None) -> Any:
     global last_refresh_summary
-    result = refresh_menu_store(menu_date=menu_date, existing_db=existing_db, cache=cache)
+    result = refresh_menu_store(
+        menu_date=menu_date,
+        existing_db=existing_db,
+        cache=cache,
+        persist_snapshot=True,
+    )
     last_refresh_summary = result.summary
     if not result.summary.success:
         logger.warning("Menu refresh did not produce a fresh embedded store: %s", result.summary.to_dict())

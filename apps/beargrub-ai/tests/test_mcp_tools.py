@@ -48,6 +48,7 @@ class McpToolsTests(unittest.TestCase):
             existing_db=existing_db,
             cache=cache,
             build_empty_store_on_total_failure=False,
+            persist_snapshot=True,
         )
 
     def test_handle_get_menu_keeps_existing_db_when_fetch_returns_empty(self):

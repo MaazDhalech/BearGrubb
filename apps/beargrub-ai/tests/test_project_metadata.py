@@ -47,12 +47,18 @@ class ProjectMetadataTests(unittest.TestCase):
         self.assertIn("Telemetry privacy", log_text)
         self.assertIn("Deferred To Phase 2 Or Later", log_text)
 
+    def test_local_generated_menu_data_is_gitignored(self):
+        gitignore_text = (REPO_ROOT / ".gitignore").read_text()
+
+        self.assertIn("apps/beargrub-ai/menu_data/", gitignore_text)
+
     def test_phase_2_ci_workflow_runs_required_local_gates(self):
         workflow_text = (REPO_ROOT / ".github" / "workflows" / "beargrub-ai-ci.yml").read_text()
 
         self.assertIn("python -m pytest tests/ -v", workflow_text)
         self.assertIn("python tests/offline_prompt_eval.py", workflow_text)
         self.assertIn("refresh.py", workflow_text)
+        self.assertIn("storage.py", workflow_text)
         self.assertIn("BEARGRUB_AUTO_INIT", workflow_text)
         self.assertIn("Guard against committed generated or secret files", workflow_text)
 
@@ -62,6 +68,7 @@ class ProjectMetadataTests(unittest.TestCase):
         self.assertIn("Slice 1 - CI And Offline Prompt Eval", plan_text)
         self.assertIn("Slice 2 - Refresh Job Boundary", plan_text)
         self.assertIn("Slice 3 - Persistent Storage", plan_text)
+        self.assertIn("Local storage", plan_text)
         self.assertIn("OpenAI", plan_text)
 
 

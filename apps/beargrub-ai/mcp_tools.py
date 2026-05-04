@@ -54,6 +54,7 @@ def handle_tool_call(
         existing_db=db,
         cache=cache,
         build_empty_store_on_total_failure=False,
+        persist_snapshot=True,
     )
     if not result.summary.success:
         logger.warning("Manual menu refresh did not replace the current store: %s", result.summary.to_dict())
