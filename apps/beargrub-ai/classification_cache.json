@@ -1,1 +1,4106 @@
-{}
+{
+  "0035cd34f66b7917210ffd40af517c19": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "003949b3bf2d8c5b8bb630321f37ac7e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "00bacdbbd5a18249584ee8eec5d0cec9": {
+    "contains_shellfish": false,
+    "reason": "Contains bacon",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "01188d4692c0308ece360ffbafa4692f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "01b62b89dc07f56b9cf7ff8235d38399": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "01d8bfe7ca905457a2ce560e30b75501": {
+    "contains_shellfish": false,
+    "reason": "Marked vegan but Berkeley XML flags alcohol as an allergen",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "0213d69b8bf64cfa776f74556323cc28": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "02addfea0d154aeac6aaa68f7f79dffa": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "02dd28e292e3f8559fd0ff1895c87604": {
+    "contains_shellfish": false,
+    "reason": "Contains turkey not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "03394f7bdb9e01b16f0569410980dcfb": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "03f4f6621b766f2d31c8ad95525dd6b5": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "043a32d6c3686cad222c67c2aa8c1e95": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "04a6553fad4603b1303645b2e780bdb1": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "051047f600559c4ad35b0d67f1e2e1b3": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "0653d3cecbf5a77682ed30806a4c2877": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "06c57c7eaa2ab5529b2d7f4f9dd4d0d9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "07485c180e46ae5f992c8008a04eb338": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "07c6f6fdb8c22a29fc478ce97ff595f6": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "07ebd568287c52f956d7fa2890dff7e7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "0832fe1e5adb6b5d404f4be899303d02": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "0852de83ba46745c2700a30bc712409c": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "08675b93c06be01e15f47a703aa588c9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "08a2d66e24d399b8f953bdd2e88eef80": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "08f0e4e4ac5db16c06a84d60c39aec7a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "090815a728cb3992e5e57b8d8fef8416": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "09caa5364f12beac7144cfae2926c768": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "0a52b7d61a786d3068bdf8a0bb1a7786": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "0be4d3d072e5a8edb23ea31016bdfb1c": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "0bfb12a49e48627c82837b4a3b1eca86": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "0c802581572eab7c8930930056b8f138": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "0c805bb2c427a75841c164986d37dabc": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "0c9a4f188a438b38d5197fb902f5eaab": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "0ccb8d24e783c5b516f3215702edc513": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "0ce3f3b39ce315acc788c2dfb6ff720c": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "0d9d5e832ab3008f47d0a17b5ef207fd": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "0f1a0475e435c1c97138a55d6c7b20c5": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "0f4ddf19306e2282047c720cbccbd600": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "0f9de8157d207cb15bba90d7119b31b4": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "0fdd88ed6a9ca665f7aadc7a45680f0c": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "105af6664e7be51101190ca55093293c": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "108914140392a9348ff44ab6f757e20d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "10a412a88b68ce22cf3a07b691a1a0e8": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "10ced32a747a07a3994390d2f1b0d148": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "10d35e27b933ed22e6f25260372c1c88": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "11453587357156d7c92198bc86ee8535": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "12429d2a13d7d4604c90349f1522ab40": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1256c2da184c8a0e28d37bf1aa01d5b4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "126cdb36e0c84cd4fb233731ee37308b": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1419c8637923bf65c698fcc2f8a7f460": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "14d11ac56877ee7a272068765f1bf427": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1503b48d8d8cc0ef5830c6174038576e": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "15309ad422c636f25fddcabd8f79ab9d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "157dd35c7fb4f1f3eb886189c0fba45b": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "15a61839030c04e0c64d01ecb527e2e7": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "15e570e9b6d65fcfa8b1e607332fbafd": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "160f0a6bad3d3c55e4e63ea16046f99f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "16903dbc822fed46c039f24b0fff4a65": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1724f04b9f12093416b3df39a5b20a82": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "17802327abeeb734308ec8d6c30f684f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "179e4dee9deb50008e99310a90280564": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "17d2f450f14ad0afd66f988979106960": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1860412605436fbe3091a71670f08645": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "18b097483ba360ae07d2387a6001d6cc": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "18b4c33c989c74affc6d77ae242d96bd": {
+    "contains_shellfish": false,
+    "reason": "Contains gelatin",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "18e751d28edd1b8d74a19b7ed65902d3": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "196ed11b6e7f21d12cf413266583a0cb": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "19c508ac8eec4c8fffd8da744917b406": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "19cdb89b460239213c12002f9dc5026e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1a514d3088740c90e1adcb4fb01de27e": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "1a9af46409e0bc9670fbbc9061b22566": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "1ba1e77952a390037ed6856259e727f0": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1c317d126bc30249bbc025bb2e4b659d": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "1c9a197c3c5068f56288377c5224f287": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "1ca2b239f004c485ef1cce49c341baa4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1ccc7ad0a8b20a89fc2c038a73d78626": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1d0b35972d6b51ed73636637158fabfb": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1ddde8a32f6619eaee767d456a611e47": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "1f4c1f17db30ac8c94b11e8320141f9a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1f6b0c1bb1220b98969d6df7a0616b86": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "1f97acafa903cb494a19792770c14ede": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "1fe2e53c70d4745103155e9044c4a53a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "20086fdad0a9f5e6562fa470c2177c90": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "210fb3b4d2160bbdd41d6f9e2e922e1e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "211810069158d752316ffdac6ecee230": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "216647ede48c079a6df6be725feb8292": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2168c206e2d04cb72d2dca4bd4eca745": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "217e7197722ecf122dcf525722385e44": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "21c4be5ab5810466e6b7ce79830d706e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "22fd3118e33788a1a75ab0e80bc176ad": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "23ae21d5ed4a4890650265e51f3c4fe4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "24ecf88072d19e38c7fe88918de81dab": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "268fb948c42f6311c5ecc2b148d4da4a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "27073f714c02fb5b966012369f86b460": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "273711a847a03863bebc3926b20970d4": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "275e4e7a322c56037501eb8e00b731c9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2781d497aa18e4b4d8a34135ae3d48f9": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "27b5d7da4fa19e4f2a3c22fd70da3d43": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "27edd3660c5ac8ccf224ff48f3f07e0c": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "27f58a0c6cea48a6bd3a277231819718": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "27f68bb114200af5eed895e749180918": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2822df9a40c552759c2237a658359992": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "28b3a4eb1373ab852acb38b0b097d40b": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "291381b6135b9946264a3708fd3e3f19": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "299c92481fb788ce96f3d9b716db2c64": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2a0bda124d2d5044b3ae5ad03520322e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2a45fb10c42306e67dd3c0b36391aefd": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "2ac4e3d04a0befca8d92bea3ac22dcac": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "2ae8bdbaa03cf2ea77f52e4f2f48e5e2": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "2bcf374c05a0e36b00c80ac2c6f93d32": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2be86a731b34307e445fca46d89743ca": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2bfe162ca24ccb298314751a1feb7aa7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2c0e2b94ab7e7610a8576dd4f88f5766": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "2cd287b98a2c0c15c74b2b843115c77b": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "2cf2a7d436016905ed6e710915bbdadd": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2d4dde4318c804f542c7d5c86cee851e": {
+    "contains_shellfish": false,
+    "reason": "Contains turkey not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "2deaa9f365aa8850865702612a444c1d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2e02ee79af1a619873ed566dcadef0ce": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2e306e3fa73fb87677656375452e9cda": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2e36e222c5589cf0b1c169f76bb20cfb": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "2e5194c7cea7ce14970eb7d154cfb342": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2e6e1e0dd02f49577ba4e4f7fb3a7dab": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2f254b61b08db03c0979e23d5f6921cc": {
+    "contains_shellfish": false,
+    "reason": "Contains gelatin",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "2f60940253bb69acf7d565109392618c": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2f7e8554ed4272d4d137d8ff5413f3f7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "2f8dec243e85aa4701588be6a932b762": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "30b9609bd9bb4d8074c6a14f465126ed": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "30c53dd71a1c40069258cb235c06d58a": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "313e9c1e5ce7f6c2c47cb33927d13cd0": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "314c2bbf40dfc226648a8f0b0a0b84a7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "32e859b36e597a5f514b18edf5cdae26": {
+    "contains_shellfish": false,
+    "reason": "Contains bacon",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "336e7b21ac07625caa97ed2693b31b93": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "338632740f0400fdc2cca091a7dd913e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "339f05b06cf89f93b2c68d7d9cb92c2b": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "3477df4136f3a6d428c55d69ba73fe24": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "34866846b79c0222ef138f39cb2ad953": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "35aba7b90c161b25008adbd7e40880dd": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "35d37480875515d5feb0dadb37647409": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "35d3ca5fc6418c52b738ec376eadc639": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "3684c9318c9eea765dd11e27736f82dc": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "36d3693f913342987d95e22075ff0a31": {
+    "contains_shellfish": false,
+    "reason": "Contains bacon",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "3709d73634f71122c0ba14c2e0c338c1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "37eafd0216926b516370208c4f07b634": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "38687163fd0d8fb7421cf56106df0c9f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "38a0ac50fb6a8a080443581b9162ed7d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "396b4ef26c29e87fc01f6276b4b96a19": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "3ae6b6449d9a10d1a2129413be5363e7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "3b876fc3bad672bbf8fe1603f86ffb3a": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "3b8d96f316d9f1b66fbf7a57d511a4a4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "3c4d00e011d1f651db2e5e584aebf472": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "3cbad616cf2b25cd95adaedc4923524f": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "3cf6bd473ba1860a4bae4299d2105849": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "3d173632c9d6877a2b28183c6e8932c4": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "3d197c6296953ea7eb28b50d12448284": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "3df296d0ad519544fafe9208e0b1f0d8": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "3e10223f93205ef43d42854857c0927a": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "3e52ac301ae19d91c98aca1c831cf8f0": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "3e8d90922073101a125ce751fe57d7fa": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "3e95c7d7b108596538d30e7f3255f586": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "3ee422033b0e622c6523785c9b98753d": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "3f39678e2ce7246f9dd7551a9c06dc39": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "3fbc4dbd95675eb80223aa2ddc40f537": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "4001bb2cd5565112f264cd42ea7913ee": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4013634d07b4c0d52ec04dce6dd3dc33": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "404f77c50e28816eae6bdd836005a7d1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "40d5671527b16aa2d54e6bbfa6f13e64": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "41403bc6ea425ce013782a7665ed2379": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "414d89de6b028464a8b2e459f5d618c5": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "4230a89cc44e816a910b057b736bab24": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "42a2869d53c9c38620f6f78aaa94b048": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "42c9ddda9ef55171c83c90afa2aef4c7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "42e09a03043f67420189979f7157f4b4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4377382fa76d1413b9403b79b96d6ca0": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4381f85cfaa753ff7436dae3dd290033": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "43bbc7d97a6858c23f4c28b7873a7c5f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "44cea21b66354ef009f44fe6ff1e0958": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4513cbf386f9cb728524cdc4b93f606c": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "452d6fca2dd3d6ef5dac4d0d98dcad85": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "456c8984bdc65007d1e9b99d59b4ca14": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "45e0f37f8ead459532bfd6534df466da": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "469e516972c09590c419efa4997d5e82": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "46b23d28f449c0a7546f56719713cb94": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "46c17200ad33b9630f950e22a87b78ff": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "474d5771f1b988c1e8c0547f0f5583e5": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "47db7eb0999fa25a85cf6a089735d863": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "48cd72e848ca65c749da4dec902cb699": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4912f22717364d05db30aa4540d76c24": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "49c5f3d62d27342aa40da2ddf7a47235": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "4b20de9cb2a094d8be193b9e7f66d26e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4b2c6b57ac9d2b935aa8a5de8dfd8361": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "4b3f20e387e736d0c0dfa256e2c24c86": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "4bc5f6430873d4730b03596bdfce1610": {
+    "contains_shellfish": false,
+    "reason": "Contains anchovy paste",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "4bd6fadc428e137b52407dc32c810f3b": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4be864dcc3c5deb3d06557c327abe16a": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4cf5d5995109bd36d871d9ebf34ca4c8": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4cfb6dce7fb287f9245826f63b33478f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4d0f9f61998450f11a8007960df1e63e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4dcc0e645ceeff147c5979bc5be63e07": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "4df2fd373a008f2bc83595d7b0860e38": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4e01d921e36568f827da3019d37c7434": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4e0e98209f37e31142574ac5afa78bfe": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "4e71e8e78f4edbfc3dac1a05125ea7e6": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "4ec636eb51c4c56d644dbf2d3d0ebd28": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "4f2c61ba46db2ae263c4a7ef3c5799c1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4f8d60ea33bdfd6b73195101a6223f03": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "4fb56232df70249de782526d234d4ea7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5034376419a5d167c66f0b7237b104b5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "506dd087ccd9897dfbdc80347e65c3bf": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "514174e337e72252f7f5ae270c487dbc": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "5164a7c401b2e9be7451d9ec67411544": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "51a894a2fd8e8b25f4aedeb490be5c87": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "51c9631094bac426956d69c8135be717": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "51d408a4ccfb76f8af241b7dc8792624": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "52721c29c7a8ca705a1516077b40dc3b": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "52a7e6d6765e8a447d428c5dfaadf1c5": {
+    "contains_shellfish": false,
+    "reason": "Contains turkey not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "52d8e96843cd8c63119a22c94334bf47": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "52e8b3d959abf6d5418fd5f9ce632468": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "53c46539feaa15a92d52a04cc5c614cd": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "53de30cac3660a98755a7b0c5965d482": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "54568580d0bd5152471a71b9369c1e1e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "54f81719007535b4d7ed305ce629d54d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "551defc7cc87512b8ff83ac605c2e255": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "552f882ff421f12610d2b67fa5bbcb45": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "55e1fd3ad4d3882a4a0b9455e1d8efdd": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5604efa56a463f3634afd8b15ce2b619": {
+    "contains_shellfish": false,
+    "reason": "Contains anchovy paste",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "562df2b4c3a1c02b7fb035a428f5a6b4": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "5675c9a63041390c655b92923e1c27bf": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "569750b5882a6ad937b94a63dfa315fb": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "56f0c2607cdce0431817864a0ace9cd9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "573423fbbd4f7c101a7f28d78e3f1935": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "5753ffd9a212f61aad5f04964b73a1db": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "577fd396e78b4d2172a3bfc3ad089ca4": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "57917334e7a63effdd9ab746892e090b": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "57b3dde1583229c5d088814ec0761268": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "57b96e56c1e60a927763fdc73844a5d6": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5804f62fa0ac79057599944074723768": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5811be4389529924d7b9933d4dee1621": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "583036026179f7ee08383d1d1e0ebbfb": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "58924629453705d80b20c3c574e832ce": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "58f8d603bbb38eb99ec1191dad3af879": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "595910b38701e61b9676951afcd99ba7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "59d39ea66941e3d9862f658a52c843ed": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "59e6f9eb27aaf2471e958b2cf91972b5": {
+    "contains_shellfish": false,
+    "reason": "Marked vegan but Berkeley XML flags alcohol as an allergen",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "5aead4b6516e7e40e614aae8b96db9d6": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5b12cc4b3c4fb83912a0b233549d6207": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5b5aaab984f5df04ee8fd456b00948a1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5bba8fb28eeab7ecc449c3112eed4754": {
+    "contains_shellfish": false,
+    "reason": "Marked vegan but Berkeley XML flags alcohol as an allergen",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "5bd47c000367ce34614d6e3daf5dba23": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5c20e5d875bd7ebb20ab2168f933bdc5": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "5c39eefdebe1e8df84a27c22c6076133": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "5c6291f1f0f89dd28d05b3fa787393ee": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5c7b252b7c1e5ee5f1fd07c12455f8c3": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5c8f4978eafb61ace83ef01ddd3b5907": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5c97a2e7ef85d3789ca4d45c2c468b27": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5ca4faecfdc3331ebe32dcb4239da447": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "5cb10b2f28c844cd84696a1893f000fb": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5cc60fc229611ec7de536949c89ea220": {
+    "contains_shellfish": false,
+    "reason": "Contains bacon",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "5e920b730d9d32a5966151594ffbe2dd": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5f52261f6408181dbc4db9896aade21d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "5fa544ab80f5af64b36a4cfb2fae2380": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "608e69922b28b56d8b2e80c9a79b2fe9": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "60924f1f844567e7a53cc57e43f39bc1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "62035be9abe0677b35ab288dcffccc75": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6231a90448034b3661405d90ab112a1f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6298ab48c4faf70583f29f605cd9005b": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "631bb57f4f6cbc10c4189126b7ada339": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "63210c1cb617d683090d04f0e3eb3046": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "648b4736ba134589eddac004993593c9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "64efc8c4ef58d12ca7af2882e0d8c526": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "64f0d53b1c2206bc99f454a698f7163d": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "65d4eefc383bff99357c9a1732f34aca": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "65ea5eaa716f0b624985cb05f4ff88f4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6646bfa00f53bd593c13cbf03f753fe8": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "66afc0ffbc9d5e78d03f6023704908b6": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "66d98b1b746f5d6b7e2709459dc4d2bb": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "670eedf8d04ef9da06a01ec050fdc17f": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "675ff94ebe1d64c77e5eabfd55afd0b9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "678f59de74ea99c89410eb7c347ed8fa": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "67a1a6d068432583ed5db3c582f0d014": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "67f80503ff9c05d1fe3e1eeaed51d71e": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "67f874eefc317721950b3e68bfcd2bcf": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "6807ab973b2e1c61bff0596ab35b95c1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6807ac84d971a936f5badd65bbe6087d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6810896a3e30603929f8a3d78cd461b1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "68269450d4aee4a799fcd7aab1ef1a75": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "692061b8a9dd5afb812e47d576a0e108": {
+    "contains_shellfish": true,
+    "reason": "Contains alcohol",
+    "shellfish_note": "Shellfish",
+    "status": "NOT_HALAL"
+  },
+  "69dd897bf0efb2c9bb5cc17b06f4afc5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6a3ea2e7a4b7f55307918e9d0151bd01": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6b1ccc155d939c0656c4087ab36b9c1e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6b6563f1bffa3c2151e9d8a64ca6c47a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6bc01708b5251f9f221909bffda7e719": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6cef9865e06a16efd35410dec0a853ed": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6d209645fdb832d8fbc28a67bc13fffc": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6da44e68b4ad5ec2cde11090bb26ea19": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6dd87f5d21bd9529bc29b14bbe8cf222": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6e5bbd33d8081c358fa4c7250a8ee6e1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6e73e85db7766a6b7d04c066809759e4": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "6e86ca4baf71be24666d0a201b7a1c78": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6f33d6c3b701a4b001d6b6b78b8ca48d": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "6fdb98fec8605819ba14b5594b46a5b4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "712e09b984af85ac5a426c4b8d7fc417": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "71baf6ff1ec5bee8d992e3628c5e8a25": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "71f286486539a0054751bf370427eacf": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "71f30248a3f29507dc95b3c4769426f5": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "725643f126c1848a8fe7f14ca365e294": {
+    "contains_shellfish": false,
+    "reason": "Contains turkey not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "727af96c43c39962d6bae0e5a75e54c6": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "72a84e13bbe0d6e23d4823e4d844b512": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "72b012921b9a886077d2917a3a80fb5b": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "72d1e76a67eba9f2fefc2fd722301241": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "73abf4af5d12288e1eed6b03fe5db0f7": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "73e283ea8daa7743a6a6c8b9b53e3af0": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "74a08a74d174dadeae37b70269bf5c4f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "755f555a0f3601abe1d0da019917c3ed": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7662d705b331743285c484a2784626c5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "76bb99920dc7f3828c4caa3f15dc9c85": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "77401b101e8cabdf558040593726e423": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7768b620918f4c27c57bf81c07c7a5f8": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "7885e094288929b676167fab89b7a9a9": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "792ac0c10cb9bd2ce352cc3cf24337c0": {
+    "contains_shellfish": true,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": "Clam",
+    "status": "UNCERTAIN"
+  },
+  "796a395800790ad5ff14dfcbd9a82de6": {
+    "contains_shellfish": true,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": "Clam",
+    "status": "UNCERTAIN"
+  },
+  "79733decf83c4bd25b48c942be3b5de7": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "79755f7a09f35bc2d492d260132784f4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7a04e08f1df7b0a256e0a54fcceebf0d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7a4ede077a53c093ce3a6fb47aff73df": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7a567460cb771bc719f9fb90f6abd025": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7a982e06c988bab91f4c06ba8bcf02c3": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7b1f8d31e4a1fd8e9030cbf2dd7fcfe0": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7b7c7920178d226a8e7729a3bccecc68": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "7b7ffd8d8f5033f1e30208ed0253e616": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "7b884bd342df7502fc6b63dcaf9d5522": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7c66c32f6d3216633ccb422c770c2d32": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7cc724682119f0ac13e4a1333626d43f": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "7cc7b0c9e93e09fb5c3f6fcb2bde81d7": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "7d1fdacaa1eeb90681ce1fdc459c408b": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "7f86b97b1c1f0c2f3387778d06b5cf89": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "7fec2d7876cdbc460a1163ff895f48b7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "801cd6b9d135bd0c017320e53ce1df3c": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "803b3b22d9781344e6975583d73df838": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "806999ff057d7393305e8f17b551b5ee": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "80934d21d6f0c21eb355aec390069e56": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "80bca8ffe91f50b22f292c8b6728c832": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "80c86b4c548049468693ad0eb709d4dc": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "80ca7ea10ec218ef137bd127104bcf6f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "80e440f24badaadcd3c91d90f364ba70": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "810a6ba968320e4f5f77991de52816e5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "81354670059ea1b88236581c0f663312": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "818fb7ab9d3b11d695e8b6cca7f4fca6": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "81c8cfc926ba61a908cd9dabebd48fc1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "821c0ca2edd0d46b29d171168853469d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "829be73d066ae1eb2a3100b8ebe4d5d8": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "834b7974014077f6d35bbc055a541984": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "838936204f0d736903e8953eee22541d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "841e49a08877a7103e2b96d408fe4881": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "851d95420e4d7ab0a52d60c4a3f1c22c": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "8525f0e7379598efcdd1c93e055c79c8": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "85b54f8bbd0be01c3830c3cb39dd94db": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "85e5ede76c7670c6b2f83c8ac09550f9": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "8629b3220afff859025b5fcc88c2c3e2": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "86e35452d2ce02b36ff779dc52e1d1cd": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "870d351070687979fdf483f09e7059cf": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "87478e4ecc5197e4da57beed074c6ce4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "87831eee304134b0c3031c8eab702210": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "87954ad6600530fc3bbd9f651c95b7f6": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "880414138406be8b9b6a217d1ce7d115": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "8942d8440bbc54cc56084f79f79aff2c": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "8948367c011e455bfdeedb93174978f9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "89bcb0c4684f25a3b1e95a92559f0ffd": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "89c38e95c3adb370af54776b6b5bb917": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "89c8c81913d5515800088c06e91840da": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "8a0347380c11a5935d54b0d21990eec9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "8ad576d54a6fc036348e22dfe1866d77": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "8bd9bd355b842dd6751f099493103d3f": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "8bff417bb4fde8cacbc683320e59dc00": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "8c245ee2be488394d602b3f102a19f95": {
+    "contains_shellfish": true,
+    "reason": "Contains anchovy paste",
+    "shellfish_note": "Shellfish",
+    "status": "NOT_HALAL"
+  },
+  "8ccb82ad279b9c9ba1c6ec2dcad9fe94": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "8cede3c546f1de707e39ec03abc68716": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "8cf0a19044fdc36f4c064e84d3050117": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "8e2bb5836090bbe434dbfdf4d39b6fe9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "8ebc01958645cce91075799ffda75777": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "8fa35404afcfdc1b71d3f8fe87c45fa3": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "90595da59d0edf221fc1d005ac38c417": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "908acbf5fc68c8c7afe1a0fd6de00692": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "90b0601a2a5753f54291ec95f4ec6c0f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "90fd7cc43b872a9e9eb2630edc909538": {
+    "contains_shellfish": false,
+    "reason": "No ingredient data available",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "910f98b5e0dd68b199837168e782f624": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "91af4bff9727bf1f7e2acb4260dc75a2": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "91b04c8e019f16c88f5e8c4656199bab": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "922b116c947ff3685fe783a21c0f979d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "924dc81e28c5d7dc9c0ca02dcb2f5c0a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9261a20a6e858ffbe0e1ca818550d408": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "92f01560c30d749e557b5db8c8aafe39": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "93166526a635711967a04cad116b4760": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "932e6b79bd696cb68f81fa590156187b": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "934bfc0c7b3805ddcd1c76ed08bdd0c4": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "936b81d76fa54c26bbd6cbcd86871188": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9389c4f4401b99371571af4532ce6e68": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "93923eb8d71fbd43365c0456d2f6bc72": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "93ec135318c6a4b2e2cfd74ccf1bcbdf": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "944bb8aae7c152c70deeeead01154007": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "94e9febd330d39fccedb335b28a45456": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9579f55edf58919557357b783682e3d6": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "960373e89a1086e5000081eea290f59d": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "9641ffe352ef636692205649b86ff088": {
+    "contains_shellfish": false,
+    "reason": "Contains anchovy paste",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "964ffcbbc36bb0c736996fca405565df": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "96982d5974db86baa520281b0b5d9d84": {
+    "contains_shellfish": true,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": "Shrimp",
+    "status": "HALAL"
+  },
+  "971680ef8e6f827065892021d1a66179": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "97ebfad6e0c0b844ab4842b107372c79": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "99001f5b1b114705484fcb41b03b5782": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "991c98f80ab1b58a99d9cb06da204c25": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "992b5f7e1fb1dc5f55b2538db66a0986": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "993048e3f9ffe4a763af93f23c7626b2": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "9957a448a6f13762ae9a6f5c64113b9f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "997f9407ca426ac2278afa308c5c8de7": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "999f7c389e3774b634c28c7207cf3c13": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "99c67a5352a9352cac97ee9fbef48313": {
+    "contains_shellfish": false,
+    "reason": "Contains vanilla extract",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "99ebc21d530c070b4ff244c6a7bd8e77": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9a16b29d2f0db217592c5b47d74d4268": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "9a62113e5050171bdb16015135370ce6": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "9ab3813d8da072c19f7e86b8b2860a5a": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9ae97f34b3288df4e23c50b37050ed34": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9c42bc6b823eb45cb4f084aedebbd783": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9c4826c6d254f5d50e7c1ef46fae0022": {
+    "contains_shellfish": true,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": "Shrimp",
+    "status": "UNCERTAIN"
+  },
+  "9cef8319e9887319ee10b3cac0a9bdf5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9d9d8cf8f1cc7dbe33e607a98afc2251": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9dc7daab9cf39a4a2e6457eb6882ee68": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "9e02515f8e4ddb8e5bb3f991e21501da": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9e1f8c67853f06903991fa8da9a1afac": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9e9f16efad306d90d225baf58bd194d5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9ed69fbbe46b840a22cf6bf2f6bbc2b4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9f25a1c30de12f5b1fdc8a4603560e22": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9f3d33db27537dd3c9b16df1e9e58850": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "9fb78cc0b9b1b2cda9ae6d174c66ad92": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a065e270a2a5b3ff65d13c50d7757dfe": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "a0ab6eca82b288d9fc2c1ee584ad69dd": {
+    "contains_shellfish": false,
+    "reason": "Marked vegan but Berkeley XML flags alcohol as an allergen",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "a0d4bd9223e8ead02797d1d24ee24b2f": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "a0ee3eb62def4385f8c9e9202165a6b4": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a0f23145b0881ec096f0565f9acd9951": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "a0f6745082fccd8c5d1640295feb3a02": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "a1086fd7f2871e483d9d607d512efc47": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "a1b518f700944d9cd9a22b624939fe3d": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "a292ebbf3cae48df81511e0e108af62d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a2bf2c080fc5f967b3a60bcec93e10ed": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a30a53d90a496d293bf33061fb28e327": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a338be36f8af267e1983aa8657adec46": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "a36d1a93415317a5eef766e94ec8ad7b": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a39e227561fd49060dfda9eab20882a6": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a46a46acaff97cc40f680f6925d7e592": {
+    "contains_shellfish": false,
+    "reason": "Marked vegan but Berkeley XML flags alcohol as an allergen",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "a51229373e9fb9dcee76ecbfbfb64cbe": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a6a0a84d960cf7210c434483fe68f7f2": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a6d07fd2ddfefcc5e3794ccb87ff2279": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a6dfe787341e36181b9fa32d3b257c0a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a7069218c45606cf45a43f1a1c544be8": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "a720fb1f5d2cd0b6fc9806e82f6814f2": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a72c178c5e606b0551ce5dfb59ec89c0": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a74ce8e653d6603fce94caa70ca1a76b": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a7a42d1577f3b7dd015864e4f0f26ba8": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "a7c5fae00157f1b1e3004af1323f4df1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a81198fe5dd21dd888489eb13d34a4c4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a8142d599064ed9037db0065395916d9": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "a814eff4c63cf17527b021d5511c15d4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a85cbdb34b88fe3076cb6ec790b634ff": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "a87f67e8aac3e5eb5908494d852c8577": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a883dcd687d61db059fe1201d0ca8b3e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a88b3472c2303455b201f137c768388a": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "a8db62a52705e70ae9e5eb81f497dfac": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "a982740d8c29f67bef2e4c988acc9334": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "aa38c40137ce619b98105335c49eb4c1": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "aa3ff1919de8c786cdc8e54f7bb11405": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ab6c1e396ad06bdb39a9d33ab0cfd4a3": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "ab77f2dc0698b59a3aaaf877d36966be": {
+    "contains_shellfish": false,
+    "reason": "Marked vegan but Berkeley XML flags alcohol as an allergen",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "ab7d791e3817ce7cbc350593b7d2fb35": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "abacb56fbc99fe766e4d1aa849015b81": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ac16412831f61e9f2132d78679e739d7": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ac9c30cf9ffb6d92b24ed329e750c83e": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "acb20ebe9cb9ce17882d9433f966c5ce": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "acb93137bb1f8932c68cd6b789a40583": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ace5926587536024c8519380ba6075e9": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "acea6d21a863cb377b62f398f05475ba": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "aced0c67a9a1794964effd6b22dc397b": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "adb22b7c5e4f9c93bb9226cd71df8d8a": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "adbe527d14abe37996ba65ca0cf49b13": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ae2f4cd219c1dceb798c1118b004e843": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "aea6faba864d34a52970746235bb24ef": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "aeb2801fd81b4ec388cd4940a07c7c2c": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "aed3403322c5c3f129f6094ef6f2a789": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "af26d2466ffec918d607436b4667da33": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b0009973042e6514458929884ce147fb": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "b057eba9883e401b61aa2bc6230eba3f": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "b097ece5ff206a3699bc65e1655e04e5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b176cd203e065d18e71c7d6b07285396": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b1adf7d2dfaa7c333a92fec8c8cec6e2": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "b1bd05803aecc0d99ebb3d7229636346": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "b1f4ebb5a485f6709ca7ebd7d2d9e71e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b200aff3211735cc1750b6f68d1213d2": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b2341e9ecfd0a81c9a37f671bdc7b563": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b24c2c2c4ae1036292b6e8fd92ae7622": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b2751e808693a76b1cf20d6850efb0b5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b28dd378887ed72f649eb39313dffa44": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b31867a32981f9f699e511ea96d5f986": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "b401e1b0942014003fc7525e2a619c05": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b4edba222ccbc0bb1b9bb3f59cee99ff": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b50d1c9b8566b3b1a6f8437002dd66a1": {
+    "contains_shellfish": false,
+    "reason": "Contains turkey not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "b603582c13f98c3fad7bb4577b82a865": {
+    "contains_shellfish": true,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": "Shrimp",
+    "status": "HALAL"
+  },
+  "b6a4ff3bd5890394061604e064df7f81": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b6cc8737bad32da333e00428e895c8b8": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b74337babb82bf82afb13d00cca7706f": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "b85f42db34a3631962c6a29e24ac16c1": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "b8d387288003a128631e95c9e8c2807d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b97c262466139ef33520c5906acb4dc7": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "b9b57671d01954dc9d418d4ff4b52442": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "b9ee69b08897626fc8074e2667e7b37a": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "ba165a1fd7a1a1f63f69772569637466": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ba308791c7892a7c157d26a0039f707d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ba4a05ef065d6a410d61aa5f7397af93": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "bb121ec6b8c1a28f984a565700b5ebb9": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "bb24638cc622b3bc9e4096d2f07897cf": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "bb64f8ddb8121a397250ca19d943c03d": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "bbfb2ee2082b860467c48e031101256e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "bc38470c100b7d8dbd24fecca2f76b9e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "bcc352ef9a60404ed462a09bc6ecb393": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "bd17c30162858a7622c1ed0d4132e1d7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "be81cb0c73662464a7b5c625641dc73f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "bee41b043a49e195c0cd9aee0ef540c9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "bf0af44a4ed2cd6c23053a90dbd7620c": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "bf700da0e4bea0b56084a3747f726c6c": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "bfa9f557b78367e5feb8fd219e31b458": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "bfb9c2ea8da10ba146b8bf7173e8a05c": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "c291d6624d47642b31f939248fa81181": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "c2a41584f5ced13e907f7b032924f261": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c2b38fa571847570bcd26f0ad8223fe3": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "c2dd1db3089623d9f00062da8ed8961c": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "c38cf69a6e525f232276b74487dca481": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c3a471864da1b32f7aea4233de699db5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c3b9ae9ddf9276a0b4a6a3f1a417bdbd": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c3d0b14b7bfb37fd7f1d21eb6dbf66cf": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c419b4f67f73f202166df8b3a055b02e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c4ade7f3150cbaeeaeeb0dacd0d2f97a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c4ba6b6fe32163501819dd098e1bbd8e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c4ca01113647764e3ebad88115f541fa": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c4cd18e39cd135577c557d35e3bb6405": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c5b34b201269419c267d154df9ae4f6e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c5d5ac229a52e29eba1f06cda28504d4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c5d5e2ad551012b07378b65726d3ae11": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c5e0f698226c358b0e0eaa00a0ca1b26": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "c5e96e40570682d2e87124d3a7be3b44": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c5f886a72b1425f1bba3059016ae79dd": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "c612b8175b135b2a08a71fc6472079d3": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c64b53dde6e402530f40562e1da09c64": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c667058309fbc9393ecc8ea91e251d3c": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "c712f4510a5606b9151617ece4247ec1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c77337862bc970736809416603c17a34": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "c776a814a066fa316758dc75a277646d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c7834639b44fe9d4735ebf5ddb8f3a3b": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c7a00440cc0570a767440bcf251febee": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "c7b3d9fb14065310d61e42902b562609": {
+    "contains_shellfish": false,
+    "reason": "Contains turkey not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "c7b937b46cf5646b9366e577e3ec9347": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c837e3ddcc5ba4f3c28a942bba51976c": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c87d1ffd45b83a9fd3eeff95d5762137": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "c919fcafa982b580d0a91cd60d8e386b": {
+    "contains_shellfish": true,
+    "reason": "Contains anchovy paste",
+    "shellfish_note": "Shellfish",
+    "status": "NOT_HALAL"
+  },
+  "cab674075ee5263b814d662ae9aa75a2": {
+    "contains_shellfish": false,
+    "reason": "Contains bacon",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "cc04aff844a11b22ecbffeba995e8c5d": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "cc20803757dfa643097dc12ccbc219f4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "cc3ca0861b529ce69cc4289aac1767de": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "cd50fd7f13756a031ece6a8a35dfa575": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "cd6ecb0417c73aa8a165c2a7325966d3": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "cdd2bc39f14d1d3c41de3ada2ed9d185": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "ce33971ec267ee9382373bd253428bb4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "cfb59d1abaa78bb784f68d80ef6d902c": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "d03b29b61cc9e1d3ec5c6c8838cab6b2": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d099f7e05ac2fe73da997bc37a9f8ca3": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "d0bac89f31b942ae86cbb10a5d0615bb": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "d1a102916422358e4790f1a68e4ff99f": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "d1fb4cbeb2cfa3a38ad76d175e918e30": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d2ade29ce4fd5d41d73048bf00279b8e": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "d2cd02d95295cf4f0509089f387d5436": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d311257a6a15f93b0724bfdeef82a7db": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d3b04faca9121854d9e164a23a97c7a5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d41d8cd98f00b204e9800998ecf8427e": {
+    "contains_shellfish": false,
+    "reason": "No ingredient data available",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "d4925e81becfc439d6f3a847f9a6dc7e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d4b467dc106ad7196db367df34ea34ac": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "d56a2814d691dd5711d7ff6c1b472076": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d5766252488a12fbe296b8be4602b203": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d5dc49c27f53399d6eafddb66ce0aa80": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d6412ae013fae392209f3639c48c06b4": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "d6d5113fc5fc6efdc57f58814d5cf0bb": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "d709ec2d12ca851604b081a1bc9ec6d8": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d73ca4b8e01b317bdb781aabc209663c": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d83b8ce21a0b08dac27884a625c4a85c": {
+    "contains_shellfish": false,
+    "reason": "Contains beef not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "d860fa703dfc4b02504c891934bb4438": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d87c1847bfb62e3f2b03e15200a8ee7a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d8e91a21b6f5ce984822bd371854e6c7": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d91697fa0a260b52a507fb785f94dcd1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d9275ecb86dd5c7e20ea76592aaadb53": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d96fb7f25ab3184b37c23f4389018737": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d9a633ccefb0d888c09872baca565ad9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "d9b14cf373ff218c888d6f7a7ac380b9": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "db28e4d26fd1eed45e61e78938cc7760": {
+    "contains_shellfish": false,
+    "reason": "Marked vegan but Berkeley XML flags alcohol as an allergen",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "dc136443ae0f2abf3c49f0c0ea4f8f39": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "dc3cca36fffe6b8078ee38b37359ec58": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "dcc770798a8497d63a754c8c6a663538": {
+    "contains_shellfish": false,
+    "reason": "Contains gelatin",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "dd04f4e9a72604d0f7638cd1aee3af10": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "dd7a320260a8fdf9da648667e95bc961": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "dd890d991eeae4f1c390d9e59ba9636a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "dd9762954eba6df474a4b524fc6f0f61": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ddba6930afbf94f9515af463024c4812": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ddd148912b8aa79412d6d4a78e591d1e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "de4633c1a6b39221214433a1aec317ff": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "de5942915162de9197968937064a8f2d": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "deceb2f610a9dc567076633ff5514a9c": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "df876a648890f94796c152ff4a85b2ec": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e075f77be2ff9001d4ed1f4493244418": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "e0af41fee01a02365756860a23727acd": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e1fdf6708496b5344b5f1ba55de797d5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e21713a4d83c664a444fe959d21982c4": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e21ba8ae4d2293e054a8b19f7b0fc0c9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e2421ba696aabf7bde1ee8262a403959": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e3efc8886716d80265ba773f036c564f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e3f51224e62d009c7e3ef12d1d56e6a8": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e48ba06eeaee599eef2798cd06f33bed": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e48e42dd323dbf6d38537e97aaf7938d": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "e4d7cd3111d4acefc8906fbb4f467106": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e52b13090cfc532d586bf2d3bb9d32cb": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e588696bb0a103c151ef1f49436446fc": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e6218dc98878193730c8c23a243cd3cc": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e66aa4a4882afef0329305ca2b7c3cbe": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "e7403dbe5e0ed5629e32cee26ccfa923": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "e768ca79501a56b25942546ab0d980e5": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e7a9cfe82f46e6456d74140a8c5f503b": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e81dbf529f828ea6e9f8746dbd3b3166": {
+    "contains_shellfish": true,
+    "reason": "Contains pork",
+    "shellfish_note": "Oyster",
+    "status": "NOT_HALAL"
+  },
+  "e83fbb4ed1f33920c67ab0df37bbd2e5": {
+    "contains_shellfish": false,
+    "reason": "Contains alcohol",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "e860d2c7af47d3c347c2afdf96da663d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e92247094c244acd7e4f06b422211514": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "e99270046c4691a27554c4865e14724f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ea5bffddd57c7d77a7a4641844b85a3f": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ea7d088f6939b5b5304161fd6c380b2a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ea92ea9299ab95a06df22f17d0918089": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "eaf0181808fe5c3e8f8387b49b239e51": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "eb4504521d4ce773ea4348d6ac46d0f0": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "eb72d20de90d7c4d9c6edce92ae265b9": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ebbbcf935c2c0d06290cf27d5eef5929": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "ec3ba9b41cbfb73d34f3dec53df94c0b": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "ec4a4687e98e2ef99b6721fbff28a91d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ed2dcae95f58ef8b6dab3666e3889961": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "ed3a16c82e13572b959eccdcd0771f08": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ed58239a6b8b1175b1c8bd66ceb25fbc": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "ed594fc6d7e741c77036c7186cf43ccb": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "ed901c6dbbe2b3688acefa434c038346": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "eeb2c1f6bb7b9599685d9799700c8dde": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "eedeba1df666d8c729b7b7f1825c7606": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "eef037dc928bf89e15736d0cd7cae6ed": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "ef4fad3ca056e884c194dc6a760362ae": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f0d6e47e36154e08ebd538fc94e77696": {
+    "contains_shellfish": false,
+    "reason": "Contains pork",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "f129e98fcb007a798552b2153937e112": {
+    "contains_shellfish": false,
+    "reason": "Contains wine",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "f17a3558402f2837db0977928248684e": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "f28cb4cbe1fede9ebac1a89f4ad7ddcf": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "f2cb652fc5a7d447be0e6b16504057b1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f33a59dd598d9f94f1217fed337fe9df": {
+    "contains_shellfish": false,
+    "reason": "Berkeley XML marks this item halal and no forbidden or unlabeled meat ingredients were found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f3b217791ed0a13620dfca62fdffdfaf": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f44696586190f295fb303ae33489dc0e": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f44f28f23d6b7e5be99ffa12d2a714fd": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f4d6cb14b90c0611674aefbea1422fa5": {
+    "contains_shellfish": false,
+    "reason": "Contains natural flavors with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "f516687702e71c7cbf051ccd1cc3e6f1": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f5965c491eb880d1476c852959cd8d36": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f5c2686ce0c6b3458a1d0153dbea09d6": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f5c27672ee067e8b7a8612f4e3ee8ac3": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f5e959d9d52437fbd433b53d0f773738": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f624f4cd8608a99ae24d9b2620aacb8f": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f77f58a3724ea3a64f0968807a47d25c": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f7bbe18873cfbe8705f51e647ebdf571": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f7c93747be50d9883f2b9b026dd441a6": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f7d59763732ac31c743cd1716d374384": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "f95f8f2384f9c04a7a9ce3f2fa1fe0da": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "fa66db71de8a41c9d761eae0cc8109b6": {
+    "contains_shellfish": false,
+    "reason": "Contains enzymes with unknown source",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "fa83bd8b1614388b9d175d7ac8e1ff07": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "fab41ace3d16b7772368dc07549972cf": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "fb6807c24601be9715f284ab7f573359": {
+    "contains_shellfish": false,
+    "reason": "Contains ham",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "fb86a0847311a776491318917dbbf6b3": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "fc48ea0091a089c57cedc23578aac79a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "fce946018b21a6ed6cbeda04d2275197": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "fcf53d90e8be35c711506a1d96db008a": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "fd75cc245902805a7b20e5c5bf4b1bed": {
+    "contains_shellfish": false,
+    "reason": "Marked vegan but Berkeley XML flags alcohol as an allergen",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  },
+  "fd97280afc4d2c210a3189478866e5a6": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "fdfaf103235f526f6f6b7fd3aef5198d": {
+    "contains_shellfish": false,
+    "reason": "No forbidden or ambiguous ingredients found",
+    "shellfish_note": null,
+    "status": "HALAL"
+  },
+  "feb6f7a09aa152fc042584442a3142a9": {
+    "contains_shellfish": false,
+    "reason": "Contains chicken not labeled halal",
+    "shellfish_note": null,
+    "status": "NOT_HALAL"
+  },
+  "ff9d1b512dbb662764877c9f78b9748d": {
+    "contains_shellfish": false,
+    "reason": "Marked vegan but Berkeley XML flags alcohol as an allergen",
+    "shellfish_note": null,
+    "status": "UNCERTAIN"
+  }
+}

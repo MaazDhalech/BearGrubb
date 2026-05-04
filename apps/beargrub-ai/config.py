@@ -32,4 +32,4 @@ POSTHOG_API_KEY = os.getenv("POSTHOG_API_KEY")
 
 REQUEST_TIMEOUT_SECONDS = 15
 
-DEBUG = True
+DEBUG = os.getenv("BEARGRUB_DEBUG", "").lower() in ("1", "true")

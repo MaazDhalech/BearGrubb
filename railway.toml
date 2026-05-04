@@ -1,0 +1,9 @@
+[build]
+dockerfilePath = "apps/beargrub-ai/Dockerfile"
+buildContext = "apps/beargrub-ai"
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 60
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
