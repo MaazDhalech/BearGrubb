@@ -153,7 +153,7 @@ alert_style = "classic"
 custom_meta_image_url = "/public/beargrub-icon.png"
 
 # Load assistant logo directly from URL.
-logo_file_url = "/public/beargrub-icon.png"
+logo_file_url = "/public/beargrub-wordmark.svg"
 
 # Load assistant avatar image directly from URL.
 default_avatar_file_url = "/public/beargrub-icon.png"

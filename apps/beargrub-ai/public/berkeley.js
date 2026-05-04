@@ -1,4 +1,28 @@
 const README_URL = "https://github.com/MaazDhalech/BearGrubb#readme";
+const ICON_URL = "/public/beargrub-icon.png";
+
+function setFavicon() {
+  const selectors = [
+    'link[rel="icon"]',
+    'link[rel="shortcut icon"]',
+    'link[rel="apple-touch-icon"]',
+  ];
+
+  selectors.forEach((selector) => {
+    document.querySelectorAll(selector).forEach((link) => link.remove());
+  });
+
+  const favicon = document.createElement("link");
+  favicon.rel = "icon";
+  favicon.type = "image/png";
+  favicon.href = ICON_URL;
+  document.head.appendChild(favicon);
+
+  const appleTouchIcon = document.createElement("link");
+  appleTouchIcon.rel = "apple-touch-icon";
+  appleTouchIcon.href = ICON_URL;
+  document.head.appendChild(appleTouchIcon);
+}
 
 function wireReadmeButton() {
   const buttons = Array.from(document.querySelectorAll("button"));
@@ -22,7 +46,7 @@ function wireReadmeButton() {
 }
 
 function centerEmptyState() {
-  const logo = document.querySelector('img[alt="logo"][src*="beargrub-icon.png"]');
+  const logo = document.querySelector('img[src*="beargrub-wordmark.svg"]');
   const composer = document.querySelector("textarea");
 
   if (!logo || !composer) {
@@ -45,11 +69,13 @@ function disableThemeControl() {
   document.documentElement.classList.add("dark");
 }
 
+setFavicon();
 wireReadmeButton();
 centerEmptyState();
 disableThemeControl();
 
 new MutationObserver(() => {
+  setFavicon();
   wireReadmeButton();
   centerEmptyState();
   disableThemeControl();
@@ -59,6 +85,7 @@ new MutationObserver(() => {
 });
 
 window.addEventListener("load", () => {
+  setFavicon();
   wireReadmeButton();
   centerEmptyState();
   disableThemeControl();
