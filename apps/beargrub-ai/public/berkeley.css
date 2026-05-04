@@ -1,0 +1,212 @@
+:root {
+  --bg-blue: #003262;
+  --bg-gold: #fdb515;
+  --bg-gold-dark: #c4820e;
+  --bg-founder: #3b7ea1;
+  --bg-lap: #00a598;
+  --bg-ink: #061a2f;
+  --bg-paper: #fffaf0;
+  --bg-paper-2: #f6f0df;
+  --bg-border: rgba(0, 50, 98, 0.16);
+  --bg-shadow: 0 18px 48px rgba(0, 50, 98, 0.16);
+  --background: 43 100% 97%;
+  --foreground: 211 77% 10%;
+  --card: 43 100% 98%;
+  --card-foreground: 211 77% 10%;
+  --popover: 43 100% 98%;
+  --popover-foreground: 211 77% 10%;
+  --primary: 209 100% 19%;
+  --primary-foreground: 43 98% 54%;
+  --secondary: 198 46% 43%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 42 52% 91%;
+  --muted-foreground: 209 38% 33%;
+  --accent: 43 98% 54%;
+  --accent-foreground: 209 100% 19%;
+  --border: 209 42% 84%;
+  --input: 209 42% 84%;
+  --ring: 198 46% 43%;
+}
+
+html,
+body {
+  background:
+    radial-gradient(circle at top left, rgba(253, 181, 21, 0.18), transparent 34rem),
+    linear-gradient(135deg, #fffaf0 0%, #f3ead6 48%, #e6f1f5 100%) !important;
+  color: var(--bg-ink) !important;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(0, 50, 98, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0, 50, 98, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 65%);
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+.MuiAppBar-root,
+header[class*="MuiPaper-root"] {
+  background: linear-gradient(90deg, var(--bg-blue), #064b82) !important;
+  color: white !important;
+  border-bottom: 4px solid var(--bg-gold) !important;
+  box-shadow: 0 10px 30px rgba(0, 50, 98, 0.22) !important;
+}
+
+.MuiAppBar-root img,
+header[class*="MuiPaper-root"] img {
+  border-radius: 12px !important;
+  box-shadow: 0 0 0 2px rgba(253, 181, 21, 0.5) !important;
+}
+
+.MuiDrawer-paper,
+aside[class*="MuiPaper-root"] {
+  background: linear-gradient(180deg, #00284f, #001d3a) !important;
+  color: #fffaf0 !important;
+  border-right: 1px solid rgba(253, 181, 21, 0.3) !important;
+}
+
+.MuiDrawer-paper .MuiTypography-root,
+aside[class*="MuiPaper-root"] .MuiTypography-root {
+  color: #fffaf0 !important;
+}
+
+.MuiDrawer-paper .MuiButtonBase-root,
+aside[class*="MuiPaper-root"] .MuiButtonBase-root {
+  border-radius: 8px !important;
+}
+
+.MuiDrawer-paper .MuiButtonBase-root:hover,
+aside[class*="MuiPaper-root"] .MuiButtonBase-root:hover {
+  background: rgba(253, 181, 21, 0.14) !important;
+}
+
+.MuiPaper-root {
+  border-color: var(--bg-border) !important;
+}
+
+.MuiButton-contained,
+.MuiButton-containedPrimary {
+  background: linear-gradient(135deg, var(--bg-gold), #f6c85f) !important;
+  color: var(--bg-blue) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 22px rgba(196, 130, 14, 0.22) !important;
+  font-weight: 800 !important;
+}
+
+.bg-primary,
+button[class*="bg-primary"] {
+  background: var(--bg-blue) !important;
+  color: var(--bg-gold) !important;
+}
+
+button[class*="bg-primary"]:hover,
+button[class*="rounded-full"][class*="h-8"][class*="w-8"]:hover {
+  background: #064b82 !important;
+  color: #ffd65c !important;
+}
+
+button[class*="rounded-full"][class*="h-8"][class*="w-8"] {
+  background: var(--bg-blue) !important;
+  color: var(--bg-gold) !important;
+  border: 1px solid rgba(253, 181, 21, 0.55) !important;
+  box-shadow: 0 8px 18px rgba(0, 50, 98, 0.18) !important;
+}
+
+.text-muted-foreground,
+button[class*="text-muted-foreground"] {
+  color: rgba(0, 50, 98, 0.72) !important;
+}
+
+button[class*="px-4"][class*="py-2"] {
+  color: var(--bg-blue) !important;
+  font-weight: 750 !important;
+}
+
+.MuiButton-contained:hover,
+.MuiButton-containedPrimary:hover {
+  background: linear-gradient(135deg, #ffd45a, var(--bg-gold)) !important;
+}
+
+.MuiButton-outlined,
+.MuiIconButton-root {
+  border-radius: 8px !important;
+}
+
+.MuiIconButton-root:hover {
+  background: rgba(253, 181, 21, 0.18) !important;
+}
+
+.MuiInputBase-root,
+.MuiOutlinedInput-root,
+textarea,
+input {
+  background: rgba(255, 250, 240, 0.96) !important;
+  border-radius: 10px !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: rgba(0, 50, 98, 0.22) !important;
+}
+
+.Mui-focused .MuiOutlinedInput-notchedOutline,
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--bg-founder) !important;
+  box-shadow: 0 0 0 3px rgba(59, 126, 161, 0.15) !important;
+}
+
+[data-testid*="message"],
+[class*="message"],
+main .MuiPaper-root {
+  border-radius: 8px !important;
+}
+
+main .MuiPaper-root,
+[class*="Message"] {
+  box-shadow: none !important;
+}
+
+[class*="message"] .MuiAvatar-root,
+.MuiAvatar-root {
+  background: var(--bg-blue) !important;
+  color: var(--bg-gold) !important;
+  font-weight: 800 !important;
+}
+
+a,
+.MuiLink-root {
+  color: var(--bg-founder) !important;
+}
+
+code,
+pre {
+  background: #eef4f7 !important;
+  color: var(--bg-blue) !important;
+  border: 1px solid rgba(59, 126, 161, 0.18) !important;
+  border-radius: 6px !important;
+}
+
+.watermark,
+[class*="watermark"] {
+  opacity: 0.35 !important;
+}
+
+@media (max-width: 720px) {
+  body::before {
+    background-size: 28px 28px;
+  }
+
+  .MuiAppBar-root,
+  header[class*="MuiPaper-root"] {
+    border-bottom-width: 3px !important;
+  }
+}

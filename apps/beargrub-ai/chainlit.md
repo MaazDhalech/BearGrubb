@@ -1,10 +1,10 @@
 # BearGrub AI
 
-Ask about today's UC Berkeley dining hall menus across Crossroads, Cafe 3, Clark Kerr, and Foothill.
+Berkeley dining help for today's menus across Crossroads, Cafe 3, Clark Kerr, and Foothill.
 
 Examples:
 
 - What halal dinner options are at Crossroads?
-- What vegan lunch options are at Cafe 3?
-- How many calories are in 6 oz of the lentil soup?
+- What vegan brunch options are at Cafe 3?
+- Build me a high-protein meal plan under 2000 calories.
 - Refresh today's menu.

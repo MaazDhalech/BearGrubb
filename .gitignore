@@ -13,4 +13,6 @@ node_modules/
 venv/
 apps/beargrub-ai/chroma_db/
 apps/beargrub-ai/classification_cache.local.json
-apps/beargrub-ai/.chainlit/
+apps/beargrub-ai/.chainlit/*
+!apps/beargrub-ai/.chainlit/
+!apps/beargrub-ai/.chainlit/config.toml
