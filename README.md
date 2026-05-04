@@ -107,6 +107,20 @@ Run tests:
 cd apps/beargrub-ai && .venv/bin/python -m pytest tests/ -v
 ```
 
+Run the offline prompt eval used by CI:
+
+```bash
+cd apps/beargrub-ai && .venv/bin/python tests/offline_prompt_eval.py
+```
+
+The live 100-case prompt eval remains available for manual or scheduled checks:
+
+```bash
+cd apps/beargrub-ai && .venv/bin/python tests/eval_pipeline.py
+```
+
+`tests/eval_pipeline.py` fetches Berkeley Dining data and calls OpenAI, so it requires network access and `OPENAI_API_KEY`. It is intentionally not the required every-push gate.
+
 ## Legacy
 
 `apps/calinclusive-dining/` — Flask API exposing `/api/halal-meals`, `/api/vegan-meals`, `/api/vegetarian-meals`.

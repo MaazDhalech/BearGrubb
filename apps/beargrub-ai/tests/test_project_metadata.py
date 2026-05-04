@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = PROJECT_ROOT.parents[1]
 
 
 class ProjectMetadataTests(unittest.TestCase):
@@ -45,6 +46,21 @@ class ProjectMetadataTests(unittest.TestCase):
         self.assertIn("External menu availability", log_text)
         self.assertIn("Telemetry privacy", log_text)
         self.assertIn("Deferred To Phase 2 Or Later", log_text)
+
+    def test_phase_2_ci_workflow_runs_required_local_gates(self):
+        workflow_text = (REPO_ROOT / ".github" / "workflows" / "beargrub-ai-ci.yml").read_text()
+
+        self.assertIn("python -m pytest tests/ -v", workflow_text)
+        self.assertIn("python tests/offline_prompt_eval.py", workflow_text)
+        self.assertIn("BEARGRUB_AUTO_INIT", workflow_text)
+        self.assertIn("Guard against committed generated or secret files", workflow_text)
+
+    def test_phase_2_plan_documents_ci_and_persistence_work(self):
+        plan_text = (REPO_ROOT / "docs" / "PHASE2_PLAN.md").read_text()
+
+        self.assertIn("Slice 1 - CI And Offline Prompt Eval", plan_text)
+        self.assertIn("Slice 3 - Persistent Storage", plan_text)
+        self.assertIn("OpenAI", plan_text)
 
 
 if __name__ == "__main__":
