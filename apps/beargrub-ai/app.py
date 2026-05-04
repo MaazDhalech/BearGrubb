@@ -4,16 +4,21 @@ import json
 import logging
 import os
 from datetime import date
+from time import monotonic
 from typing import Any
 
 from classifier import load_cache
 from config import DEBUG, OPENAI_MODEL, POSTHOG_API_KEY
+from menu_answers import RuleBasedResponse, build_menu_response, build_pre_context_response
 from mcp_tools import MCP_TOOLS, handle_tool_call
 from prompts import SYSTEM_PROMPT
 from rag import embed_menu, extract_filters, is_list_query, is_stale, retrieve
 from refresh import RefreshSummary, refresh_menu_store
 
 logger = logging.getLogger(__name__)
+
+RATE_LIMIT_WINDOW_SECONDS = 60
+RATE_LIMIT_MAX_MESSAGES = 30
 
 
 try:
@@ -211,6 +216,21 @@ def should_show_halal_disclaimer(content: str) -> bool:
     return is_halal_query(content) and not cl.user_session.get("halal_disclaimer_shown", False)
 
 
+def is_rate_limited(now: float | None = None) -> bool:
+    now = monotonic() if now is None else now
+    timestamps = [
+        timestamp
+        for timestamp in (cl.user_session.get("message_timestamps", []) or [])
+        if now - float(timestamp) < RATE_LIMIT_WINDOW_SECONDS
+    ]
+    if len(timestamps) >= RATE_LIMIT_MAX_MESSAGES:
+        cl.user_session.set("message_timestamps", timestamps)
+        return True
+    timestamps.append(now)
+    cl.user_session.set("message_timestamps", timestamps)
+    return False
+
+
 def create_completion(openai_client: Any, messages: list[dict[str, str]], tools: list[dict[str, Any]] | None):
     kwargs: dict[str, Any] = {
         "model": OPENAI_MODEL,
@@ -259,10 +279,32 @@ def run_tool_calls(tool_calls: list[dict[str, str]]) -> None:
         db = handle_tool_call(name, arguments, db, cache=cache)
 
 
+async def send_rule_based_response(
+    response: RuleBasedResponse,
+    user_content: str,
+    history: list[dict[str, str]],
+) -> None:
+    msg = cl.Message(content=response.content)
+    await msg.send()
+    cl.user_session.set("history", append_history(history, user_content, msg.content))
+    if response.disclaimer_used:
+        cl.user_session.set("halal_disclaimer_shown", True)
+    capture_event(
+        "response_sent",
+        {
+            "response_length": len(msg.content),
+            "tool_call_count": 0,
+            "guardrail": response.guardrail,
+            "halal_disclaimer_shown": bool(response.disclaimer_used),
+        },
+    )
+
+
 @cl.on_chat_start
 async def on_start():
     cl.user_session.set("history", [])
     cl.user_session.set("halal_disclaimer_shown", False)
+    cl.user_session.set("message_timestamps", [])
     capture_event("session_started")
 
 
@@ -283,6 +325,23 @@ async def on_message(message):
         },
     )
 
+    if is_rate_limited():
+        capture_event("rate_limited", {"message_length": len(user_content)})
+        await send_rule_based_response(
+            RuleBasedResponse(
+                "You're sending messages too quickly. Wait a moment, then ask another Berkeley dining question.",
+                guardrail="rate_limited",
+            ),
+            user_content,
+            history,
+        )
+        return
+
+    pre_context_response = build_pre_context_response(user_content)
+    if pre_context_response is not None:
+        await send_rule_based_response(pre_context_response, user_content, history)
+        return
+
     active_db = ensure_fresh_menu(menu_date)
     chunks = retrieve(active_db, user_content)
 
@@ -298,6 +357,16 @@ async def on_message(message):
             print(f"[DEBUG] chunk[{i}]={preview!r}")
 
     context = build_context(chunks)
+    rule_based_response = build_menu_response(
+        user_content,
+        chunks,
+        menu_date,
+        include_halal_disclaimer=disclaimer_needed,
+    )
+    if rule_based_response is not None:
+        await send_rule_based_response(rule_based_response, user_content, history)
+        return
+
     messages = build_messages(
         user_content,
         context,

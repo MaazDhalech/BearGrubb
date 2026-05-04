@@ -143,6 +143,34 @@ OUT_OF_SCOPE_PATTERNS = [
     ),
 ]
 
+SECURITY_GUARDRAIL_PATTERNS = [
+    (
+        re.compile(r"\b(make a bomb|build a bomb|weapon|poison someone|arsenic)\b", re.I),
+        "I can't help with that. I can only help with Berkeley dining menus, halal status, allergens, and nutrition for today's options.",
+        "unsafe_non_dining_request",
+    ),
+    (
+        re.compile(r"\b(api key|openai_api_key|posthog_api_key|\.env|environment variables?|secrets?)\b", re.I),
+        "I can't reveal, inspect, or handle private keys, environment variables, or secrets. I can help with Berkeley dining menus, halal status, allergens, and nutrition for today's options.",
+        "sensitive_secret_request",
+    ),
+    (
+        re.compile(r"\b(ignore (all )?(previous|prior) instructions|disregard (all )?(previous|prior) instructions|you are now|pretend you are dan|do anything now)\b", re.I),
+        "I can't follow instructions that override BearGrub AI's dining-safety rules. Ask me about today's Berkeley dining menus, halal status, allergens, or nutrition.",
+        "prompt_injection",
+    ),
+    (
+        re.compile(r"\b(system prompt|developer prompt|hidden prompt|instructions?|tool definitions?|tools definition)\b", re.I),
+        "I can't reveal or modify private system instructions, tool definitions, or runtime internals. I can help with Berkeley dining menus, halal status, allergens, and nutrition for today's options.",
+        "sensitive_system_request",
+    ),
+    (
+        re.compile(r"\b(os\.system|subprocess|run shell|execute command|show me the output of ls)\b", re.I),
+        "I can't run commands or expose runtime output from chat. I can help with Berkeley dining menus, halal status, allergens, and nutrition for today's options.",
+        "runtime_command_request",
+    ),
+]
+
 
 @dataclass(frozen=True)
 class RuleBasedResponse:
@@ -184,6 +212,9 @@ def build_pre_context_response(content: str) -> RuleBasedResponse | None:
             "Hi — I can help with Berkeley dining menus, halal status, dietary filters, allergens, and nutrition for today's dining hall options.",
             guardrail="greeting",
         )
+    for pattern, response, guardrail in SECURITY_GUARDRAIL_PATTERNS:
+        if pattern.search(content):
+            return RuleBasedResponse(response, guardrail=guardrail)
     if re.search(r"\bnext\s+week\b|\bfuture\b", q):
         return RuleBasedResponse(
             "I only have access to today's menu data. I'm not able to show future menus.",

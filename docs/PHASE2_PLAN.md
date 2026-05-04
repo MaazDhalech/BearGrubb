@@ -92,6 +92,7 @@ Deliverables:
 - Sanitized PostHog events only.
 - Basic rate limiting if deployed publicly.
 - Prompt-injection regression tests.
+- Deterministic refusal path for sensitive-data, system-prompt, runtime-command, and unsafe non-dining requests.
 
 Edge cases:
 

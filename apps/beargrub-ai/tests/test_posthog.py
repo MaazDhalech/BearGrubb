@@ -115,12 +115,14 @@ class PosthogTests(unittest.TestCase):
             )
         )
 
+        prompt = "Summarize the retrieved menu context."
+
         with (
             patch.object(self.app, "ensure_fresh_menu", Mock(return_value=object())),
             patch.object(self.app, "retrieve", Mock(return_value=[menu_doc])),
             patch.object(self.app, "get_openai_client", Mock(return_value=fake_client)),
         ):
-            asyncio.run(self.app.on_message(SimpleNamespace(content="Is chicken halal?")))
+            asyncio.run(self.app.on_message(SimpleNamespace(content=prompt)))
 
         calls = self.app.posthog.capture.call_args_list
         self.assertEqual(
@@ -134,8 +136,8 @@ class PosthogTests(unittest.TestCase):
             self.assertNotIn("response", properties)
             self.assertNotIn("context", properties)
             self.assertEqual(call.kwargs["distinct_id"], "session-789")
-        self.assertEqual(calls[0].kwargs["properties"]["message_length"], len("Is chicken halal?"))
-        self.assertTrue(calls[0].kwargs["properties"]["halal_query"])
+        self.assertEqual(calls[0].kwargs["properties"]["message_length"], len(prompt))
+        self.assertFalse(calls[0].kwargs["properties"]["halal_query"])
         self.assertEqual(calls[1].kwargs["properties"]["response_length"], len("Answer text"))
 
 
