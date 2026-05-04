@@ -32,12 +32,27 @@ function centerEmptyState() {
   window.scrollTo({ top: 600, left: 0, behavior: "instant" });
 }
 
+function disableThemeControl() {
+  const buttons = Array.from(document.querySelectorAll("button"));
+  const themeButton = buttons.find((button) => button.textContent.trim() === "Toggle theme");
+
+  if (!themeButton) {
+    return;
+  }
+
+  themeButton.style.display = "none";
+  document.documentElement.classList.remove("light");
+  document.documentElement.classList.add("dark");
+}
+
 wireReadmeButton();
 centerEmptyState();
+disableThemeControl();
 
 new MutationObserver(() => {
   wireReadmeButton();
   centerEmptyState();
+  disableThemeControl();
 }).observe(document.body, {
   childList: true,
   subtree: true,
@@ -46,4 +61,5 @@ new MutationObserver(() => {
 window.addEventListener("load", () => {
   wireReadmeButton();
   centerEmptyState();
+  disableThemeControl();
 });
