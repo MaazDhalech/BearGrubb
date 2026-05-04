@@ -62,6 +62,15 @@ class ProjectMetadataTests(unittest.TestCase):
         self.assertIn("BEARGRUB_AUTO_INIT", workflow_text)
         self.assertIn("Guard against committed generated or secret files", workflow_text)
 
+    def test_live_eval_workflow_is_separate_from_required_push_gate(self):
+        workflow_text = (REPO_ROOT / ".github" / "workflows" / "beargrub-ai-live-eval.yml").read_text()
+
+        self.assertIn("workflow_dispatch", workflow_text)
+        self.assertIn("schedule:", workflow_text)
+        self.assertIn("python tests/eval_pipeline.py", workflow_text)
+        self.assertIn("secrets.OPENAI_API_KEY", workflow_text)
+        self.assertIn("actions/upload-artifact", workflow_text)
+
     def test_phase_2_plan_documents_ci_and_persistence_work(self):
         plan_text = (REPO_ROOT / "docs" / "PHASE2_PLAN.md").read_text()
 
@@ -69,6 +78,7 @@ class ProjectMetadataTests(unittest.TestCase):
         self.assertIn("Slice 2 - Refresh Job Boundary", plan_text)
         self.assertIn("Slice 3 - Persistent Storage", plan_text)
         self.assertIn("Slice 4 - Deployment", plan_text)
+        self.assertIn("Slice 6 - Live Eval", plan_text)
         self.assertIn("Local storage", plan_text)
         self.assertIn("OpenAI", plan_text)
 

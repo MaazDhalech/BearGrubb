@@ -130,6 +130,7 @@ cd apps/beargrub-ai && .venv/bin/python tests/eval_pipeline.py
 ```
 
 `tests/eval_pipeline.py` fetches Berkeley Dining data and calls OpenAI, so it requires network access and `OPENAI_API_KEY`. It is intentionally not the required every-push gate.
+The same live eval can be run from GitHub Actions through the `BearGrub AI Live Eval` workflow after adding `OPENAI_API_KEY` as a repository secret.
 
 ## Legacy
 

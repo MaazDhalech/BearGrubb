@@ -45,6 +45,8 @@ cd apps/beargrub-ai
 .venv/bin/python tests/eval_pipeline.py
 ```
 
+In GitHub Actions, use the `BearGrub AI Live Eval` workflow for the same check. It is manual plus scheduled, uploads an output artifact, and requires the repository secret `OPENAI_API_KEY`.
+
 ## Health Check
 
 The Docker image defines a health check against the Chainlit HTTP root. A healthy container means the web server is responsive. It does not prove Berkeley Dining or OpenAI are reachable; use the refresh command for that:

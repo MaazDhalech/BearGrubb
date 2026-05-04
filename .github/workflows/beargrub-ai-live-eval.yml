@@ -1,0 +1,54 @@
+name: BearGrub AI Live Eval
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 15 * * *"
+
+jobs:
+  live-eval:
+    name: Live Berkeley/OpenAI prompt eval
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    defaults:
+      run:
+        working-directory: apps/beargrub-ai
+
+    env:
+      BEARGRUB_AUTO_INIT: "0"
+      BEARGRUB_TEST_MODE: "1"
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: apps/beargrub-ai/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Verify live eval secret is configured
+        run: |
+          if [ -z "${OPENAI_API_KEY}" ]; then
+            echo "OPENAI_API_KEY GitHub Actions secret is required for live eval."
+            exit 1
+          fi
+
+      - name: Run live prompt eval
+        run: python tests/eval_pipeline.py | tee live-eval-output.txt
+
+      - name: Upload live eval output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: beargrub-ai-live-eval-output
+          path: apps/beargrub-ai/live-eval-output.txt

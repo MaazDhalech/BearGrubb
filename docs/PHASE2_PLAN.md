@@ -109,6 +109,7 @@ Deliverables:
 - Manual or scheduled GitHub Actions job for live Berkeley scrape plus OpenAI prompt eval.
 - Clear separation from required PR checks.
 - Eval artifact summary uploaded for review.
+- Required `OPENAI_API_KEY` must come from GitHub Actions secrets only.
 
 Edge cases:
 
