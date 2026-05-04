@@ -68,8 +68,22 @@ class ProjectMetadataTests(unittest.TestCase):
         self.assertIn("Slice 1 - CI And Offline Prompt Eval", plan_text)
         self.assertIn("Slice 2 - Refresh Job Boundary", plan_text)
         self.assertIn("Slice 3 - Persistent Storage", plan_text)
+        self.assertIn("Slice 4 - Deployment", plan_text)
         self.assertIn("Local storage", plan_text)
         self.assertIn("OpenAI", plan_text)
+
+    def test_phase_2_deployment_artifacts_define_safe_container_path(self):
+        dockerfile = (PROJECT_ROOT / "Dockerfile").read_text()
+        dockerignore = (PROJECT_ROOT / ".dockerignore").read_text()
+        runbook = (REPO_ROOT / "docs" / "DEPLOYMENT.md").read_text()
+
+        self.assertIn("FROM python:3.13-slim", dockerfile)
+        self.assertIn("HEALTHCHECK", dockerfile)
+        self.assertIn("chainlit run app.py", dockerfile)
+        self.assertIn(".env", dockerignore)
+        self.assertIn("menu_data/", dockerignore)
+        self.assertIn("OPENAI_API_KEY", runbook)
+        self.assertIn("Do not deploy with `DEBUG = True`", runbook)
 
 
 if __name__ == "__main__":

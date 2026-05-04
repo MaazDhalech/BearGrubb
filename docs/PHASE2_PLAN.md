@@ -74,6 +74,7 @@ Deliverables:
 - Health check.
 - AWS App Runner or equivalent deployment path.
 - Deployment runbook.
+- Keep cloud credential usage out of the repo and local command history.
 
 Edge cases:
 
