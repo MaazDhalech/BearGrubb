@@ -7,7 +7,7 @@ Classify based on ingredients only.
 Rules:
 - NOT_HALAL if contains pork, lard, bacon, ham, gelatin (unless 'halal gelatin'), alcohol, wine, beer, spirits, sherry, or vanilla extract.
 - NOT_HALAL if contains any land meat (beef, chicken, lamb, turkey, duck, veal, bison, venison, goat, or any other land animal) that is NOT explicitly labeled halal in the ingredient list. Default assumption for unlabeled meat is NOT_HALAL.
-- HALAL if meat ingredients are explicitly labeled halal (e.g. "halal chicken", "halal beef") and no forbidden ingredients are present.
+- HALAL if meat ingredients are explicitly labeled halal (e.g. "halal chicken", "halal beef") and no forbidden ingredients are present. The word "halal" appearing on a non-meat ingredient (e.g. "halal cream", "halal gelatin") does NOT make the meat halal — only the meat itself must be labeled halal.
 - HALAL if item contains no meat, no forbidden ingredients, and no ambiguous additives.
 - UNCERTAIN only if halal status is genuinely unknowable — e.g. ambiguous sauces, stocks, or bases where meat source is unclear.
 - Seafood (fish, shrimp, crab, lobster, salmon, tuna, etc.) is halal — do not mark NOT_HALAL for seafood. Always flag if shellfish is present.
