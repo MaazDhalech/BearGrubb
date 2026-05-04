@@ -1054,11 +1054,12 @@ def looks_like_meal_plan_request(content: str) -> bool:
     q = content.lower()
     if re.search(r"\bmeal[- ]?plan\b|\bplan\s+(?:for|my|me|a)\b", q):
         return True
-    return bool(
-        re.search(r"\b(?:hit(?:ting)?|target(?:ing)?|goal)\b", q)
-        and "protein" in q
-        and re.search(r"\bunder\s+\d+", q)
-    )
+    if re.search(r"\b(?:hit(?:ting)?|target(?:ing)?|goal)\b", q) and "protein" in q and re.search(r"\bunder\s+\d+", q):
+        return True
+    # "2000 calories 150 grams of protein" or "2,000 calories, 150g protein"
+    if "protein" in q and re.search(r"\b\d[\d,]*\s*(?:calories?|cal\b|kcal)", q) and re.search(r"\d+\s*g(?:rams?)?\s*(?:of\s+)?protein", q):
+        return True
+    return False
 
 
 def asks_for_hours(content: str) -> bool:
