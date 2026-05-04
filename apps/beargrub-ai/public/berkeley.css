@@ -304,30 +304,55 @@ div[class*="min-h-24"][class*="rounded-3xl"] {
   align-items: center !important;
   gap: 0.75rem !important;
   padding: 0.5rem 0.58rem 0.5rem 1rem !important;
-  background: rgba(5, 13, 42, 0.92) !important;
+  background: rgba(5, 13, 42, 0.94) !important;
   border: 1px solid rgba(253, 181, 21, 0.26) !important;
   box-shadow: 0 18px 48px rgba(1, 1, 51, 0.28) !important;
   border-radius: 22px !important;
   transform: translateY(-230px) !important;
+  overflow: hidden !important;
 }
 
 div[class*="min-h-24"][class*="rounded-3xl"] > .relative {
   flex: 1 1 auto !important;
   min-width: 0 !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 div[class*="min-h-24"][class*="rounded-3xl"] textarea,
 div[class*="min-h-24"][class*="rounded-3xl"] input {
   background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
   min-height: 40px !important;
   height: 40px !important;
   line-height: 40px !important;
+  padding: 0 !important;
+}
+
+div[class*="min-h-24"][class*="rounded-3xl"] textarea:focus,
+div[class*="min-h-24"][class*="rounded-3xl"] input:focus,
+div[class*="min-h-24"][class*="rounded-3xl"] textarea:focus-visible,
+div[class*="min-h-24"][class*="rounded-3xl"] input:focus-visible {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-offset-width: 0px !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
 }
 
 div[class*="min-h-24"][class*="rounded-3xl"] > div[class*="justify-between"] {
   width: auto !important;
   flex: 0 0 auto !important;
   justify-content: flex-end !important;
+  align-items: center !important;
 }
 
 div[class*="min-h-24"][class*="rounded-3xl"] div[class*="-ml-1.5"] {
