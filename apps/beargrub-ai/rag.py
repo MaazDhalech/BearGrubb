@@ -279,10 +279,9 @@ Dining Hall: {item.get('dining_hall', '')}
 Meal: {item.get('meal_period', '')}
 Category: {item.get('category', '')}
 Serving Size: {serving_text}
+Dietary Category: {item.get('dietary_category', 'UNCERTAIN')}
 Halal Status: {item.get('halal_status', 'UNCERTAIN')}
 Halal Reason: {item.get('halal_reason', '')}
-Vegan: {item.get('is_vegan', False)}
-Vegetarian: {item.get('is_vegetarian', False)}
 Contains Shellfish: {item.get('contains_shellfish', False)}
 Shellfish Note: {shellfish_note}
 Allergens: {allergens_present}

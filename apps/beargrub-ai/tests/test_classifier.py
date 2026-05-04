@@ -53,11 +53,30 @@ class ClassifierTests(unittest.TestCase):
     def test_normalize_strips_punctuation_and_collapses_whitespace(self):
         self.assertEqual(classifier.normalize(" Chicken;   HALAL! "), "CHICKEN HALAL")
 
-    def test_gpt_is_called_for_every_uncached_item(self):
+    def test_gpt_is_called_for_every_uncached_non_veg_item(self):
         client = fake_client("HALAL", "No forbidden ingredients")
         result = classifier.classify(item("Brown Rice; Olive Oil"), cache={}, openai_client=client, cache_path=None)
         self.assertEqual(client.calls, 1)
         self.assertEqual(result["status"], "HALAL")
+
+    def test_vegan_item_skips_gpt_and_gets_vegan_category(self):
+        client = fake_client("HALAL", "should not be called")
+        result = classifier.classify(item("Brown Rice", is_vegan=True), cache={}, openai_client=client, cache_path=None)
+        self.assertEqual(client.calls, 0)
+        self.assertEqual(result["status"], "HALAL")
+        self.assertEqual(result["dietary_category"], "VEGAN")
+
+    def test_vegetarian_item_skips_gpt_and_gets_vegetarian_category(self):
+        client = fake_client("HALAL", "should not be called")
+        result = classifier.classify(item("Cheese Pizza", is_vegetarian=True), cache={}, openai_client=client, cache_path=None)
+        self.assertEqual(client.calls, 0)
+        self.assertEqual(result["status"], "HALAL")
+        self.assertEqual(result["dietary_category"], "VEGETARIAN")
+
+    def test_halal_meat_gets_halal_meat_category(self):
+        client = fake_client("HALAL", "Meat is explicitly labeled halal")
+        result = classifier.classify(item("Halal Chicken; Oil"), cache={}, openai_client=client, cache_path=None)
+        self.assertEqual(result["dietary_category"], "HALAL_MEAT")
 
     def test_cache_hit_skips_gpt(self):
         client = fake_client("HALAL", "Cached")

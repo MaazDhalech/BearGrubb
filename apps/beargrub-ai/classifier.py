@@ -19,6 +19,7 @@ SHELLFISH_TERMS = [
 ]
 
 VALID_STATUSES = {"HALAL", "NOT_HALAL", "UNCERTAIN"}
+VALID_CATEGORIES = {"HALAL_MEAT", "VEGAN", "VEGETARIAN", "NOT_HALAL", "UNCERTAIN"}
 CLASSIFICATION_CACHE_VERSION = "v3"
 
 
@@ -64,6 +65,12 @@ def classify(
     openai_client: Any | None = None,
     cache_path: str | None = CACHE_PATH,
 ) -> dict[str, Any]:
+    # Use Berkeley's reliable vegan/vegetarian tags directly — skip GPT
+    if item.get("is_vegan"):
+        return _result("HALAL", "Vegan item", dietary_category="VEGAN")
+    if item.get("is_vegetarian"):
+        return _result("HALAL", "Vegetarian item", dietary_category="VEGETARIAN")
+
     ingredients = item.get("ingredients") or ""
     key = get_cache_key(ingredients)
     active_cache = cache if cache is not None else load_cache(cache_path or CACHE_PATH)
@@ -99,6 +106,7 @@ def classify_all(
             {
                 "halal_status": result["status"],
                 "halal_reason": result["reason"],
+                "dietary_category": result["dietary_category"],
                 "contains_shellfish": result["contains_shellfish"],
                 "shellfish_note": result["shellfish_note"],
             }
@@ -153,7 +161,10 @@ def _coerce_result(value: dict[str, Any]) -> dict[str, Any]:
     shellfish_note = value.get("shellfish_note")
     if not contains_shellfish:
         shellfish_note = None
-    return _result(status, reason, contains_shellfish, shellfish_note)
+    dietary_category = str(value.get("dietary_category", "")).upper()
+    if dietary_category not in VALID_CATEGORIES:
+        dietary_category = status if status in ("NOT_HALAL", "UNCERTAIN") else "HALAL_MEAT"
+    return _result(status, reason, contains_shellfish, shellfish_note, dietary_category)
 
 
 def _result(
@@ -161,10 +172,14 @@ def _result(
     reason: str,
     contains_shellfish: bool = False,
     shellfish_note: str | None = None,
+    dietary_category: str | None = None,
 ) -> dict[str, Any]:
+    if dietary_category is None:
+        dietary_category = status if status in ("NOT_HALAL", "UNCERTAIN") else "HALAL_MEAT"
     return {
         "status": status,
         "reason": reason,
         "contains_shellfish": contains_shellfish,
         "shellfish_note": shellfish_note if contains_shellfish else None,
+        "dietary_category": dietary_category,
     }
