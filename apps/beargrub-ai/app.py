@@ -6,12 +6,12 @@ import os
 from datetime import date
 from typing import Any
 
-from classifier import classify_all, load_cache
+from classifier import load_cache
 from config import DEBUG, OPENAI_MODEL, POSTHOG_API_KEY
 from mcp_tools import MCP_TOOLS, handle_tool_call
 from prompts import SYSTEM_PROMPT
 from rag import embed_menu, extract_filters, is_list_query, is_stale, retrieve
-from scraper import fetch_all
+from refresh import RefreshSummary, refresh_menu_store
 
 logger = logging.getLogger(__name__)
 
@@ -77,6 +77,7 @@ if cl is None:
 client = None
 db = None
 cache: dict[str, dict[str, Any]] = {}
+last_refresh_summary: RefreshSummary | None = None
 
 
 def configure_posthog() -> None:
@@ -133,12 +134,12 @@ def init(menu_date: str | None = None) -> Any:
 
 
 def refresh_menu(menu_date: str, existing_db: Any = None) -> Any:
-    raw = fetch_all(menu_date)
-    if not raw:
-        logger.warning("Initial or stale menu refresh returned no items for %s", menu_date)
-        return existing_db if existing_db is not None else embed_menu([])
-    classified = classify_all(raw, cache)
-    return embed_menu(classified)
+    global last_refresh_summary
+    result = refresh_menu_store(menu_date=menu_date, existing_db=existing_db, cache=cache)
+    last_refresh_summary = result.summary
+    if not result.summary.success:
+        logger.warning("Menu refresh did not produce a fresh embedded store: %s", result.summary.to_dict())
+    return result.store
 
 
 def ensure_fresh_menu(menu_date: str | None = None) -> Any:

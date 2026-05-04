@@ -4,10 +4,8 @@ import logging
 from datetime import date
 from typing import Any
 
-from classifier import classify_all
 from config import DINING_HALLS
-from rag import embed_menu
-from scraper import fetch_all
+from refresh import refresh_menu_store
 
 logger = logging.getLogger(__name__)
 
@@ -50,17 +48,16 @@ def handle_tool_call(
     menu_date = args.get("date")
     _validate_get_menu_args(dining_hall, menu_date)
 
-    raw = fetch_all(menu_date, hall=dining_hall)
-    if not raw:
-        logger.warning(
-            "Manual menu refresh returned no items for %s on %s; keeping existing store",
-            dining_hall,
-            menu_date,
-        )
-        return db
-
-    classified = classify_all(raw, cache=cache)
-    return embed_menu(classified)
+    result = refresh_menu_store(
+        menu_date=menu_date,
+        hall=dining_hall,
+        existing_db=db,
+        cache=cache,
+        build_empty_store_on_total_failure=False,
+    )
+    if not result.summary.success:
+        logger.warning("Manual menu refresh did not replace the current store: %s", result.summary.to_dict())
+    return result.store
 
 
 def _validate_get_menu_args(dining_hall: Any, menu_date: Any) -> None:

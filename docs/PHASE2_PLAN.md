@@ -33,10 +33,11 @@ Edge cases:
 
 Deliverables:
 
-- A single command that performs scrape -> classify -> embed/snapshot.
+- A single command that performs scrape -> classify -> embed.
 - Structured refresh summary: date, halls fetched, item count, classification counts, failures.
 - Nonzero exit on total refresh failure.
 - Keep-existing-data behavior when a live refresh returns zero items.
+- Snapshot persistence remains part of Slice 3, after the refresh boundary is stable.
 
 Edge cases:
 

@@ -113,6 +113,14 @@ Run the offline prompt eval used by CI:
 cd apps/beargrub-ai && .venv/bin/python tests/offline_prompt_eval.py
 ```
 
+Refresh today's menu data from the command line:
+
+```bash
+cd apps/beargrub-ai && .venv/bin/python refresh.py --date "$(date +%F)" --hall ALL
+```
+
+Use `--json` for a machine-readable refresh summary with fetched halls, failed halls, item counts, and classification counts. The refresh command exits nonzero if no fresh menu can be built.
+
 The live 100-case prompt eval remains available for manual or scheduled checks:
 
 ```bash

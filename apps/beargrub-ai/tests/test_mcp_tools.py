@@ -23,18 +23,17 @@ class McpToolsTests(unittest.TestCase):
         )
         self.assertEqual(tool["function"]["parameters"]["required"], ["dining_hall", "date"])
 
-    def test_handle_get_menu_fetches_classifies_and_embeds(self):
+    def test_handle_get_menu_refreshes_store_through_refresh_boundary(self):
         existing_db = object()
         new_db = object()
-        raw_items = [{"short_name": "Beet Red", "ingredients": "Beet Red"}]
-        classified_items = [{"short_name": "Beet Red", "halal_status": "HALAL"}]
         cache = {}
+        summary = Mock(success=True)
 
-        with (
-            patch.object(mcp_tools, "fetch_all", Mock(return_value=raw_items)) as fetch_mock,
-            patch.object(mcp_tools, "classify_all", Mock(return_value=classified_items)) as classify_mock,
-            patch.object(mcp_tools, "embed_menu", Mock(return_value=new_db)) as embed_mock,
-        ):
+        with patch.object(
+            mcp_tools,
+            "refresh_menu_store",
+            Mock(return_value=Mock(store=new_db, summary=summary)),
+        ) as refresh_mock:
             result = mcp_tools.handle_tool_call(
                 "get_menu",
                 {"dining_hall": "Cafe 3", "date": "2026-04-27"},
@@ -43,18 +42,23 @@ class McpToolsTests(unittest.TestCase):
             )
 
         self.assertIs(result, new_db)
-        fetch_mock.assert_called_once_with("2026-04-27", hall="Cafe 3")
-        classify_mock.assert_called_once_with(raw_items, cache=cache)
-        embed_mock.assert_called_once_with(classified_items)
+        refresh_mock.assert_called_once_with(
+            menu_date="2026-04-27",
+            hall="Cafe 3",
+            existing_db=existing_db,
+            cache=cache,
+            build_empty_store_on_total_failure=False,
+        )
 
     def test_handle_get_menu_keeps_existing_db_when_fetch_returns_empty(self):
         existing_db = object()
+        summary = Mock(success=False)
 
-        with (
-            patch.object(mcp_tools, "fetch_all", Mock(return_value=[])) as fetch_mock,
-            patch.object(mcp_tools, "classify_all", Mock()) as classify_mock,
-            patch.object(mcp_tools, "embed_menu", Mock()) as embed_mock,
-        ):
+        with patch.object(
+            mcp_tools,
+            "refresh_menu_store",
+            Mock(return_value=Mock(store=existing_db, summary=summary)),
+        ) as refresh_mock:
             result = mcp_tools.handle_tool_call(
                 "get_menu",
                 {"dining_hall": "ALL", "date": "2026-04-27"},
@@ -62,9 +66,7 @@ class McpToolsTests(unittest.TestCase):
             )
 
         self.assertIs(result, existing_db)
-        fetch_mock.assert_called_once_with("2026-04-27", hall="ALL")
-        classify_mock.assert_not_called()
-        embed_mock.assert_not_called()
+        refresh_mock.assert_called_once()
 
     def test_handle_tool_call_rejects_unknown_tools(self):
         with self.assertRaisesRegex(ValueError, "Unsupported MCP tool"):

@@ -52,6 +52,7 @@ class ProjectMetadataTests(unittest.TestCase):
 
         self.assertIn("python -m pytest tests/ -v", workflow_text)
         self.assertIn("python tests/offline_prompt_eval.py", workflow_text)
+        self.assertIn("refresh.py", workflow_text)
         self.assertIn("BEARGRUB_AUTO_INIT", workflow_text)
         self.assertIn("Guard against committed generated or secret files", workflow_text)
 
@@ -59,6 +60,7 @@ class ProjectMetadataTests(unittest.TestCase):
         plan_text = (REPO_ROOT / "docs" / "PHASE2_PLAN.md").read_text()
 
         self.assertIn("Slice 1 - CI And Offline Prompt Eval", plan_text)
+        self.assertIn("Slice 2 - Refresh Job Boundary", plan_text)
         self.assertIn("Slice 3 - Persistent Storage", plan_text)
         self.assertIn("OpenAI", plan_text)
 
