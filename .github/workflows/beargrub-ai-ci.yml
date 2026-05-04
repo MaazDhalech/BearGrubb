@@ -51,7 +51,7 @@ jobs:
         working-directory: .
         run: |
           set -euo pipefail
-          blocked="$(git ls-files | grep -E '(^|/)(\.env|__pycache__/|.*\.pyc$|chroma_db/)' || true)"
+          blocked="$(git ls-files | grep -E '(^|/)(\.env$|__pycache__/|.*\.pyc$|chroma_db/)' || true)"
           if [ -n "$blocked" ]; then
             echo "Generated or secret-like files are tracked and must be removed:"
             echo "$blocked"
