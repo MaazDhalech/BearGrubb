@@ -1,27 +1,24 @@
 const README_URL = "https://github.com/MaazDhalech/BearGrubb#readme";
 const ICON_URL = "/public/beargrub-icon.png";
+const FAVICON_URL = `${ICON_URL}?v=beargrub-icon-2`;
 
 function setFavicon() {
-  const selectors = [
-    'link[rel="icon"]',
-    'link[rel="shortcut icon"]',
-    'link[rel="apple-touch-icon"]',
-  ];
-
-  selectors.forEach((selector) => {
-    document.querySelectorAll(selector).forEach((link) => link.remove());
+  document.querySelectorAll('link[rel*="icon"], link[rel="manifest"]').forEach((link) => {
+    link.remove();
   });
 
-  const favicon = document.createElement("link");
-  favicon.rel = "icon";
-  favicon.type = "image/png";
-  favicon.href = ICON_URL;
-  document.head.appendChild(favicon);
-
-  const appleTouchIcon = document.createElement("link");
-  appleTouchIcon.rel = "apple-touch-icon";
-  appleTouchIcon.href = ICON_URL;
-  document.head.appendChild(appleTouchIcon);
+  [
+    { rel: "icon", type: "image/png", sizes: "32x32" },
+    { rel: "shortcut icon", type: "image/png", sizes: "32x32" },
+    { rel: "apple-touch-icon", sizes: "180x180" },
+  ].forEach((attrs) => {
+    const link = document.createElement("link");
+    Object.entries(attrs).forEach(([key, value]) => {
+      link.setAttribute(key, value);
+    });
+    link.href = FAVICON_URL;
+    document.head.appendChild(link);
+  });
 }
 
 function wireReadmeButton() {
