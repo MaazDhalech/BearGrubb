@@ -284,17 +284,19 @@ button[class*="hover:bg-muted"] {
   display: none !important;
 }
 
-img[src*="beargrub-wordmark.svg"] {
-  width: min(72vw, 430px) !important;
-  max-height: 116px !important;
+.logo[src*="beargrub-icon.png"],
+img[alt="logo"][src*="beargrub-icon.png"] {
+  width: clamp(108px, 22vw, 168px) !important;
+  height: clamp(108px, 22vw, 168px) !important;
   object-fit: contain !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
+  border-radius: 24px !important;
+  box-shadow: 0 18px 42px rgba(1, 1, 51, 0.28) !important;
   filter: drop-shadow(0 14px 26px rgba(1, 1, 51, 0.32)) !important;
-  transform: translateY(-250px) !important;
+  transform: translateY(-170px) !important;
 }
 
-div:has(> img[src*="beargrub-wordmark.svg"]) {
+div:has(> .logo[src*="beargrub-icon.png"]),
+div:has(> img[alt="logo"][src*="beargrub-icon.png"]) {
   position: relative !important;
 }
 
@@ -384,8 +386,9 @@ html.dark [data-radix-popper-content-wrapper] > div {
 }
 
 @media (min-width: 900px) {
-  img[src*="beargrub-wordmark.svg"] {
-    transform: translateY(-270px) !important;
+  .logo[src*="beargrub-icon.png"],
+  img[alt="logo"][src*="beargrub-icon.png"] {
+    transform: translateY(-190px) !important;
   }
 
   div[class*="min-h-24"][class*="rounded-3xl"] {
@@ -395,8 +398,9 @@ html.dark [data-radix-popper-content-wrapper] > div {
 }
 
 @media (max-width: 720px) {
-  img[src*="beargrub-wordmark.svg"] {
-    transform: translateY(-230px) !important;
+  .logo[src*="beargrub-icon.png"],
+  img[alt="logo"][src*="beargrub-icon.png"] {
+    transform: translateY(-160px) !important;
   }
 
   div[class*="min-h-24"][class*="rounded-3xl"] {

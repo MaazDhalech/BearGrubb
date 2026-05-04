@@ -22,7 +22,7 @@ function wireReadmeButton() {
 }
 
 function centerEmptyState() {
-  const logo = document.querySelector('img[src*="beargrub-wordmark.svg"]');
+  const logo = document.querySelector('img[alt="logo"][src*="beargrub-icon.png"]');
   const composer = document.querySelector("textarea");
 
   if (!logo || !composer) {
