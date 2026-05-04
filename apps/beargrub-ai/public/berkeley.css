@@ -153,6 +153,17 @@ button[class*="bg-primary"] {
   color: var(--bg-blue) !important;
 }
 
+.step div[class*="bg-accent"][class*="rounded-3xl"][class*="max-w-[70%]"] {
+  background: linear-gradient(135deg, var(--bg-gold), #f6c85f) !important;
+  color: var(--bg-blue) !important;
+  border: 1px solid rgba(255, 255, 255, 0.48) !important;
+  box-shadow: 0 12px 24px rgba(1, 1, 51, 0.22) !important;
+}
+
+.step div[class*="bg-accent"][class*="rounded-3xl"][class*="max-w-[70%]"] * {
+  color: var(--bg-blue) !important;
+}
+
 button[class*="bg-primary"]:hover,
 button[class*="rounded-full"][class*="h-8"][class*="w-8"]:hover {
   background: #ffc31b !important;
