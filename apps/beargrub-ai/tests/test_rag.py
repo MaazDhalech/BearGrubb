@@ -62,6 +62,13 @@ class RagTests(unittest.TestCase):
             },
         )
 
+    def test_extract_filters_prefers_earliest_hall_when_history_is_appended(self):
+        filters = rag.extract_filters(
+            "what about cafe 3?\n\nRecent user context:\n- what halal options are at Crossroads tonight?"
+        )
+
+        self.assertEqual(filters["dining_hall"], "Cafe 3")
+
     def test_extract_filters_handles_vegan_vegetarian_and_brunch_mapping(self):
         vegan_filters = rag.extract_filters("vegan breakfast near crossroads")
         veggie_filters = rag.extract_filters("veggie lunch at clark")
@@ -124,6 +131,48 @@ class RagTests(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].metadata["short_name"], "Vegan Lentil Soup")
         self.assertEqual(results[0].metadata["dining_hall"], "Cafe 3")
+
+    def test_retrieve_specific_item_includes_exact_default_excluded_match(self):
+        db = rag.embed_menu(
+            [
+                menu_item(
+                    short_name="Caesar Dressing",
+                    category="Dressing",
+                    halal_status="NOT_HALAL",
+                    halal_reason="Contains anchovy paste",
+                    ingredients="Dressing Caesar; Anchovy Paste",
+                ),
+                menu_item(short_name="Halal Rosemary Chicken"),
+            ],
+            use_chroma=False,
+        )
+
+        results = rag.retrieve(db, "is the Caesar Dressing halal?", n_results=5)
+
+        self.assertEqual(results[0].metadata["short_name"], "Caesar Dressing")
+
+    def test_retrieve_specific_item_prefers_regular_item_when_requested(self):
+        db = rag.embed_menu(
+            [
+                menu_item(
+                    short_name="Halal Vegan Chicken Tenders",
+                    is_vegan=True,
+                    is_vegetarian=True,
+                    ingredients="Meat Alternative Chicken Tender",
+                ),
+                menu_item(
+                    short_name="Chicken Tenders",
+                    halal_status="NOT_HALAL",
+                    halal_reason="Contains chicken not labeled halal",
+                    ingredients="Chicken Tenderloin Breaded",
+                ),
+            ],
+            use_chroma=False,
+        )
+
+        results = rag.retrieve(db, "is the regular Chicken Tenders halal?", n_results=5)
+
+        self.assertEqual(results[0].metadata["short_name"], "Chicken Tenders")
 
     def test_vector_filter_uses_chroma_and_syntax_for_multiple_filters(self):
         filters = rag.extract_filters("whats halal for lunch today at cafe 3")

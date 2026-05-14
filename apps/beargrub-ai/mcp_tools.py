@@ -16,7 +16,8 @@ MCP_TOOLS = [
             "name": "get_menu",
             "description": (
                 "Manually refresh the dining hall menu. "
-                "Only call if the user explicitly asks to refresh "
+                "Call if the user explicitly asks to refresh, reload, update, "
+                "or get the latest/up-to-date/current/most recent menu, "
                 "or if data seems incorrect for today."
             ),
             "parameters": {

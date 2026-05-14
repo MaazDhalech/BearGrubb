@@ -157,7 +157,7 @@ class AppTests(unittest.TestCase):
         self.assertEqual(history[-1]["content"], "Beet Red is vegan.")
         self.assertNotIn("tools", fake_client.calls[-1] if len(fake_client.calls) > 1 else {})
 
-    def test_on_message_sets_halal_disclaimer_flag_once_for_deterministic_answer(self):
+    def test_on_message_sets_halal_disclaimer_flag_once_for_model_answer(self):
         doc = menu_doc(
             "Halal Chicken",
             category="Center Plate",
@@ -167,15 +167,18 @@ class AppTests(unittest.TestCase):
             calories=150,
             protein=20,
         )
+        fake_client = FakeCompletionClient(
+            [[chunk("Note: classifications are ingredient-based and intended as a guide, not a religious ruling.\n\nHalal Chicken is available.")]]
+        )
 
         with (
             patch.object(self.app, "ensure_fresh_menu", Mock(return_value=object())),
             patch.object(self.app, "retrieve", Mock(return_value=[doc])),
-            patch.object(self.app, "get_openai_client", Mock()) as client_mock,
+            patch.object(self.app, "get_openai_client", Mock(return_value=fake_client)) as client_mock,
         ):
             asyncio.run(self.app.on_message(SimpleNamespace(content="What's halal at Crossroads tonight?")))
 
-        client_mock.assert_not_called()
+        client_mock.assert_called_once()
         self.assertTrue(self.app.cl.user_session.get("halal_disclaimer_shown"))
         self.assertIn("Note: classifications", self.app.cl.user_session.get("history")[-1]["content"])
 
@@ -194,7 +197,7 @@ class AppTests(unittest.TestCase):
         self.assertIn("private keys", response)
         self.assertNotIn("sk-", response)
 
-    def test_on_message_uses_deterministic_menu_answer_before_model_call(self):
+    def test_on_message_passes_normal_menu_questions_to_model(self):
         doc = menu_doc(
             "Halal Rosemary Chicken",
             category="Center Plate",
@@ -204,7 +207,7 @@ class AppTests(unittest.TestCase):
             calories=153,
             protein=20.85,
         )
-        fake_client = FakeCompletionClient([])
+        fake_client = FakeCompletionClient([[chunk("Halal Rosemary Chicken is available tonight.")]])
 
         with (
             patch.object(self.app, "ensure_fresh_menu", Mock(return_value=object())),
@@ -214,10 +217,37 @@ class AppTests(unittest.TestCase):
             asyncio.run(self.app.on_message(SimpleNamespace(content="What's halal at Crossroads tonight?")))
 
         retrieve_mock.assert_called_once()
-        client_mock.assert_not_called()
+        client_mock.assert_called_once()
         response = self.app.cl.user_session.get("history")[-1]["content"]
         self.assertIn("Halal Rosemary Chicken", response)
-        self.assertIn("classifications are ingredient-based", response)
+        self.assertIn("tools", fake_client.calls[0])
+
+    def test_build_retrieval_query_adds_recent_context_for_numeric_meal_plan_target(self):
+        history = [
+            {"role": "user", "content": "help me develop a balanced meal plan for today"},
+            {"role": "assistant", "content": "What calorie and protein target should I use?"},
+        ]
+
+        query = self.app.build_retrieval_query("2000 calories, 200 grams of protein", history)
+
+        self.assertIn("2000 calories, 200 grams of protein", query)
+        self.assertIn("balanced meal plan", query)
+
+    def test_build_retrieval_query_keeps_current_hall_first_for_followups(self):
+        history = [
+            {"role": "user", "content": "what halal options are at Crossroads tonight?"},
+            {"role": "assistant", "content": "Crossroads has halal options."},
+        ]
+
+        query = self.app.build_retrieval_query("what about Cafe 3?", history)
+
+        self.assertTrue(query.startswith("what about Cafe 3?"))
+        self.assertIn("Crossroads", query)
+
+    def test_make_it_more_balanced_is_not_blocked_as_recipe(self):
+        response = self.app.build_pre_context_response("make it more balanced")
+
+        self.assertIsNone(response)
 
     def test_rate_limit_blocks_before_refresh_or_model_call(self):
         self.app.cl.user_session.set(

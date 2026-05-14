@@ -3,13 +3,14 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 from datetime import date
 from time import monotonic
 from typing import Any
 
 from classifier import load_cache
 from config import DEBUG, OPENAI_MODEL, POSTHOG_API_KEY
-from menu_answers import RuleBasedResponse, build_menu_response, build_pre_context_response
+from menu_answers import RuleBasedResponse, build_pre_context_response
 from mcp_tools import MCP_TOOLS, handle_tool_call
 from prompts import SYSTEM_PROMPT
 from rag import embed_menu, extract_filters, is_list_query, is_stale, retrieve
@@ -184,6 +185,42 @@ def ensure_fresh_menu(menu_date: str | None = None) -> Any:
 
 def build_context(chunks: list[Any]) -> str:
     return "\n\n".join(getattr(chunk, "page_content", str(chunk)) for chunk in chunks)
+
+
+def build_retrieval_query(user_content: str, history: list[dict[str, str]]) -> str:
+    """Augment terse follow-ups with recent user intent while keeping the current query first."""
+    current = (user_content or "").strip()
+    if not should_include_retrieval_history(current):
+        return current
+
+    recent_user_messages = [
+        str(message.get("content", "")).strip()
+        for message in history or []
+        if message.get("role") == "user" and str(message.get("content", "")).strip()
+    ][-3:]
+    if not recent_user_messages:
+        return current
+    previous_context = "\n".join(f"- {message}" for message in recent_user_messages)
+    return f"{current}\n\nRecent user context:\n{previous_context}"
+
+
+def should_include_retrieval_history(content: str) -> bool:
+    q = (content or "").lower().strip()
+    if not q:
+        return False
+    words = re.findall(r"[a-z0-9]+", q)
+    if len(words) <= 4:
+        return True
+    if re.fullmatch(r"[\d\s,./+-]+", q):
+        return True
+    if "protein" in q and re.search(r"\b\d[\d,]*\s*(?:calories?|cal|kcal)\b", q):
+        return True
+    return bool(
+        re.search(
+            r"\b(what about|how about|same|that|those|there|yes|yeah|yep|no|make it|more balanced|balanced)\b",
+            q,
+        )
+    )
 
 
 def build_messages(
@@ -365,12 +402,14 @@ async def on_message(message):
         return
 
     active_db = ensure_fresh_menu(menu_date)
-    chunks = retrieve(active_db, user_content)
+    retrieval_query = build_retrieval_query(user_content, history)
+    chunks = retrieve(active_db, retrieval_query)
 
     if DEBUG:
-        filters = extract_filters(user_content)
-        list_q = is_list_query(user_content)
+        filters = extract_filters(retrieval_query)
+        list_q = is_list_query(retrieval_query)
         print(f"[DEBUG] query={user_content!r}")
+        print(f"[DEBUG] retrieval_query={retrieval_query!r}")
         print(f"[DEBUG] filters={filters}")
         print(f"[DEBUG] is_list_query={list_q}")
         print(f"[DEBUG] chunk_count={len(chunks)}")
@@ -379,16 +418,6 @@ async def on_message(message):
             print(f"[DEBUG] chunk[{i}]={preview!r}")
 
     context = build_context(chunks)
-    rule_based_response = build_menu_response(
-        user_content,
-        chunks,
-        menu_date,
-        include_halal_disclaimer=disclaimer_needed,
-    )
-    if rule_based_response is not None:
-        await send_rule_based_response(rule_based_response, user_content, history)
-        return
-
     messages = build_messages(
         user_content,
         context,
@@ -404,7 +433,7 @@ async def on_message(message):
 
     if tool_calls:
         run_tool_calls(tool_calls)
-        refreshed_chunks = retrieve(db, user_content)
+        refreshed_chunks = retrieve(db, retrieval_query)
         refreshed_context = build_context(refreshed_chunks)
         refreshed_messages = build_messages(
             user_content,

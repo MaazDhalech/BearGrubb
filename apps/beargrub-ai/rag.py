@@ -19,7 +19,7 @@ MEAT_TERMS_FOR_SORT: frozenset[str] = frozenset({
 # rather than going through semantic search. When in doubt, be a list query.
 _LIST_QUERY_PATTERNS: tuple[str, ...] = (
     "what is", "what are", "what do", "what can",
-    "show me", "show", "list", "find", "give me",
+    "show me", "show", "list", "find", "give me", "get", "choose",
     " any ", " all ", "options", "available",
     "tonight", "today", "this morning", "this evening",
     "for dinner", "for brunch", "for breakfast", "for lunch",
@@ -30,10 +30,19 @@ _LIST_QUERY_PATTERNS: tuple[str, ...] = (
     "what vegetarian", "whats vegetarian", "what's vegetarian",
     "highest protein", "lowest calorie", "most protein",
     "high protein", "low calorie", "low fat",
-    "meal plan", "build me", "plan for",
+    "meal plan", "build me", "plan for", "plan", "balanced",
+    "main protein", "protein target",
     "gluten free", "gluten-free", "allergen", "allergens",
     "which dining", "where can", "which hall",
+    "refresh", "reload", "update", "up to date", "up-to-date", "most recent", "latest", "stale",
 )
+
+_QUERY_STOPWORDS: frozenset[str] = frozenset({
+    "a", "an", "and", "are", "at", "cal", "calories", "can", "do", "does",
+    "for", "from", "give", "hall", "have", "how", "i", "in", "is", "list",
+    "many", "me", "menu", "much", "of", "on", "options", "please", "show",
+    "the", "there", "today", "tonight", "what", "whats", "with",
+})
 
 
 @dataclass(frozen=True)
@@ -105,10 +114,13 @@ def extract_filters(query: str) -> dict[str, Any] | None:
         "foothills": "Foothill",
         "foothill": "Foothill",
     }
-    for key, val in hall_map.items():
-        if key in q:
-            filters["dining_hall"] = val
-            break
+    hall_match = min(
+        ((q.index(alias), hall) for alias, hall in hall_map.items() if alias in q),
+        default=None,
+        key=lambda match: match[0],
+    )
+    if hall_match:
+        filters["dining_hall"] = hall_match[1]
 
     if "halal" in q:
         filters["halal_status"] = "HALAL"
@@ -243,13 +255,90 @@ def retrieve(db: Any, query: str, n_results: int = 20) -> list[Any]:
         chunks = _get_by_filter(db, location_filters or None, limit=400)
         return sorted(chunks, key=_item_sort_key)
 
-    # Specific item query — semantic search, strip dietary filters to avoid blindness
+    # Specific item query — exact/lexical candidates first, then semantic search.
     non_dietary = {
         k: v for k, v in (filters or {}).items()
         if k not in ("halal_status", "is_vegan", "is_vegetarian")
     }
     chroma_filter = vector_filter(non_dietary) if non_dietary else None
-    return db.similarity_search(query, k=n_results, filter=chroma_filter)
+    lexical_matches = lexical_item_matches(db, query, non_dietary or None, limit=8)
+    semantic_matches = db.similarity_search(query, k=n_results, filter=chroma_filter)
+    return dedupe_documents([*lexical_matches, *semantic_matches])[:n_results]
+
+
+def lexical_item_matches(
+    db: Any,
+    query: str,
+    filters: dict[str, Any] | None = None,
+    limit: int = 8,
+) -> list[Any]:
+    candidates = _get_by_filter(db, filters, limit=500)
+    scored = [
+        (lexical_item_score(query, doc), doc)
+        for doc in candidates
+    ]
+    scored = [(score, doc) for score, doc in scored if score > 0]
+    scored.sort(key=lambda entry: entry[0], reverse=True)
+    return [doc for _, doc in scored[:limit]]
+
+
+def lexical_item_score(query: str, doc: Any) -> int:
+    metadata = getattr(doc, "metadata", {}) or {}
+    name = str(metadata.get("short_name") or "")
+    if not name:
+        return 0
+    normalized_query = normalize_lookup_text(query)
+    normalized_name = normalize_lookup_text(name)
+    if not normalized_name:
+        return 0
+
+    name_terms = _terms(name)
+    query_terms = {term for term in _terms(query) if term not in _QUERY_STOPWORDS}
+    if not query_terms:
+        return 0
+
+    score = 0
+    if normalized_name in normalized_query:
+        score += 1000 + len(normalized_name)
+
+    overlap = len(name_terms & query_terms)
+    if overlap:
+        score += overlap * 20
+        score += int(100 * (overlap / max(len(name_terms), 1)))
+
+    missing = len(name_terms - query_terms)
+    score -= missing * 8
+
+    q = query.lower()
+    if "regular" in q and not bool(metadata.get("is_vegan", False)):
+        score += 50
+    if "vegan" in q and bool(metadata.get("is_vegan", False)):
+        score += 80
+    if "halal" in q and str(metadata.get("halal_status", "")).upper() == "HALAL":
+        score += 20
+
+    return score if score >= 40 else 0
+
+
+def normalize_lookup_text(value: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", value.lower())).strip()
+
+
+def dedupe_documents(documents: list[Any]) -> list[Any]:
+    seen: set[tuple[str, str, str]] = set()
+    deduped: list[Any] = []
+    for doc in documents:
+        metadata = getattr(doc, "metadata", {}) or {}
+        key = (
+            str(metadata.get("dining_hall", "")),
+            str(metadata.get("meal_period", "")),
+            str(metadata.get("short_name", "")),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(doc)
+    return deduped
 
 
 def is_stale(db: Any) -> bool:

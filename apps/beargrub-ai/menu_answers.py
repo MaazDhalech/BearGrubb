@@ -131,7 +131,7 @@ OUT_OF_SCOPE_PATTERNS = [
         "preference",
     ),
     (
-        re.compile(r"\b(recipe|cook|make)\b", re.I),
+        re.compile(r"\b(recipe|cook)\b|\bhow\s+(?:do|can)\s+i\s+make\b", re.I),
         "I can only help with what's available at Berkeley dining halls today. Want me to show you the halal chicken options tonight?",
         "recipe",
     ),
