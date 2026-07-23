@@ -34,6 +34,22 @@ def chunk(content: str):
     )
 
 
+class FakeAsyncStream:
+    """Mimics openai's AsyncStream: an async iterator over chunk objects."""
+
+    def __init__(self, chunks):
+        self._iterator = iter(chunks)
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        try:
+            return next(self._iterator)
+        except StopIteration:
+            raise StopAsyncIteration
+
+
 class PosthogTests(unittest.TestCase):
     def setUp(self):
         self.app = reload_app()
@@ -110,9 +126,12 @@ class PosthogTests(unittest.TestCase):
         self.app.posthog = Mock()
         self.app.posthog.api_key = "test-key"
         menu_doc = rag.MenuDocument("Item: Halal Chicken", {"date": "2026-04-29"})
+        async def fake_create(**kwargs):
+            return FakeAsyncStream([chunk("Answer text")])
+
         fake_client = SimpleNamespace(
             chat=SimpleNamespace(
-                completions=SimpleNamespace(create=Mock(return_value=[chunk("Answer text")]))
+                completions=SimpleNamespace(create=fake_create)
             )
         )
 

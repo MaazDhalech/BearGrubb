@@ -56,6 +56,22 @@ def menu_doc(name: str, **metadata):
     return rag.MenuDocument(f"Item: {name}", base_metadata)
 
 
+class FakeAsyncStream:
+    """Mimics openai's AsyncStream: an async iterator over chunk objects."""
+
+    def __init__(self, chunks):
+        self._iterator = iter(chunks)
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        try:
+            return next(self._iterator)
+        except StopIteration:
+            raise StopAsyncIteration
+
+
 class FakeCompletionClient:
     def __init__(self, responses):
         self.responses = list(responses)
@@ -64,9 +80,9 @@ class FakeCompletionClient:
             completions=SimpleNamespace(create=self._create),
         )
 
-    def _create(self, **kwargs):
+    async def _create(self, **kwargs):
         self.calls.append(kwargs)
-        return self.responses.pop(0)
+        return FakeAsyncStream(self.responses.pop(0))
 
 
 class AppTests(unittest.TestCase):
@@ -268,10 +284,12 @@ class AppTests(unittest.TestCase):
 
     def test_stream_completion_collects_fragmented_tool_call_arguments(self):
         msg = self.app.cl.Message(content="")
-        response = [
-            chunk(tool_calls=[tool_call(name="get_menu", arguments='{"dining_hall": "ALL"', index=0)]),
-            chunk(tool_calls=[tool_call(arguments=', "date": "2026-04-29"}', index=0)]),
-        ]
+        response = FakeAsyncStream(
+            [
+                chunk(tool_calls=[tool_call(name="get_menu", arguments='{"dining_hall": "ALL"', index=0)]),
+                chunk(tool_calls=[tool_call(arguments=', "date": "2026-04-29"}', index=0)]),
+            ]
+        )
 
         calls = asyncio.run(self.app.stream_completion(response, msg))
 

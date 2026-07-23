@@ -125,9 +125,9 @@ def sanitize_event_properties(properties: dict[str, Any]) -> dict[str, Any]:
 def get_openai_client():
     global client
     if client is None:
-        from openai import OpenAI
+        from openai import AsyncOpenAI
 
-        client = OpenAI()
+        client = AsyncOpenAI(timeout=30.0)
     return client
 
 
@@ -290,7 +290,7 @@ def is_rate_limited(now: float | None = None) -> bool:
     return False
 
 
-def create_completion(openai_client: Any, messages: list[dict[str, str]], tools: list[dict[str, Any]] | None):
+async def create_completion(openai_client: Any, messages: list[dict[str, str]], tools: list[dict[str, Any]] | None):
     kwargs: dict[str, Any] = {
         "model": OPENAI_MODEL,
         "messages": messages,
@@ -298,12 +298,12 @@ def create_completion(openai_client: Any, messages: list[dict[str, str]], tools:
     }
     if tools:
         kwargs["tools"] = tools
-    return openai_client.chat.completions.create(**kwargs)
+    return await openai_client.chat.completions.create(**kwargs)
 
 
 async def stream_completion(response: Any, msg: Any) -> list[dict[str, str]]:
     tool_calls: dict[int, dict[str, str]] = {}
-    for chunk in response:
+    async for chunk in response:
         if not getattr(chunk, "choices", None):
             continue
         delta = getattr(chunk.choices[0], "delta", None)
@@ -427,7 +427,7 @@ async def on_message(message):
     )
 
     openai_client = get_openai_client()
-    response = create_completion(openai_client, messages, tools=MCP_TOOLS)
+    response = await create_completion(openai_client, messages, tools=MCP_TOOLS)
     msg = cl.Message(content="")
     tool_calls = await stream_completion(response, msg)
 
@@ -445,7 +445,7 @@ async def on_message(message):
         refreshed_messages.append(
             {"role": "system", "content": "The menu data was refreshed for this request."}
         )
-        refreshed_response = create_completion(openai_client, refreshed_messages, tools=None)
+        refreshed_response = await create_completion(openai_client, refreshed_messages, tools=None)
         await stream_completion(refreshed_response, msg)
 
     await msg.send()
